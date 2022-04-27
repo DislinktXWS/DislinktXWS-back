@@ -23,3 +23,7 @@ func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
 func (service *UserService) GetAll() ([]*domain.User, error) {
 	return service.store.GetAll()
 }
+
+func (service *UserService) Insert(user *domain.User) error {
+	return service.store.Insert(user)
+}

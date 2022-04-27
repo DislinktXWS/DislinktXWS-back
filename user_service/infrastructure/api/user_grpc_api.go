@@ -50,3 +50,12 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	}
 	return response, nil
 }
+
+func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
+	user := mapNewUser(request.User)
+	err := handler.service.Insert(user)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserResponse{}, nil
+}
