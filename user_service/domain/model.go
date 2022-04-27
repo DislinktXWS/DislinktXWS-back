@@ -8,7 +8,7 @@ type User struct {
 	Surname     string             `bson:"surname"`
 	Username    string             `bson:"username"`
 	Password    string             `bson:"password"`
-	DateOfBirth string             `bson:"date_of_birth"`
+	DateOfBirth string             `bson:"dateOfBirth"`
 	Gender      string             `bson:"gender"`
 	Email       string             `bson:"email"`
 	Phone       string             `bson:"phone"`

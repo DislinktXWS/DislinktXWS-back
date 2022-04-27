@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DATABASE   = "user"
+	DATABASE   = "userDB"
 	COLLECTION = "users"
 )
 
