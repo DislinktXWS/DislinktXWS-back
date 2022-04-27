@@ -10,7 +10,7 @@ type UserService struct {
 	store domain.UserStore
 }
 
-func NewOrderService(store domain.UserStore) *UserService {
+func NewUserService(store domain.UserStore) *UserService {
 	return &UserService{
 		store: store,
 	}

@@ -1,14 +1,18 @@
 package startup
 
 import (
+	"fmt"
 	"log"
+	user_service "module/common/proto/user_service"
 	"module/user_service/application"
 	"module/user_service/domain"
 	"module/user_service/infrastructure/api"
 	"module/user_service/infrastructure/persistence"
 	"module/user_service/startup/config"
+	"net"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -31,6 +35,8 @@ func (server *Server) Start() {
 
 	userService := server.initUserService(userStore)
 	userHandler := server.initUserHandler(userService)
+
+	server.startGrpcServer(userHandler)
 }
 
 func (server *Server) initMongoClient() *mongo.Client {
@@ -55,9 +61,21 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 }
 
 func (server *Server) initUserService(store domain.UserStore) *application.UserService {
-	return application.NewOrderService(store)
+	return application.NewUserService(store)
 }
 
 func (server *Server) initUserHandler(service *application.UserService) *api.UserHandler {
-	return api.NewOrderHandler(service)
+	return api.NewUserHandler(service)
+}
+
+func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	user_service.RegisterUserServiceServer(grpcServer, userHandler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("Failed to serve: %s", err)
+	}
 }

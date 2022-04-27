@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var orders = []*domain.User{
+var users = []*domain.User{
 	{
 		Id:          getObjectId("623b0cc336a1d6fd8c1cf0f6"),
 		Name:        "Milica",

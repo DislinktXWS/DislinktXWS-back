@@ -1,6 +1,7 @@
 package config
 
 type Config struct {
+	Host       string
 	Port       string
 	UserDBHost string
 	UserDBPort string
@@ -8,7 +9,8 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		Port:       ":9090",
+		Host:       "localhost",
+		Port:       "8081",
 		UserDBHost: "localhost",
 		UserDBPort: "27017",
 	}
