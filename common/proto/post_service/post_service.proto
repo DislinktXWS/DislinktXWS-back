@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option go_package = "module/common/posts";
+
+package posts;
+
+import "google/api/annotations.proto";
