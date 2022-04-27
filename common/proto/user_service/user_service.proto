@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option go_package = "module/common/users";
+
+package users;
+
+import "google/api/annotations.proto";
+
+service UserService{
+        rpc Get(GetRequest) returns(GetResponse) {
+        	option (google.api.http) = {
+			get: "/users/user/{id}"
+		};
+        }
+        rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+        	option (google.api.http) = {
+			get: "/users/user"
+		};
+        }
+}
+
+message GetRequest {
+        string id = 1;
+}
+
+message GetResponse {
+        User user = 1;
+}
+
+message GetAllRequest {
+}
+
+message GetAllResponse {
+        repeated User users = 1;
+}
+
+message User {
+        string id = 1;
+        string name = 2;
+        string surname = 3;
+        string username = 4;
+        string password = 5;
+        string dateOfBirth = 6;
+        string gender = 7;
+        string email = 8;
+        string phone = 9;
+}
