@@ -41,7 +41,7 @@ message GetAllRequest {
 }
 
 message GetAllResponse {
-    repeated Post post = 1;
+    repeated Post posts = 1;
 }
 
 message InsertPostRequest {

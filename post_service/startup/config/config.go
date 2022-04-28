@@ -10,7 +10,7 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		Host:       "localhost",
-		Port:       "8082",
+		Port:       "8085",
 		PostDBHost: "localhost",
 		PostDBPort: "27017",
 	}

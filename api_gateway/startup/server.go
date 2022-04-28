@@ -7,6 +7,7 @@ import (
 	cfg "module/api_gateway/startup/config"
 	"net/http"
 
+	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -33,6 +34,11 @@ func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

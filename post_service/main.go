@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/user_service/startup"
-	"module/user_service/startup/config"
+	"module/post_service/startup"
+	"module/post_service/startup/config"
 )
 
 func main() {

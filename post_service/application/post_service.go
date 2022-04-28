@@ -1,7 +1,7 @@
 package application
 
 import (
-	"module/Post_service/domain"
+	"module/post_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
