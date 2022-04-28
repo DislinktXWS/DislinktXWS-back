@@ -5,3 +5,54 @@ option go_package = "module/common/posts";
 package posts;
 
 import "google/api/annotations.proto";
+
+
+service PostService{
+
+    rpc Get(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+        get: "/posts/post/{id}"
+    };
+    }
+
+    rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+        option (google.api.http) = {
+        get: "/posts/post"
+    };
+    }
+
+    rpc Insert(InsertPostRequest) returns (InsertPostResponse) {
+            option (google.api.http) = {
+                    post: "/posts/post"
+                    body: "post"
+            };
+    }
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    Post post = 1;
+}
+
+message GetAllRequest {
+}
+
+message GetAllResponse {
+    repeated Post post = 1;
+}
+
+message InsertPostRequest {
+    Post post = 1;
+}
+
+message InsertPostResponse {
+}
+
+message Post {
+    string id = 1;
+    string content = 2;
+    string date = 3;
+}
