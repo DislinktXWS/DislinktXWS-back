@@ -35,6 +35,11 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 	return store.filter(filter)
 }
 
+func (store *PostMongoDBStore) GetPostsByUser(user string) ([]*domain.Post, error) {
+	filter := bson.M{"user": user}
+	return store.filter(filter)
+}
+
 func (store *PostMongoDBStore) filter(filter interface{}) ([]*domain.Post, error) {
 	cursor, err := store.posts.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())

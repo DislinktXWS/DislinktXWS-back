@@ -19,6 +19,24 @@ func NewPostHandler(service *application.PostService) *PostHandler {
 	}
 }
 
+func (handler *PostHandler) GetPostsByUser(ctx context.Context, request *pb.GetPostsByUserRequest) (*pb.GetPostsByUserResponse, error) {
+	user := request.User
+	Posts, err := handler.service.GetPostsByUser(user)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetPostsByUserResponse{
+		Posts: []*pb.Post{},
+	}
+
+	for _, Post := range Posts {
+		current := mapPost(Post)
+		response.Posts = append(response.Posts, current)
+	}
+
+	return response, nil
+}
+
 func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
 	id := request.Id
 	objectId, err := primitive.ObjectIDFromHex(id)

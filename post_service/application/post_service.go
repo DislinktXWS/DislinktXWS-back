@@ -27,3 +27,7 @@ func (service *PostService) GetAll() ([]*domain.Post, error) {
 func (service *PostService) Insert(Post *domain.Post) error {
 	return service.store.Insert(Post)
 }
+
+func (service *PostService) GetPostsByUser(user string) ([]*domain.Post, error) {
+	return service.store.GetPostsByUser(user)
+}

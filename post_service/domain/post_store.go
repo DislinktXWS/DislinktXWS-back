@@ -6,5 +6,6 @@ type PostStore interface {
 	Get(id primitive.ObjectID) (*Post, error)
 	GetAll() ([]*Post, error)
 	Insert(user *Post) error
+	GetPostsByUser(user string) ([]*Post, error)
 	DeleteAll()
 }
