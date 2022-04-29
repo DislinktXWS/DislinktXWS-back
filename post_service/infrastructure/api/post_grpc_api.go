@@ -19,6 +19,28 @@ func NewPostHandler(service *application.PostService) *PostHandler {
 	}
 }
 
+func (handler *PostHandler) LikePost(ctx context.Context, request *pb.LikePostRequest) (*pb.LikePostResponse, error) {
+	id := request.Id
+	username := request.Username
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	handler.service.LikePost(objectId, username)
+	return &pb.LikePostResponse{}, nil
+}
+
+func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.DislikePostRequest) (*pb.DislikePostResponse, error) {
+	id := request.Id
+	username := request.Username
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	handler.service.DislikePost(objectId, username)
+	return &pb.DislikePostResponse{}, nil
+}
+
 func (handler *PostHandler) GetPostsByUser(ctx context.Context, request *pb.GetPostsByUserRequest) (*pb.GetPostsByUserResponse, error) {
 	user := request.User
 	Posts, err := handler.service.GetPostsByUser(user)

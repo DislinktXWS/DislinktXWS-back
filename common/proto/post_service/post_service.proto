@@ -11,26 +11,38 @@ service PostService{
 
     rpc Get(GetRequest) returns(GetResponse) {
         option (google.api.http) = {
-        get: "/posts/post/{id}"
-    };
+            get: "/posts/post/{id}"
+        };
     }
 
     rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         option (google.api.http) = {
-        get: "/posts/post"
-    };
+            get: "/posts/post"
+        };
     }
 
     rpc Insert(InsertPostRequest) returns (InsertPostResponse) {
         option (google.api.http) = {
-                post: "/posts/post"
-                body: "post"
+            post: "/posts/post"
+            body: "post"
         };
     }
 
     rpc GetPostsByUser(GetPostsByUserRequest) returns (GetPostsByUserResponse){
         option (google.api.http) = {
             get: "/posts/post/{user}"
+        };
+    }
+
+    rpc LikePost(LikePostRequest) returns (LikePostResponse){
+        option (google.api.http) = {
+            put: "/posts/post/like/{id}/user/{username}"
+        };
+    }
+
+    rpc DislikePost(DislikePostRequest) returns (DislikePostResponse){
+        option (google.api.http) = {
+            put: "/posts/post/dislike/{id}/user/{username}"
         };
     }
    
@@ -66,9 +78,29 @@ message InsertPostRequest {
 message InsertPostResponse {
 }
 
+message LikePostRequest{
+    string id = 1;
+    string username = 2;
+}
+
+message LikePostResponse{
+}
+
+message DislikePostRequest{
+    string id = 1;
+    string username = 2;
+}
+
+message DislikePostResponse{
+}
+
+
 message Post {
     string id = 1;
     string content = 2;
-    string date = 3;
-    string user = 4;
+    repeated string links = 3;
+    string date = 4;
+    string user = 5;
+    repeated string likes = 6;
+    repeated string dislikes = 7;
 }
