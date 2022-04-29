@@ -7,5 +7,7 @@ type PostStore interface {
 	GetAll() ([]*Post, error)
 	Insert(user *Post) error
 	GetPostsByUser(user string) ([]*Post, error)
+	LikePost(id primitive.ObjectID, username string)
+	DislikePost(id primitive.ObjectID, username string)
 	DeleteAll()
 }

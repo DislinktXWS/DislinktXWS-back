@@ -31,3 +31,11 @@ func (service *PostService) Insert(Post *domain.Post) error {
 func (service *PostService) GetPostsByUser(user string) ([]*domain.Post, error) {
 	return service.store.GetPostsByUser(user)
 }
+
+func (service *PostService) LikePost(id primitive.ObjectID, username string) {
+	service.store.LikePost(id, username)
+}
+
+func (service *PostService) DislikePost(id primitive.ObjectID, username string) {
+	service.store.DislikePost(id, username)
+}

@@ -25,6 +25,58 @@ func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
 	}
 }
 
+func (store *PostMongoDBStore) LikePost(id primitive.ObjectID, username string) {
+	filter := bson.M{"_id": id}
+	removed := false
+	post, _ := store.filterOne(filter)
+	currentDislikes := post.Dislikes
+	for i, users := range currentDislikes {
+		if username == users {
+			currentDislikes = append(currentDislikes[:i], currentDislikes[i+1:]...)
+		}
+	}
+	currentLikes := post.Likes
+	for i, users := range currentLikes {
+		if username == users {
+			currentLikes = append(currentLikes[:i], currentLikes[i+1:]...)
+			removed = true
+		}
+	}
+	if !removed {
+		currentLikes = append(currentLikes, username)
+	}
+	store.posts.UpdateOne(context.TODO(), filter, bson.D{
+		{"$set", bson.D{{"dislikes", currentDislikes}}}})
+	store.posts.UpdateOne(context.TODO(), filter, bson.D{
+		{"$set", bson.D{{"likes", currentLikes}}}})
+}
+
+func (store *PostMongoDBStore) DislikePost(id primitive.ObjectID, username string) {
+	filter := bson.M{"_id": id}
+	removed := false
+	post, _ := store.filterOne(filter)
+	currentLikes := post.Likes
+	for i, users := range currentLikes {
+		if username == users {
+			currentLikes = append(currentLikes[:i], currentLikes[i+1:]...)
+		}
+	}
+	currentDislikes := post.Dislikes
+	for i, users := range currentDislikes {
+		if username == users {
+			currentDislikes = append(currentDislikes[:i], currentDislikes[i+1:]...)
+			removed = true
+		}
+	}
+	if !removed {
+		currentDislikes = append(currentDislikes, username)
+	}
+	store.posts.UpdateOne(context.TODO(), filter, bson.D{
+		{"$set", bson.D{{"dislikes", currentDislikes}}}})
+	store.posts.UpdateOne(context.TODO(), filter, bson.D{
+		{"$set", bson.D{{"likes", currentLikes}}}})
+}
+
 func (store *PostMongoDBStore) Get(id primitive.ObjectID) (*domain.Post, error) {
 	filter := bson.M{"_id": id} //M je getovanje ali NE po redosledu kakav je u bazi
 	return store.filterOne(filter)
@@ -69,14 +121,14 @@ func (store *PostMongoDBStore) DeleteAll() {
 	store.posts.DeleteMany(context.TODO(), bson.D{{}})
 }
 
-func decode(cursor *mongo.Cursor) (orders []*domain.Post, err error) {
+func decode(cursor *mongo.Cursor) (posts []*domain.Post, err error) {
 	for cursor.Next(context.TODO()) {
-		var Order domain.Post
-		err = cursor.Decode(&Order)
+		var Post domain.Post
+		err = cursor.Decode(&Post)
 		if err != nil {
 			return
 		}
-		orders = append(orders, &Order)
+		posts = append(posts, &Post)
 	}
 	err = cursor.Err()
 	return
