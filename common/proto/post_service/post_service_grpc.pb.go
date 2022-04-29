@@ -25,6 +25,7 @@ type PostServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertPostRequest, opts ...grpc.CallOption) (*InsertPostResponse, error)
+	GetPostsByUser(ctx context.Context, in *GetPostsByUserRequest, opts ...grpc.CallOption) (*GetPostsByUserResponse, error)
 }
 
 type postServiceClient struct {
@@ -62,6 +63,15 @@ func (c *postServiceClient) Insert(ctx context.Context, in *InsertPostRequest, o
 	return out, nil
 }
 
+func (c *postServiceClient) GetPostsByUser(ctx context.Context, in *GetPostsByUserRequest, opts ...grpc.CallOption) (*GetPostsByUserResponse, error) {
+	out := new(GetPostsByUserResponse)
+	err := c.cc.Invoke(ctx, "/posts.PostService/GetPostsByUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type PostServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertPostRequest) (*InsertPostResponse, error)
+	GetPostsByUser(context.Context, *GetPostsByUserRequest) (*GetPostsByUserResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedPostServiceServer) GetAll(context.Context, *GetAllRequest) (*
 }
 func (UnimplementedPostServiceServer) Insert(context.Context, *InsertPostRequest) (*InsertPostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
+}
+func (UnimplementedPostServiceServer) GetPostsByUser(context.Context, *GetPostsByUserRequest) (*GetPostsByUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPostsByUser not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -152,6 +166,24 @@ func _PostService_Insert_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_GetPostsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPostsByUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).GetPostsByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/posts.PostService/GetPostsByUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).GetPostsByUser(ctx, req.(*GetPostsByUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Insert",
 			Handler:    _PostService_Insert_Handler,
+		},
+		{
+			MethodName: "GetPostsByUser",
+			Handler:    _PostService_GetPostsByUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

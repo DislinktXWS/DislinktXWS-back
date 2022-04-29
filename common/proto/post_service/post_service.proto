@@ -22,11 +22,18 @@ service PostService{
     }
 
     rpc Insert(InsertPostRequest) returns (InsertPostResponse) {
-            option (google.api.http) = {
-                    post: "/posts/post"
-                    body: "post"
-            };
+        option (google.api.http) = {
+                post: "/posts/post"
+                body: "post"
+        };
     }
+
+    rpc GetPostsByUser(GetPostsByUserRequest) returns (GetPostsByUserResponse){
+        option (google.api.http) = {
+            get: "/posts/post/{user}"
+        };
+    }
+   
 }
 
 message GetRequest {
@@ -35,6 +42,14 @@ message GetRequest {
 
 message GetResponse {
     Post post = 1;
+}
+
+message GetPostsByUserRequest{
+    string user = 1;
+}
+
+message GetPostsByUserResponse{
+    repeated Post posts = 1;
 }
 
 message GetAllRequest {
@@ -55,4 +70,5 @@ message Post {
     string id = 1;
     string content = 2;
     string date = 3;
+    string user = 4;
 }
