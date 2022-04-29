@@ -3,6 +3,7 @@ module module
 go 1.18
 
 require (
+	github.com/gorilla/handlers v1.5.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
 	go.mongodb.org/mongo-driver v1.9.0
 	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46
@@ -11,6 +12,7 @@ require (
 )
 
 require (
+	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect

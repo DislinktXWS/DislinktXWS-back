@@ -10,6 +10,7 @@ import (
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
+	handlers "github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -51,8 +52,9 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-
+	ch := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}))
 	listeningOn := server.config.Host + ":" + server.config.Port
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
-	http.ListenAndServe(listeningOn, server.mux)
+
+	http.ListenAndServe(listeningOn, ch(server.mux))
 }
