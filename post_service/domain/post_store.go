@@ -9,5 +9,6 @@ type PostStore interface {
 	GetPostsByUser(user string) ([]*Post, error)
 	LikePost(id primitive.ObjectID, username string)
 	DislikePost(id primitive.ObjectID, username string)
+	CommentPost(comment *Comment) error
 	DeleteAll()
 }

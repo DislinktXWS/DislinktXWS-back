@@ -25,6 +25,21 @@ func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
 	}
 }
 
+func (store *PostMongoDBStore) CommentPost(comment *domain.Comment) error {
+	objectId, err := primitive.ObjectIDFromHex(comment.PostId)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objectId}
+	post, _ := store.filterOne(filter)
+	currentComments := post.Comments
+	newComment := domain.Comment{PostId: comment.PostId, User: comment.User, Content: comment.User}
+	currentComments = append(currentComments, newComment)
+	store.posts.UpdateOne(context.TODO(), filter, bson.D{
+		{"$set", bson.D{{"comments", currentComments}}}})
+	return nil
+}
+
 func (store *PostMongoDBStore) LikePost(id primitive.ObjectID, username string) {
 	filter := bson.M{"_id": id}
 	removed := false

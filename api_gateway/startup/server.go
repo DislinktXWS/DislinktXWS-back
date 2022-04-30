@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"fmt"
+	"github.com/gorilla/handlers"
 	"module/api_gateway/infrastructure/api"
 	cfg "module/api_gateway/startup/config"
 	"net/http"
@@ -10,7 +11,6 @@ import (
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
-	handlers "github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -52,9 +52,11 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	ch := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}))
+	ch := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}),
+		handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
+	)
 	listeningOn := server.config.Host + ":" + server.config.Port
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
 
-	http.ListenAndServe(listeningOn, ch(server.mux))
+	http.ListenAndServe(listeningOn, ch(server.mux)) //ch(server.mux))
 }
