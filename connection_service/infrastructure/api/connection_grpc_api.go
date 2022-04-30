@@ -7,7 +7,7 @@ import (
 )
 
 type ConnectionHandler struct {
-	//pb.UnimplementedConnectionServiceServer
+	pb.UnimplementedConnectionsServiceServer
 	service *application.ConnectionsService
 }
 
@@ -16,7 +16,6 @@ func NewConnectionHandler(service *application.ConnectionsService) *ConnectionHa
 		service: service,
 	}
 }
-
 func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.InsertUserConnection(connection)
@@ -25,8 +24,7 @@ func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, requ
 	}
 	return &pb.InsertUserConnectionResponse{}, nil
 }
-
-func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserResponse, error) {
+func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := request.String()
 	err := handler.service.InsertNewUser(user)
 	if err != nil {

@@ -1,14 +1,18 @@
 package startup
 
 import (
+	"fmt"
 	"log"
+	connection_service "module/common/proto/connection_service"
 	"module/connection_service/application"
 	"module/connection_service/domain"
 	"module/connection_service/infrastructure/api"
 	"module/connection_service/infrastructure/persistence"
 	"module/connection_service/startup/config"
+	"net"
 
 	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -26,13 +30,13 @@ const (
 )
 
 func (server *Server) Start() {
-	//neo4jsession := server.initNeo4jSession()
-	//connectionStore := server.initConnectionStore(neo4jsession)
+	neo4jsession := server.initNeo4jSession()
+	connectionStore := server.initConnectionStore(neo4jsession)
 
-	//connectionsService := server.initConnectionsService(connectionStore)
-	//connectionsHandler := server.initConnectionsHandler(connectionsService)
+	connectionsService := server.initConnectionsService(connectionStore)
+	userHandler := server.initConnectionsHandler(connectionsService)
 
-	//server.startGrpcServer(userHandler)
+	server.startGrpcServer(userHandler)
 }
 
 func (server *Server) initNeo4jSession() *neo4j.Session {
@@ -54,4 +58,16 @@ func (server *Server) initConnectionsService(store domain.ConnectionsGraph) *app
 
 func (server *Server) initConnectionsHandler(service *application.ConnectionsService) *api.ConnectionHandler {
 	return api.NewConnectionHandler(service)
+}
+
+func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	connection_service.RegisterConnectionsServiceServer(grpcServer, connectionHandler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("Failed to serve: %s", err)
+	}
 }

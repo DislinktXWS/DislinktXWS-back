@@ -12,9 +12,10 @@ func NewConnectionsService(graph domain.ConnectionsGraph) *ConnectionsService {
 	}
 }
 
+/*
 func (service *ConnectionsService) Get(connection *domain.UserConnection) bool {
 	return service.graph.Get(connection)
-}
+}*/
 
 func (service *ConnectionsService) GetAll(userId string) []string {
 	return service.graph.GetAll(userId)
@@ -27,6 +28,7 @@ func (service *ConnectionsService) InsertUserConnection(connection *domain.UserC
 	return service.graph.InsertUserConnection(connection)
 }
 
+/*
 func (service *ConnectionsService) Delete(connection *domain.UserConnection) error {
 	return service.graph.DeleteUserConnection(connection)
-}
+}*/
