@@ -18,6 +18,22 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint) error {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	educationCurrent := user.Education
+	educationCurrent = append(educationCurrent[:index], educationCurrent[index+1:]...)
+
+	_, err1 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"education", educationCurrent}}},
+		},
+	)
+	return err1
+}
+
 func (store *UserMongoDBStore) AddEducation(education *domain.Education, id primitive.ObjectID) (*domain.Education, error) {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)

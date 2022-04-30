@@ -36,8 +36,14 @@ service UserService{
 
         rpc AddEducation(AddEducationRequest) returns (AddEducationResponse){
                 option(google.api.http)  = {
-                        put: "/users/user/addEducation/{id}"
+                        put: "/users/user/education/{id}"
                         body: "education"
+                };
+        }
+
+        rpc DeleteEducation(DeleteEducationRequest) returns (DeleteEducationResponse){
+                option(google.api.http) = {
+                        delete: "/users/education/{id}/{index}"
                 };
         }
 }
@@ -70,6 +76,15 @@ message AddEducationRequest{
 }
 
 message AddEducationResponse{
+
+}
+
+message DeleteEducationRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteEducationResponse{
 
 }
 

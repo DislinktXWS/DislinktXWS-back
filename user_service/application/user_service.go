@@ -35,3 +35,7 @@ func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 func (service *UserService) AddEducation(education *domain.Education, id primitive.ObjectID) (*domain.Education, error) {
 	return service.store.AddEducation(education, id)
 }
+
+func (service *UserService) DeleteEducation(id primitive.ObjectID, index uint) error {
+	return service.store.DeleteEducation(id, index)
+}
