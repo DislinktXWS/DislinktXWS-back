@@ -12,8 +12,9 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		Host: "localhost",
-		Port: "8089",
+		Port: "8084",
 
+		//Uri:      "bullshit",
 		Uri:      "bolt://localhost:7687",
 		Username: "neo4j",
 		Password: "ConnectionDB", //password je onaj koji je postavi kad se pravi nova sema bp

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	pb "module/common/proto/connection_service"
 	"module/connection_service/application"
 )
@@ -17,6 +18,8 @@ func NewConnectionHandler(service *application.ConnectionsService) *ConnectionHa
 	}
 }
 func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	fmt.Print("Doslo je do handlera grpc-a..")
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.InsertUserConnection(connection)
 	if err != nil {
