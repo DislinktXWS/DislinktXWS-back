@@ -64,6 +64,23 @@ func (store *UserMongoDBStore) DeleteAll() {
 	store.users.DeleteMany(context.TODO(), bson.D{{}})
 }
 
+func (store *UserMongoDBStore) EditUser(user *domain.User) (*domain.User, error) {
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"name", user.Name},
+				{"surname", user.Surname},
+				{"username", user.Username},
+				{"dateOfBirth", user.DateOfBirth},
+				{"gender", user.Gender},
+				{"email", user.Email},
+				{"phone", user.Phone}}},
+		},
+	)
+	return user, err
+}
+
 func decode(cursor *mongo.Cursor) (orders []*domain.User, err error) {
 	for cursor.Next(context.TODO()) {
 		var Order domain.User

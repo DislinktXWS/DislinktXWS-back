@@ -25,6 +25,7 @@ type UserServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
+	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 }
 
 type userServiceClient struct {
@@ -62,6 +63,15 @@ func (c *userServiceClient) Insert(ctx context.Context, in *InsertUserRequest, o
 	return out, nil
 }
 
+func (c *userServiceClient) EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error) {
+	out := new(InsertUserResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/EditUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type UserServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
+	EditUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedUserServiceServer) GetAll(context.Context, *GetAllRequest) (*
 }
 func (UnimplementedUserServiceServer) Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
+}
+func (UnimplementedUserServiceServer) EditUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -152,6 +166,24 @@ func _UserService_Insert_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_EditUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).EditUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/EditUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).EditUser(ctx, req.(*InsertUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Insert",
 			Handler:    _UserService_Insert_Handler,
+		},
+		{
+			MethodName: "EditUser",
+			Handler:    _UserService_EditUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	pb "module/common/proto/user_service"
 	"module/user_service/domain"
 )
@@ -22,6 +23,22 @@ func mapUser(user *domain.User) *pb.User {
 
 func mapNewUser(userPb *pb.User) *domain.User {
 	user := &domain.User{
+		Name:        userPb.Name,
+		Surname:     userPb.Surname,
+		Username:    userPb.Username,
+		Password:    userPb.Password,
+		DateOfBirth: userPb.DateOfBirth,
+		Gender:      userPb.Gender,
+		Email:       userPb.Email,
+		Phone:       userPb.Phone,
+	}
+	return user
+}
+
+func mapEditUser(userPb *pb.User) *domain.User {
+	id, _ := primitive.ObjectIDFromHex(userPb.Id)
+	user := &domain.User{
+		Id:          id,
 		Name:        userPb.Name,
 		Surname:     userPb.Surname,
 		Username:    userPb.Username,
