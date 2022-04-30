@@ -26,6 +26,13 @@ service UserService{
                         body: "user"
                 };
         }
+
+        rpc EditUser(InsertUserRequest) returns (InsertUserResponse){
+                option (google.api.http) = {
+                        put: "/users/user"
+                        body: "user"
+                };
+        }
 }
 
 message GetRequest {

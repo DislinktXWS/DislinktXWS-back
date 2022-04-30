@@ -59,3 +59,13 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRe
 	}
 	return &pb.InsertUserResponse{}, nil
 }
+
+func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
+	user := mapEditUser(request.User)
+	_, err := handler.service.EditUser(user)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserResponse{}, nil
+
+}

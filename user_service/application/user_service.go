@@ -27,3 +27,7 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 func (service *UserService) Insert(user *domain.User) error {
 	return service.store.Insert(user)
 }
+
+func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
+	return service.store.EditUser(user)
+}

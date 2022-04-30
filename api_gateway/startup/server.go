@@ -10,7 +10,7 @@ import (
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
-	handlers "github.com/gorilla/handlers"
+	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

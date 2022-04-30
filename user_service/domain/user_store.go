@@ -7,4 +7,5 @@ type UserStore interface {
 	GetAll() ([]*User, error)
 	Insert(user *User) error
 	DeleteAll()
+	EditUser(user *User) (*User, error)
 }
