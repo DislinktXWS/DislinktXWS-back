@@ -18,6 +18,39 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) DeleteExperience(id primitive.ObjectID, index uint) error {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	experienceCurrent := user.Experience
+	experienceCurrent = append(experienceCurrent[:index], experienceCurrent[index+1:]...)
+
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"experience", experienceCurrent}}},
+		},
+	)
+	return err
+
+}
+
+func (store *UserMongoDBStore) AddExperience(experience *domain.Experience, id primitive.ObjectID) (*domain.Experience, error) {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	experienceCurrent := user.Experience
+	experienceCurrent = append(experienceCurrent, *experience)
+
+	_, err1 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"experience", experienceCurrent}}},
+		},
+	)
+	return experience, err1
+}
+
 func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint) error {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)

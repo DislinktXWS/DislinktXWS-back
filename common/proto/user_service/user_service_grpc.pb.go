@@ -28,6 +28,8 @@ type UserServiceClient interface {
 	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 	AddEducation(ctx context.Context, in *AddEducationRequest, opts ...grpc.CallOption) (*AddEducationResponse, error)
 	DeleteEducation(ctx context.Context, in *DeleteEducationRequest, opts ...grpc.CallOption) (*DeleteEducationResponse, error)
+	AddExperience(ctx context.Context, in *AddExperienceRequest, opts ...grpc.CallOption) (*AddExperienceResponse, error)
+	DeleteExperience(ctx context.Context, in *DeleteExperienceRequest, opts ...grpc.CallOption) (*DeleteExperienceResponse, error)
 }
 
 type userServiceClient struct {
@@ -92,6 +94,24 @@ func (c *userServiceClient) DeleteEducation(ctx context.Context, in *DeleteEduca
 	return out, nil
 }
 
+func (c *userServiceClient) AddExperience(ctx context.Context, in *AddExperienceRequest, opts ...grpc.CallOption) (*AddExperienceResponse, error) {
+	out := new(AddExperienceResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/AddExperience", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteExperience(ctx context.Context, in *DeleteExperienceRequest, opts ...grpc.CallOption) (*DeleteExperienceResponse, error) {
+	out := new(DeleteExperienceResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/DeleteExperience", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -102,6 +122,8 @@ type UserServiceServer interface {
 	EditUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	AddEducation(context.Context, *AddEducationRequest) (*AddEducationResponse, error)
 	DeleteEducation(context.Context, *DeleteEducationRequest) (*DeleteEducationResponse, error)
+	AddExperience(context.Context, *AddExperienceRequest) (*AddExperienceResponse, error)
+	DeleteExperience(context.Context, *DeleteExperienceRequest) (*DeleteExperienceResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -126,6 +148,12 @@ func (UnimplementedUserServiceServer) AddEducation(context.Context, *AddEducatio
 }
 func (UnimplementedUserServiceServer) DeleteEducation(context.Context, *DeleteEducationRequest) (*DeleteEducationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEducation not implemented")
+}
+func (UnimplementedUserServiceServer) AddExperience(context.Context, *AddExperienceRequest) (*AddExperienceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddExperience not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteExperience(context.Context, *DeleteExperienceRequest) (*DeleteExperienceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteExperience not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -248,6 +276,42 @@ func _UserService_DeleteEducation_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_AddExperience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddExperienceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddExperience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/AddExperience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddExperience(ctx, req.(*AddExperienceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteExperience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteExperienceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteExperience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/DeleteExperience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteExperience(ctx, req.(*DeleteExperienceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +342,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEducation",
 			Handler:    _UserService_DeleteEducation_Handler,
+		},
+		{
+			MethodName: "AddExperience",
+			Handler:    _UserService_AddExperience_Handler,
+		},
+		{
+			MethodName: "DeleteExperience",
+			Handler:    _UserService_DeleteExperience_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

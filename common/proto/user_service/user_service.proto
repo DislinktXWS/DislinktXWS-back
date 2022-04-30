@@ -43,7 +43,20 @@ service UserService{
 
         rpc DeleteEducation(DeleteEducationRequest) returns (DeleteEducationResponse){
                 option(google.api.http) = {
-                        delete: "/users/education/{id}/{index}"
+                        delete: "/users/user/education/{id}/{index}"
+                };
+        }
+
+        rpc AddExperience(AddExperienceRequest) returns (AddExperienceResponse){
+                option(google.api.http) = {
+                        put: "/users/user/experience/{id}"
+                        body: "experience"
+                };
+        }
+
+        rpc DeleteExperience(DeleteExperienceRequest) returns (DeleteExperienceResponse){
+                option(google.api.http) = {
+                        delete: "/users/user/experience/{id}/{index}"
                 };
         }
 }
@@ -88,6 +101,24 @@ message DeleteEducationResponse{
 
 }
 
+message AddExperienceRequest{
+        Experience experience = 1;
+        string id = 2;
+}
+
+message AddExperienceResponse{
+
+}
+
+message DeleteExperienceRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteExperienceResponse{
+
+}
+
 message User {
         string id = 1;
         string name = 2;
@@ -108,4 +139,13 @@ message Education {
         string endDate = 5;
         float grade = 6;
         string description = 7;
+}
+
+message Experience{
+        string title = 1;
+        string companyName = 2;
+        string startDate = 3;
+        string endDate = 4;
+        string industry = 5;
+        string description = 6;
 }

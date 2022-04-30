@@ -63,3 +63,15 @@ func mapAddEducation(educationPb *pb.Education) *domain.Education {
 	}
 	return education
 }
+
+func mapAddExperience(experiencePb *pb.Experience) *domain.Experience {
+	experience := &domain.Experience{
+		Title:       experiencePb.Title,
+		CompanyName: experiencePb.CompanyName,
+		StartDate:   experiencePb.StartDate,
+		EndDate:     experiencePb.EndDate,
+		Industry:    experiencePb.Industry,
+		Description: experiencePb.Description,
+	}
+	return experience
+}

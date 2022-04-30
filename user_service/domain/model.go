@@ -15,6 +15,7 @@ type User struct {
 	Email       string             `bson:"email"`
 	Phone       string             `bson:"phone"`
 	Education   []Education        `bson:"education"`
+	Experience  []Experience       `bson:"experience"`
 }
 
 type Education struct {
@@ -25,4 +26,13 @@ type Education struct {
 	EndDate      string  `bson:"endDate"`
 	Grade        float32 `bson:"grade"`
 	Description  string  `bson:"description"`
+}
+
+type Experience struct {
+	Title       string `bson:"title"`
+	CompanyName string `bson:"companyName"`
+	StartDate   string `bson:"startDate"`
+	EndDate     string `bson:"endDate"`
+	Industry    string `bson:"industry"`
+	Description string `bson:"description"`
 }

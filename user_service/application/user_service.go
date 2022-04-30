@@ -39,3 +39,11 @@ func (service *UserService) AddEducation(education *domain.Education, id primiti
 func (service *UserService) DeleteEducation(id primitive.ObjectID, index uint) error {
 	return service.store.DeleteEducation(id, index)
 }
+
+func (service *UserService) AddExperience(experience *domain.Experience, id primitive.ObjectID) (*domain.Experience, error) {
+	return service.store.AddExperience(experience, id)
+}
+
+func (service *UserService) DeleteExperience(id primitive.ObjectID, index uint) error {
+	return service.store.DeleteExperience(id, index)
+}
