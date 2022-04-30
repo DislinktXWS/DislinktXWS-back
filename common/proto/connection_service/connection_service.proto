@@ -4,3 +4,58 @@ option go_package = "module/common/connections";
 
 package connections;
 
+import "google/api/annotations.proto";
+
+
+service ConnectionsService{
+
+    //ova prva ne bi trebalo da se koristi kasnije ali zbog provjere, jer kao okida u dr servisu registracijom
+
+    rpc InsertNewUser(InsertUserRequest) returns (InsertUserResponse) {
+        option (google.api.http) = {
+                post: "/connections/user"
+                body: "user"
+        };
+    }
+
+    rpc InsertUserConnection(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection"
+                body: "connection"
+        };
+    }
+
+    rpc GetAll(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
+        	option (google.api.http) = {
+			get: "/connections/{id}"
+		};
+    }
+}
+
+message InsertUserRequest {
+        string user = 1;
+}
+
+message InsertUserResponse {
+}
+
+message InsertUserConnectionRequest {
+    UserConnection connection = 1;
+}
+
+message InsertUserConnectionResponse {
+}
+
+message GetAllConnectionsRequest {
+    string id = 1;
+}
+
+message GetAllConnectionsResponse {
+    repeated string ids = 1;
+}
+
+
+message UserConnection {
+        string connecting = 1;
+        string connected = 2;
+}

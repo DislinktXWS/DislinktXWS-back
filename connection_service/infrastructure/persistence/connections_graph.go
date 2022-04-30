@@ -21,21 +21,21 @@ func (store *ConnectionsDBGraph) Get(connection *domain.UserConnection) bool {
 	return true
 }
 
-func (store *ConnectionsDBGraph) GetAll(username string) []*domain.User {
+func (store *ConnectionsDBGraph) GetAll(username string) []string {
 	//filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return nil
 }
 
-func (store *ConnectionsDBGraph) InsertNewUser(user *domain.User) error {
+func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 
 	var session = *store.session
 	_, err := session.WriteTransaction(addUserNodeTxFunc(user))
 	return err
 }
 
-func addUserNodeTxFunc(user *domain.User) neo4j.TransactionWork {
+func addUserNodeTxFunc(user string) neo4j.TransactionWork {
 	return func(tx neo4j.Transaction) (interface{}, error) {
-		result, err := tx.Run("CREATE (a:User {name: $name})", map[string]interface{}{"name": user.Username})
+		result, err := tx.Run("CREATE (a:User {id: $name})", map[string]interface{}{"name": user})
 		if err != nil {
 			return nil, err
 		}

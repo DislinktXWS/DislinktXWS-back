@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
+	github.com/neo4j/neo4j-go-driver v1.8.3
 	go.mongodb.org/mongo-driver v1.9.0
 	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46
 	google.golang.org/grpc v1.46.0

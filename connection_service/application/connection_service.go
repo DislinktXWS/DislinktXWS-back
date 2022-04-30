@@ -16,10 +16,10 @@ func (service *ConnectionsService) Get(connection *domain.UserConnection) bool {
 	return service.graph.Get(connection)
 }
 
-func (service *ConnectionsService) GetAll(username string) []*domain.User {
-	return service.graph.GetAll(username)
+func (service *ConnectionsService) GetAll(userId string) []string {
+	return service.graph.GetAll(userId)
 }
-func (service *ConnectionsService) InsertNewUser(user *domain.User) error {
+func (service *ConnectionsService) InsertNewUser(user string) error {
 	return service.graph.InsertNewUser(user)
 }
 
