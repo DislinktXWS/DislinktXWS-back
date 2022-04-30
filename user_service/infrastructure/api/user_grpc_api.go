@@ -67,5 +67,14 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 		return nil, err
 	}
 	return &pb.InsertUserResponse{}, nil
+}
 
+func (handler *UserHandler) AddEducation(ctx context.Context, request *pb.AddEducationRequest) (*pb.AddEducationResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	education := mapAddEducation(request.Education)
+	_, err := handler.service.AddEducation(education, id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AddEducationResponse{}, nil
 }

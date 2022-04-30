@@ -14,4 +14,15 @@ type User struct {
 	Gender      string             `bson:"gender"`
 	Email       string             `bson:"email"`
 	Phone       string             `bson:"phone"`
+	Education   []Education        `bson:"education"`
+}
+
+type Education struct {
+	School       string  `bson:"school"`
+	Degree       string  `bson:"degree"`
+	FieldOfStudy string  `bson:"fieldOfStudy"`
+	StartDate    string  `bson:"startDate"`
+	EndDate      string  `bson:"endDate"`
+	Grade        float32 `bson:"grade"`
+	Description  string  `bson:"description"`
 }

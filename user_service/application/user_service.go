@@ -31,3 +31,7 @@ func (service *UserService) Insert(user *domain.User) error {
 func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 	return service.store.EditUser(user)
 }
+
+func (service *UserService) AddEducation(education *domain.Education, id primitive.ObjectID) (*domain.Education, error) {
+	return service.store.AddEducation(education, id)
+}

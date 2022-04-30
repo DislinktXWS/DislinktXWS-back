@@ -8,4 +8,5 @@ type UserStore interface {
 	Insert(user *User) error
 	DeleteAll()
 	EditUser(user *User) (*User, error)
+	AddEducation(education *Education, id primitive.ObjectID) (*Education, error)
 }

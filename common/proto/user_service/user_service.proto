@@ -9,14 +9,14 @@ import "google/api/annotations.proto";
 service UserService{
 
         rpc Get(GetRequest) returns(GetResponse) {
-        	option (google.api.http) = {
-			get: "/users/user/{id}"
+        	      option (google.api.http) = {
+			                  get: "/users/user/{id}"
 		};
         }
 
         rpc GetAll(GetAllRequest) returns(GetAllResponse) {
-        	option (google.api.http) = {
-			get: "/users/user"
+        	      option (google.api.http) = {
+			                  get: "/users/user"
 		};
         }
 
@@ -31,6 +31,13 @@ service UserService{
                 option (google.api.http) = {
                         put: "/users/user"
                         body: "user"
+                };
+        }
+
+        rpc AddEducation(AddEducationRequest) returns (AddEducationResponse){
+                option(google.api.http)  = {
+                        put: "/users/user/addEducation/{id}"
+                        body: "education"
                 };
         }
 }
@@ -57,6 +64,15 @@ message InsertUserRequest {
 message InsertUserResponse {
 }
 
+message AddEducationRequest{
+        Education education = 1;
+        string id = 2;
+}
+
+message AddEducationResponse{
+
+}
+
 message User {
         string id = 1;
         string name = 2;
@@ -67,4 +83,14 @@ message User {
         string gender = 7;
         string email = 8;
         string phone = 9;
+}
+
+message Education {
+        string school = 1;
+        string degree = 2;
+        string fieldOfStudy = 3;
+        string startDate = 4;
+        string endDate = 5;
+        float grade = 6;
+        string description = 7;
 }

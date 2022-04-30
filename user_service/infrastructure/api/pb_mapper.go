@@ -50,3 +50,16 @@ func mapEditUser(userPb *pb.User) *domain.User {
 	}
 	return user
 }
+
+func mapAddEducation(educationPb *pb.Education) *domain.Education {
+	education := &domain.Education{
+		School:       educationPb.School,
+		Degree:       educationPb.Degree,
+		FieldOfStudy: educationPb.FieldOfStudy,
+		StartDate:    educationPb.StartDate,
+		EndDate:      educationPb.EndDate,
+		Grade:        educationPb.Grade,
+		Description:  educationPb.Description,
+	}
+	return education
+}
