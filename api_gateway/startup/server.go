@@ -27,7 +27,7 @@ func NewServer(config *cfg.Config) *Server {
 		mux:    runtime.NewServeMux(),
 	}
 	server.initHandlers()
-	//server.initCustomHandlers()
+	server.initCustomHandlers()
 	return server
 }
 
@@ -47,8 +47,11 @@ func (server *Server) initHandlers() {
 
 func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	userHandler := api.NewUserHandler(userEndpoint)
-	userHandler.Init(server.mux)
+	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+
+	//ovi handler se prave po funkcionalnosti
+	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
+	registrationHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

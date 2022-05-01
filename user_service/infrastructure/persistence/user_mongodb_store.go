@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 	"module/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -132,6 +133,18 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	return store.filter(filter)
 }
 
+func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
+
+	fmt.Print("*******************USLI SMO U STORE")
+	result, err := store.users.InsertOne(context.TODO(), User)
+	if err != nil {
+		return err, &domain.User{}
+	}
+	User.Id = result.InsertedID.(primitive.ObjectID)
+	//ne znam kako za ostala polja, ali skontace se kako se citav obj vraca
+	return nil, User
+}
+
 func (store *UserMongoDBStore) filter(filter interface{}) ([]*domain.User, error) {
 	cursor, err := store.users.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())
@@ -146,15 +159,6 @@ func (store *UserMongoDBStore) filterOne(filter interface{}) (User *domain.User,
 	result := store.users.FindOne(context.TODO(), filter)
 	err = result.Decode(&User)
 	return
-}
-
-func (store *UserMongoDBStore) Insert(User *domain.User) error {
-	result, err := store.users.InsertOne(context.TODO(), User)
-	if err != nil {
-		return err
-	}
-	User.Id = result.InsertedID.(primitive.ObjectID)
-	return nil
 }
 
 func (store *UserMongoDBStore) DeleteAll() {

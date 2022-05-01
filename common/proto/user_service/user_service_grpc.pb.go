@@ -25,7 +25,7 @@ type UserServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
-	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
+	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*EditUserResponse, error)
 	AddEducation(ctx context.Context, in *AddEducationRequest, opts ...grpc.CallOption) (*AddEducationResponse, error)
 	DeleteEducation(ctx context.Context, in *DeleteEducationRequest, opts ...grpc.CallOption) (*DeleteEducationResponse, error)
 	AddExperience(ctx context.Context, in *AddExperienceRequest, opts ...grpc.CallOption) (*AddExperienceResponse, error)
@@ -69,8 +69,8 @@ func (c *userServiceClient) Insert(ctx context.Context, in *InsertUserRequest, o
 	return out, nil
 }
 
-func (c *userServiceClient) EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error) {
-	out := new(InsertUserResponse)
+func (c *userServiceClient) EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*EditUserResponse, error) {
+	out := new(EditUserResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/EditUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -139,7 +139,7 @@ type UserServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
-	EditUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
+	EditUser(context.Context, *InsertUserRequest) (*EditUserResponse, error)
 	AddEducation(context.Context, *AddEducationRequest) (*AddEducationResponse, error)
 	DeleteEducation(context.Context, *DeleteEducationRequest) (*DeleteEducationResponse, error)
 	AddExperience(context.Context, *AddExperienceRequest) (*AddExperienceResponse, error)
@@ -162,7 +162,7 @@ func (UnimplementedUserServiceServer) GetAll(context.Context, *GetAllRequest) (*
 func (UnimplementedUserServiceServer) Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
 }
-func (UnimplementedUserServiceServer) EditUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error) {
+func (UnimplementedUserServiceServer) EditUser(context.Context, *InsertUserRequest) (*EditUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUser not implemented")
 }
 func (UnimplementedUserServiceServer) AddEducation(context.Context, *AddEducationRequest) (*AddEducationResponse, error) {

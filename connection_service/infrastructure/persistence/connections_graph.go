@@ -28,7 +28,6 @@ func (store *ConnectionsDBGraph) GetAll(user string) []string {
 }
 
 func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
-
 	var session = *store.session
 	_, err := session.WriteTransaction(addUserNodeTxFunc(user))
 	return err

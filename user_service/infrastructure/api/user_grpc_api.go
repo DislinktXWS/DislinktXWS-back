@@ -53,20 +53,24 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := mapNewUser(request.User)
-	err := handler.service.Insert(user)
+	err, newUser := handler.service.Insert(user)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.InsertUserResponse{}, nil
+	UserPb := mapUser(newUser)
+	response := &pb.InsertUserResponse{
+		User: UserPb,
+	}
+	return response, nil
 }
 
-func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
+func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.EditUserResponse, error) {
 	user := mapEditUser(request.User)
 	_, err := handler.service.EditUser(user)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.InsertUserResponse{}, nil
+	return &pb.EditUserResponse{}, nil
 }
 
 func (handler *UserHandler) AddEducation(ctx context.Context, request *pb.AddEducationRequest) (*pb.AddEducationResponse, error) {
