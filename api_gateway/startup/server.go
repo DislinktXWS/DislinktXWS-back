@@ -52,6 +52,9 @@ func (server *Server) initCustomHandlers() {
 	//ovi handler se prave po funkcionalnosti
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
+
+	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
+	userConnectionsHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

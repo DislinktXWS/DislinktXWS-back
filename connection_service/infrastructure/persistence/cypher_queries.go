@@ -1,6 +1,8 @@
 package persistence
 
-import "github.com/neo4j/neo4j-go-driver/neo4j"
+import (
+	"github.com/neo4j/neo4j-go-driver/neo4j"
+)
 
 func addUserNodeTxFunc(user string) neo4j.TransactionWork {
 	return func(tx neo4j.Transaction) (interface{}, error) {
@@ -46,7 +48,7 @@ func getUserConnections(session neo4j.Session, user string) ([]string, error) {
 	people, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
 		var list []string
 
-		result, err := tx.Run("MATCH (user: User {userId: $user})-[:CONNECTED]->(userConnection:User) RETURN userConnection.name", map[string]interface{}{"user": user})
+		result, err := tx.Run("MATCH (user: User {userId: $user})-[:CONNECTED]->(userConnection:User) RETURN userConnection.userId", map[string]interface{}{"user": user})
 		if err != nil {
 			return nil, err
 		}
