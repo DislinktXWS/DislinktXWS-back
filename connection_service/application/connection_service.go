@@ -1,7 +1,6 @@
 package application
 
 import (
-	"fmt"
 	"module/connection_service/domain"
 )
 
@@ -24,14 +23,12 @@ func (service *ConnectionsService) GetAll(userId string) []string {
 	return service.graph.GetAll(userId)
 }
 func (service *ConnectionsService) InsertNewUser(user string) error {
-	fmt.Print("Doslo je do servisa..")
 	return service.graph.InsertNewUser(user)
 }
 
 func (service *ConnectionsService) InsertUserConnection(connection *domain.UserConnection) error {
 	return service.graph.InsertUserConnection(connection)
 }
-
 
 func (service *ConnectionsService) Delete(connection *domain.UserConnection) error {
 	return service.graph.DeleteUserConnection(connection)

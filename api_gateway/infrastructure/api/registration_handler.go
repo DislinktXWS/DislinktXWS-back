@@ -83,6 +83,7 @@ func (handler *RegistrationHandler) addUserNode(userId string) error {
 	return err
 }
 
+//ovo je samo zasad kopirano
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
 		Id:          user.Id.Hex(),
