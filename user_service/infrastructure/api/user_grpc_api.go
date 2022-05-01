@@ -108,3 +108,23 @@ func (handler *UserHandler) DeleteExperience(ctx context.Context, request *pb.De
 	}
 	return &pb.DeleteExperienceResponse{}, nil
 }
+
+func (handler *UserHandler) AddInterest(ctx context.Context, request *pb.AddInterestRequest) (*pb.AddInterestResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	interest := request.Interest
+	err := handler.service.AddInterest(id, interest)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AddInterestResponse{}, nil
+}
+
+func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.DeleteInterestRequest) (*pb.DeleteInterestResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	index := uint(request.Index)
+	err := handler.service.DeleteInterest(id, index)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteInterestResponse{}, nil
+}

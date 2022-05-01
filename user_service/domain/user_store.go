@@ -12,4 +12,6 @@ type UserStore interface {
 	DeleteEducation(id primitive.ObjectID, index uint) error
 	AddExperience(experience *Experience, id primitive.ObjectID) (*Experience, error)
 	DeleteExperience(id primitive.ObjectID, index uint) error
+	AddInterest(id primitive.ObjectID, interest string) error
+	DeleteInterest(id primitive.ObjectID, index uint) error
 }

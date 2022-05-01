@@ -18,6 +18,38 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) AddInterest(id primitive.ObjectID, interest string) error {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	interestsCurrent := user.Interests
+	interestsCurrent = append(interestsCurrent, interest)
+
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"interests", interestsCurrent}}},
+		},
+	)
+	return err
+}
+
+func (store *UserMongoDBStore) DeleteInterest(id primitive.ObjectID, index uint) error {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	interestsCurrent := user.Interests
+	interestsCurrent = append(interestsCurrent[:index], interestsCurrent[index+1:]...)
+
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"interests", interestsCurrent}}},
+		},
+	)
+	return err
+}
+
 func (store *UserMongoDBStore) DeleteExperience(id primitive.ObjectID, index uint) error {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
@@ -41,14 +73,14 @@ func (store *UserMongoDBStore) AddExperience(experience *domain.Experience, id p
 	experienceCurrent := user.Experience
 	experienceCurrent = append(experienceCurrent, *experience)
 
-	_, err1 := store.users.UpdateOne(
+	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": user.Id},
 		bson.D{
 			{"$set", bson.D{{"experience", experienceCurrent}}},
 		},
 	)
-	return experience, err1
+	return experience, err
 }
 
 func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint) error {
@@ -57,14 +89,14 @@ func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint
 	educationCurrent := user.Education
 	educationCurrent = append(educationCurrent[:index], educationCurrent[index+1:]...)
 
-	_, err1 := store.users.UpdateOne(
+	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": user.Id},
 		bson.D{
 			{"$set", bson.D{{"education", educationCurrent}}},
 		},
 	)
-	return err1
+	return err
 }
 
 func (store *UserMongoDBStore) AddEducation(education *domain.Education, id primitive.ObjectID) (*domain.Education, error) {
@@ -73,14 +105,14 @@ func (store *UserMongoDBStore) AddEducation(education *domain.Education, id prim
 	educationCurrent := user.Education
 	educationCurrent = append(educationCurrent, *education)
 
-	_, err1 := store.users.UpdateOne(
+	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": user.Id},
 		bson.D{
 			{"$set", bson.D{{"education", educationCurrent}}},
 		},
 	)
-	return education, err1
+	return education, err
 }
 
 func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {

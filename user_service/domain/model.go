@@ -16,6 +16,7 @@ type User struct {
 	Phone       string             `bson:"phone"`
 	Education   []Education        `bson:"education"`
 	Experience  []Experience       `bson:"experience"`
+	Interests   []string           `bson:"interests"`
 }
 
 type Education struct {

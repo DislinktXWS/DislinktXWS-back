@@ -59,6 +59,18 @@ service UserService{
                         delete: "/users/user/experience/{id}/{index}"
                 };
         }
+
+        rpc AddInterest(AddInterestRequest) returns (AddInterestResponse){
+                option(google.api.http) = {
+                        put: "/users/user/interest/{id}/{interest}"
+                };
+        }
+
+        rpc DeleteInterest(DeleteInterestRequest) returns (DeleteInterestResponse) {
+                option(google.api.http) = {
+                        delete: "/users/user/interest/{id}/{index}"
+                };
+        }
 }
 
 message GetRequest {
@@ -116,6 +128,24 @@ message DeleteExperienceRequest{
 }
 
 message DeleteExperienceResponse{
+
+}
+
+message AddInterestRequest{
+        string id = 1;
+        string interest = 2;
+}
+
+message AddInterestResponse{
+
+}
+
+message DeleteInterestRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteInterestResponse{
 
 }
 

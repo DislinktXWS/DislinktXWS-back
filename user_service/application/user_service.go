@@ -47,3 +47,11 @@ func (service *UserService) AddExperience(experience *domain.Experience, id prim
 func (service *UserService) DeleteExperience(id primitive.ObjectID, index uint) error {
 	return service.store.DeleteExperience(id, index)
 }
+
+func (service *UserService) AddInterest(id primitive.ObjectID, interest string) error {
+	return service.store.AddInterest(id, interest)
+}
+
+func (service *UserService) DeleteInterest(id primitive.ObjectID, index uint) error {
+	return service.store.DeleteInterest(id, index)
+}
