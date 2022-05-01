@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
+	pb "module/common/proto/user_service"
 	user_proto "module/common/proto/user_service"
 	"module/user_service/domain"
 	"net/http"
@@ -42,20 +43,18 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	_, error := handler.addUser(newUser)
+	newUserId, error := handler.addUser(newUser)
 	if error != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	/*
-		e := handler.addUserNode(newUserid)
-		if e != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		fmt.Print(err)
-	*/
+	e := handler.addUserNode(newUserId)
+	if e != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	fmt.Print(err)
 
 	response, err := json.Marshal(newUser)
 	if err != nil {
@@ -66,22 +65,35 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 	w.Write(response)
 }
 
-func (handler *RegistrationHandler) addUser(userDetails domain.User) (string, error) {
+func (handler *RegistrationHandler) addUser(newUser domain.User) (string, error) {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
-	//************ovo bi trebalo da je poenta grpc-a********
-	//orderInfo, err := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: userDetails.Id.String()})
+	UserPb := mapUser(&newUser)
 
-	insertedUser, err := userClient.Insert(context.TODO(), &user_proto.InsertUserRequest{})
+	insertedUser, err := userClient.Insert(context.TODO(), &user_proto.InsertUserRequest{User: UserPb})
 
-	fmt.Print("*****************************")
-	fmt.Print(insertedUser)
 	return insertedUser.User.Id, err
 }
 
 func (handler *RegistrationHandler) addUserNode(userId string) error {
 
-	connectionClient := services.NewConnectionClient(handler.userClientAddress)
+	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	_, err := connectionClient.InsertNewUser(context.TODO(), &connection_proto.InsertUserRequest{User: userId})
+
 	return err
+}
+
+func mapUser(user *domain.User) *pb.User {
+	userPb := &pb.User{
+		Id:          user.Id.Hex(),
+		Name:        user.Name,
+		Surname:     user.Surname,
+		Username:    user.Username,
+		Password:    user.Password,
+		DateOfBirth: user.DateOfBirth,
+		Gender:      user.Gender,
+		Email:       user.Email,
+		Phone:       user.Phone,
+	}
+	return userPb
 }

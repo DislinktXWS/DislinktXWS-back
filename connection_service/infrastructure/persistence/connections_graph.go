@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"fmt"
 	"module/connection_service/domain"
 
 	"github.com/neo4j/neo4j-go-driver/neo4j"
@@ -29,6 +30,7 @@ func (store *ConnectionsDBGraph) GetAll(user string) []string {
 
 func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 
+	fmt.Print("USLI U INSERT USER****************/")
 	var session = *store.session
 	_, err := session.WriteTransaction(addUserNodeTxFunc(user))
 	return err
