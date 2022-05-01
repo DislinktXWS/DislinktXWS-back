@@ -12,7 +12,7 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		Host: "localhost",
-		Port: "8084",
+		Port: "8087",
 
 		//Uri:      "bullshit",
 		Uri:      "bolt://localhost:7687",

@@ -52,7 +52,7 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 	users, _ := store.GetAll()
 	store.DeleteAll()
 	for _, User := range users {
-		err := store.Insert(User)
+		_, err := store.Insert(User)
 		if err != nil {
 			log.Fatal(err)
 		}
