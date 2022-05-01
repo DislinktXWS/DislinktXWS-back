@@ -37,3 +37,35 @@ type Experience struct {
 	Industry    string `bson:"industry"`
 	Description string `bson:"description"`
 }
+
+type Skill struct {
+	Name        string           `bson:"name"`
+	Proficiency SkillProficiency `bson:"proficiency"`
+}
+
+type SkillProficiency int8
+
+const (
+	novice SkillProficiency = iota
+	advancedBeginner
+	proficient
+	expert
+	master
+)
+
+func (proficiency SkillProficiency) String() string {
+	switch proficiency {
+	case novice:
+		return "novice"
+	case advancedBeginner:
+		return "advanced beginner"
+	case proficient:
+		return "proficient"
+	case expert:
+		return "expert"
+	case master:
+		return "master"
+	}
+
+	return "unknown"
+}
