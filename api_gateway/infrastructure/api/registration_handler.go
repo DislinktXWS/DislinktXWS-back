@@ -27,7 +27,7 @@ func NewRegistrationHandler(userClientAddress, connectionClientAddress string) H
 }
 
 func (handler *RegistrationHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("POST", "/userss/user", handler.RegisterUser)
+	err := mux.HandlePath("POST", "/users/user", handler.RegisterUser)
 	if err != nil {
 		panic(err)
 	}
