@@ -53,11 +53,12 @@ func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter,
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	/*
-		var users []domain.User
-		users, _ = handler.getUsers(userIds)
-	*/
-	response, err := json.Marshal(userIds)
+
+	users := []domain.User{}
+
+	_ = handler.getUsers(&users, userIds)
+
+	response, err := json.Marshal(users)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -74,23 +75,19 @@ func (handler *UserConnectionsHandler) getUserIds(userId string) ([]string, erro
 	return connections.Ids, err
 }
 
-func (handler *UserConnectionsHandler) getUsers(userIds []string) ([]domain.User, error) {
+func (handler *UserConnectionsHandler) getUsers(users *[]domain.User, userIds []string) error {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
-	var users []domain.User
+	connections := *users
 
 	for _, id := range userIds {
 		user, _ := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: id})
 		domainUser := mapNewUser(user.User)
-		users = append(users, *domainUser)
+		connections = append(connections, *domainUser)
 	}
-
-	fmt.Print("**********connections*************")
-	for _, id := range users {
-		fmt.Print(id.Id)
-	}
-	return users, nil
+	*users = connections
+	return nil
 }
 
 func mapNewUser(userPb *pb.User) *domain.User {
