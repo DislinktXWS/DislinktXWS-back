@@ -79,14 +79,11 @@ func (handler *UserConnectionsHandler) getUsers(users *[]domain.User, userIds []
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
-	connections := *users
-
 	for _, id := range userIds {
 		user, _ := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: id})
 		domainUser := mapNewUser(user.User)
-		connections = append(connections, *domainUser)
+		*users = append(*users, *domainUser)
 	}
-	*users = connections
 	return nil
 }
 
