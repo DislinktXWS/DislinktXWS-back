@@ -168,11 +168,16 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 	fmt.Print("*******************USLI SMO U STORE")
+	User.Skills = make([]domain.Skill, 0)
+	User.Interests = make([]string, 0)
+	User.Experience = make([]domain.Experience, 0)
+	User.Education = make([]domain.Education, 0)
 	result, err := store.users.InsertOne(context.TODO(), User)
 	if err != nil {
 		return err, &domain.User{}
 	}
 	User.Id = result.InsertedID.(primitive.ObjectID)
+	fmt.Println(User.Education)
 	//ne znam kako za ostala polja, ali skontace se kako se citav obj vraca
 	return nil, User
 }
