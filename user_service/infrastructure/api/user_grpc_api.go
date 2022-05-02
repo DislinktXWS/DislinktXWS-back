@@ -92,6 +92,23 @@ func (handler *UserHandler) DeleteEducation(ctx context.Context, request *pb.Del
 	}
 	return &pb.DeleteEducationResponse{}, nil
 }
+func (handler *UserHandler) GetExperience(ctx context.Context, request *pb.GetExperienceRequest) (*pb.GetExperienceResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	experience, err := handler.service.GetExperience(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetExperienceResponse{
+		Experience: []*pb.Experience{},
+	}
+
+	for _, exper := range *experience {
+		exp := mapExperience(&exper)
+		response.Experience = append(response.Experience, exp)
+	}
+
+	return response, nil
+}
 
 func (handler *UserHandler) AddExperience(ctx context.Context, request *pb.AddExperienceRequest) (*pb.AddExperienceResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Id)

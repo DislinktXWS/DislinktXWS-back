@@ -108,6 +108,18 @@ func mapSkill(skill *domain.Skill) *pb.Skill {
 	return skillPb
 }
 
+func mapExperience(experience *domain.Experience) *pb.Experience {
+	experiencePb := &pb.Experience{
+		Title:       experience.Title,
+		CompanyName: experience.CompanyName,
+		StartDate:   experience.StartDate,
+		EndDate:     experience.EndDate,
+		Industry:    experience.Industry,
+		Description: experience.Description,
+	}
+	return experiencePb
+}
+
 func mapProficiencyToPb(proficiency domain.SkillProficiency) pb.Skill_SkillProficiency {
 	switch proficiency {
 	case domain.Novice:
