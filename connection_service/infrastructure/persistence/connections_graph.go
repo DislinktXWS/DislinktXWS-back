@@ -27,6 +27,18 @@ func (store *ConnectionsDBGraph) GetAll(user string) []string {
 	return connections
 }
 
+func (store *ConnectionsDBGraph) GetBlockedUsers(user string) []string {
+	var session = *store.session
+	blocked, _ := getBlockedUsersTxFunc(session, user)
+	return blocked
+}
+
+func (store *ConnectionsDBGraph) GetConnectionRequests(user string) []string {
+	var session = *store.session
+	blocked, _ := getConnectionRequestsTxFunc(session, user)
+	return blocked
+}
+
 func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 	var session = *store.session
 	_, err := session.WriteTransaction(addUserNodeTxFunc(user))
@@ -42,5 +54,32 @@ func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserCon
 func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserConnection) error {
 	var session = *store.session
 	_, err := session.WriteTransaction(disconnectUsersTxFunc(connection.Connecting, connection.Connected))
+	return err
+}
+
+func (store *ConnectionsDBGraph) InsertUserConnectionRequest(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, err := session.WriteTransaction(requestConnectionTxFunc(connection.Connecting, connection.Connected))
+	return err
+}
+
+func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, er := session.WriteTransaction(deleteConnectionRequestTxFunc(connection.Connecting, connection.Connected))
+	if er != nil {
+		return er
+	}
+	_, err := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
+	return err
+}
+
+func (store *ConnectionsDBGraph) BlockUser(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, err := session.WriteTransaction(blockUserTxFunc(connection.Connecting, connection.Connected))
+	return err
+}
+func (store *ConnectionsDBGraph) UnblockUser(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, err := session.WriteTransaction(unblockUserTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
