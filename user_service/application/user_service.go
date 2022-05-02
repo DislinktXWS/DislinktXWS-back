@@ -55,3 +55,11 @@ func (service *UserService) AddInterest(id primitive.ObjectID, interest string) 
 func (service *UserService) DeleteInterest(id primitive.ObjectID, index uint) error {
 	return service.store.DeleteInterest(id, index)
 }
+
+func (service *UserService) AddSkill(skill *domain.Skill, id primitive.ObjectID) (*domain.Skill, error) {
+	return service.store.AddSkill(skill, id)
+}
+
+func (service *UserService) DeleteSkill(id primitive.ObjectID, index uint) error {
+	return service.store.DeleteSkill(id, index)
+}

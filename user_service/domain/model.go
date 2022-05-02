@@ -17,6 +17,7 @@ type User struct {
 	Education   []Education        `bson:"education"`
 	Experience  []Experience       `bson:"experience"`
 	Interests   []string           `bson:"interests"`
+	Skills      []Skill            `bson:"skills"`
 }
 
 type Education struct {
@@ -46,24 +47,24 @@ type Skill struct {
 type SkillProficiency int8
 
 const (
-	novice SkillProficiency = iota
-	advancedBeginner
-	proficient
-	expert
-	master
+	Novice SkillProficiency = iota
+	AdvancedBeginner
+	Proficient
+	Expert
+	Master
 )
 
 func (proficiency SkillProficiency) String() string {
 	switch proficiency {
-	case novice:
+	case Novice:
 		return "novice"
-	case advancedBeginner:
+	case AdvancedBeginner:
 		return "advanced beginner"
-	case proficient:
+	case Proficient:
 		return "proficient"
-	case expert:
+	case Expert:
 		return "expert"
-	case master:
+	case Master:
 		return "master"
 	}
 
