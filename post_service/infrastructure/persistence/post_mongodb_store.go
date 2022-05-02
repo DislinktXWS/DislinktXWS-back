@@ -33,7 +33,7 @@ func (store *PostMongoDBStore) CommentPost(comment *domain.Comment) error {
 	filter := bson.M{"_id": objectId}
 	post, _ := store.filterOne(filter)
 	currentComments := post.Comments
-	newComment := domain.Comment{PostId: comment.PostId, User: comment.User, Content: comment.User}
+	newComment := domain.Comment{PostId: comment.PostId, User: comment.User, Content: comment.Content}
 	currentComments = append(currentComments, newComment)
 	store.posts.UpdateOne(context.TODO(), filter, bson.D{
 		{"$set", bson.D{{"comments", currentComments}}}})
