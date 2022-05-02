@@ -132,3 +132,23 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 	}
 	return &pb.DeleteInterestResponse{}, nil
 }
+
+func (handler *UserHandler) AddSkill(ctx context.Context, request *pb.AddSkillRequest) (*pb.AddSkillResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	skill := mapAddSkill(request.Skill)
+	_, err := handler.service.AddSkill(skill, id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AddSkillResponse{}, nil
+}
+
+func (handler *UserHandler) DeleteSkill(ctx context.Context, request *pb.DeleteSkillRequest) (*pb.DeleteSkillResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	index := uint(request.Index)
+	err := handler.service.DeleteSkill(id, index)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteSkillResponse{}, nil
+}

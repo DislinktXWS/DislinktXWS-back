@@ -71,6 +71,19 @@ service UserService{
                         delete: "/users/user/interest/{id}/{index}"
                 };
         }
+
+        rpc AddSkill(AddSkillRequest) returns (AddSkillResponse){
+                option(google.api.http) = {
+                        put: "/users/user/skill/{id}"
+                        body: "skill"
+                };
+        }
+
+        rpc DeleteSkill(DeleteSkillRequest) returns (DeleteSkillResponse){
+                option(google.api.http) = {
+                        delete: "/users/user/skill/{id}/{index}"
+                };
+        }
 }
 
 message GetRequest {
@@ -153,6 +166,24 @@ message DeleteInterestResponse{
 
 }
 
+message AddSkillRequest{
+        Skill skill = 1;
+        string id = 2;
+}
+
+message AddSkillResponse{
+
+}
+
+message DeleteSkillRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteSkillResponse{
+
+}
+
 message User {
         string id = 1;
         string name = 2;
@@ -182,4 +213,16 @@ message Experience{
         string endDate = 4;
         string industry = 5;
         string description = 6;
+}
+
+message Skill {
+        string name = 1;
+        enum SkillProficiency {
+            novice = 0;
+            advancedBeginner = 1;
+            proficient = 2;
+            expert = 3;
+            master = 4;
+        }
+        SkillProficiency proficiency = 2;
 }

@@ -19,6 +19,38 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.ObjectID) (*domain.Skill, error) {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	skillsCurrent := user.Skills
+	skillsCurrent = append(skillsCurrent, *skill)
+
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"skills", skillsCurrent}}},
+		},
+	)
+	return skill, err
+}
+
+func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint) error {
+	filter := bson.M{"_id": id}
+	user, _ := store.filterOne(filter)
+	skillsCurrent := user.Skills
+	skillsCurrent = append(skillsCurrent[:index], skillsCurrent[index+1:]...)
+
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"experience", skillsCurrent}}},
+		},
+	)
+	return err
+}
+
 func (store *UserMongoDBStore) AddInterest(id primitive.ObjectID, interest string) error {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
