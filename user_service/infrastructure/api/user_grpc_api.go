@@ -113,6 +113,20 @@ func (handler *UserHandler) DeleteExperience(ctx context.Context, request *pb.De
 	return &pb.DeleteExperienceResponse{}, nil
 }
 
+func (handler *UserHandler) GetInterests(ctx context.Context, request *pb.GetInterestsRequest) (*pb.GetInterestsResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	interests, err := handler.service.GetInterests(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetInterestsResponse{
+		Interests: interests,
+	}
+
+	return response, nil
+
+}
+
 func (handler *UserHandler) AddInterest(ctx context.Context, request *pb.AddInterestRequest) (*pb.AddInterestResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	interest := request.Interest
@@ -131,6 +145,26 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 		return nil, err
 	}
 	return &pb.DeleteInterestResponse{}, nil
+}
+
+func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkillsRequest) (*pb.GetSkillsResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	skills, err := handler.service.GetSkills(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetSkillsResponse{
+		Skills: []*pb.Skill{},
+	}
+
+	for _, skill := range *skills {
+		s := mapSkill(&skill)
+		response.Skills = append(response.Skills, s)
+	}
+
+	return response, nil
+
 }
 
 func (handler *UserHandler) AddSkill(ctx context.Context, request *pb.AddSkillRequest) (*pb.AddSkillResponse, error) {

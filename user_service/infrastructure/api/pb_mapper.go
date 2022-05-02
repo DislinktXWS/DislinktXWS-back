@@ -99,3 +99,27 @@ func mapProficiency(proficiency pb.Skill_SkillProficiency) domain.SkillProficien
 	}
 	return domain.Novice
 }
+
+func mapSkill(skill *domain.Skill) *pb.Skill {
+	skillPb := &pb.Skill{
+		Name:        skill.Name,
+		Proficiency: mapProficiencyToPb(skill.Proficiency),
+	}
+	return skillPb
+}
+
+func mapProficiencyToPb(proficiency domain.SkillProficiency) pb.Skill_SkillProficiency {
+	switch proficiency {
+	case domain.Novice:
+		return pb.Skill_novice
+	case domain.AdvancedBeginner:
+		return pb.Skill_advancedBeginner
+	case domain.Proficient:
+		return pb.Skill_proficient
+	case domain.Expert:
+		return pb.Skill_expert
+	case domain.Master:
+		return pb.Skill_master
+	}
+	return pb.Skill_novice
+}

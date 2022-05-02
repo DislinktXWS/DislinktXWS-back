@@ -19,6 +19,30 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Education, err
+}
+
+func (store *UserMongoDBStore) GetExperience(id primitive.ObjectID) (*[]domain.Experience, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Experience, err
+}
+
+func (store *UserMongoDBStore) GetInterests(id primitive.ObjectID) ([]string, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return user.Interests, err
+}
+
+func (store *UserMongoDBStore) GetSkills(id primitive.ObjectID) (*[]domain.Skill, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Skills, err
+}
+
 func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.ObjectID) (*domain.Skill, error) {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
