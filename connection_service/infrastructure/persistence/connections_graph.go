@@ -72,7 +72,11 @@ func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.
 	_, err := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
-
+func (store *ConnectionsDBGraph) DeclineUserConnectionRequest(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, er := session.WriteTransaction(deleteConnectionRequestTxFunc(connection.Connecting, connection.Connected))
+	return er
+}
 func (store *ConnectionsDBGraph) BlockUser(connection *domain.UserConnection) error {
 	var session = *store.session
 	_, err := session.WriteTransaction(blockUserTxFunc(connection.Connecting, connection.Connected))
