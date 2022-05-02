@@ -9,14 +9,14 @@ import "google/api/annotations.proto";
 service UserService{
 
         rpc Get(GetRequest) returns(GetResponse) {
-        	option (google.api.http) = {
-			get: "/users/user/{id}"
+        	      option (google.api.http) = {
+			                  get: "/users/user/{id}"
 		};
         }
 
         rpc GetAll(GetAllRequest) returns(GetAllResponse) {
-        	option (google.api.http) = {
-			get: "/users/user"
+        	      option (google.api.http) = {
+			                  get: "/users/user"
 		};
         }
 
@@ -24,6 +24,51 @@ service UserService{
                 option (google.api.http) = {
                         post: "/users/user"
                         body: "user"
+                };
+        }
+
+        rpc EditUser(InsertUserRequest) returns (EditUserResponse){
+                option (google.api.http) = {
+                        put: "/users/user"
+                        body: "user"
+                };
+        }
+
+        rpc AddEducation(AddEducationRequest) returns (AddEducationResponse){
+                option(google.api.http)  = {
+                        put: "/users/user/education/{id}"
+                        body: "education"
+                };
+        }
+
+        rpc DeleteEducation(DeleteEducationRequest) returns (DeleteEducationResponse){
+                option(google.api.http) = {
+                        delete: "/users/user/education/{id}/{index}"
+                };
+        }
+
+        rpc AddExperience(AddExperienceRequest) returns (AddExperienceResponse){
+                option(google.api.http) = {
+                        put: "/users/user/experience/{id}"
+                        body: "experience"
+                };
+        }
+
+        rpc DeleteExperience(DeleteExperienceRequest) returns (DeleteExperienceResponse){
+                option(google.api.http) = {
+                        delete: "/users/user/experience/{id}/{index}"
+                };
+        }
+
+        rpc AddInterest(AddInterestRequest) returns (AddInterestResponse){
+                option(google.api.http) = {
+                        put: "/users/user/interest/{id}/{interest}"
+                };
+        }
+
+        rpc DeleteInterest(DeleteInterestRequest) returns (DeleteInterestResponse) {
+                option(google.api.http) = {
+                        delete: "/users/user/interest/{id}/{index}"
                 };
         }
 }
@@ -48,6 +93,64 @@ message InsertUserRequest {
 }
 
 message InsertUserResponse {
+        User user = 1;
+}
+
+message EditUserResponse {
+}
+
+message AddEducationRequest{
+        Education education = 1;
+        string id = 2;
+}
+
+message AddEducationResponse{
+
+}
+
+message DeleteEducationRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteEducationResponse{
+
+}
+
+message AddExperienceRequest{
+        Experience experience = 1;
+        string id = 2;
+}
+
+message AddExperienceResponse{
+
+}
+
+message DeleteExperienceRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteExperienceResponse{
+
+}
+
+message AddInterestRequest{
+        string id = 1;
+        string interest = 2;
+}
+
+message AddInterestResponse{
+
+}
+
+message DeleteInterestRequest{
+        string id = 1;
+        uint32 index = 2;
+}
+
+message DeleteInterestResponse{
+
 }
 
 message User {
@@ -60,4 +163,23 @@ message User {
         string gender = 7;
         string email = 8;
         string phone = 9;
+}
+
+message Education {
+        string school = 1;
+        string degree = 2;
+        string fieldOfStudy = 3;
+        string startDate = 4;
+        string endDate = 5;
+        float grade = 6;
+        string description = 7;
+}
+
+message Experience{
+        string title = 1;
+        string companyName = 2;
+        string startDate = 3;
+        string endDate = 4;
+        string industry = 5;
+        string description = 6;
 }

@@ -1,6 +1,8 @@
 package application
 
-import "module/connection_service/domain"
+import (
+	"module/connection_service/domain"
+)
 
 type ConnectionsService struct {
 	graph domain.ConnectionsGraph
@@ -28,7 +30,6 @@ func (service *ConnectionsService) InsertUserConnection(connection *domain.UserC
 	return service.graph.InsertUserConnection(connection)
 }
 
-/*
 func (service *ConnectionsService) Delete(connection *domain.UserConnection) error {
 	return service.graph.DeleteUserConnection(connection)
-}*/
+}
