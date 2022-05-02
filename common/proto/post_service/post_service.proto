@@ -45,6 +45,13 @@ service PostService{
             put: "/posts/post/dislike/{id}/user/{username}"
         };
     }
+
+    rpc CommentPost(CommentPostRequest) returns (CommentPostResponse){
+        option (google.api.http) = {
+            post: "/posts/post/comment"
+            body: "comment"
+        };
+    }
    
 }
 
@@ -94,6 +101,12 @@ message DislikePostRequest{
 message DislikePostResponse{
 }
 
+message CommentPostRequest{
+    Comment comment = 1;
+}
+
+message CommentPostResponse{
+}
 
 message Post {
     string id = 1;
@@ -103,4 +116,11 @@ message Post {
     string user = 5;
     repeated string likes = 6;
     repeated string dislikes = 7;
+    repeated Comment comments = 8;
+}
+
+message Comment{
+    string postId = 1;
+    string user = 2;
+    string content = 3;
 }

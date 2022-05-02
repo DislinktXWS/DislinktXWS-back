@@ -39,3 +39,7 @@ func (service *PostService) LikePost(id primitive.ObjectID, username string) {
 func (service *PostService) DislikePost(id primitive.ObjectID, username string) {
 	service.store.DislikePost(id, username)
 }
+
+func (service *PostService) CommentPost(Comment *domain.Comment) error {
+	return service.store.CommentPost(Comment)
+}

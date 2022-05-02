@@ -99,3 +99,12 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertPostRe
 	}
 	return &pb.InsertPostResponse{}, nil
 }
+
+func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.CommentPostRequest) (*pb.CommentPostResponse, error) {
+	Comment := mapNewComment(request.Comment)
+	err := handler.service.CommentPost(Comment)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CommentPostResponse{}, nil
+}

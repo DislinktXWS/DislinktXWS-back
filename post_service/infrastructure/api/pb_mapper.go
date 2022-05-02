@@ -15,6 +15,14 @@ func mapPost(post *domain.Post) *pb.Post {
 		Likes:    post.Likes,
 		Dislikes: post.Dislikes,
 	}
+
+	for _, comment := range post.Comments {
+		postPb.Comments = append(postPb.Comments, &pb.Comment{
+			PostId:  comment.PostId,
+			User:    comment.User,
+			Content: comment.Content,
+		})
+	}
 	return postPb
 }
 
@@ -28,4 +36,13 @@ func mapNewPost(postPb *pb.Post) *domain.Post {
 		Dislikes: postPb.Dislikes,
 	}
 	return post
+}
+
+func mapNewComment(commentPb *pb.Comment) *domain.Comment {
+	comment := &domain.Comment{
+		PostId: commentPb.PostId,
+		User: commentPb.User,
+		Content:  commentPb.Content,
+	}
+	return comment
 }
