@@ -14,7 +14,7 @@ type Config struct { //prijava svih servisa gateway-u
 func NewConfig() *Config {
 	return &Config{
 		Host:           "localhost",
-		Port:           "8080",
+		Port:           "8083",
 		UserHost:       "localhost",
 		UserPort:       "8081",
 		PostHost:       "localhost",
