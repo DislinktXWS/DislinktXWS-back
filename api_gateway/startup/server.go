@@ -3,11 +3,13 @@ package startup
 import (
 	"context"
 	"fmt"
-	"github.com/gorilla/handlers"
 	"module/api_gateway/infrastructure/api"
 	cfg "module/api_gateway/startup/config"
 	"net/http"
 
+	"github.com/gorilla/handlers"
+
+	connectionGw "module/common/proto/connection_service"
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
@@ -40,6 +42,12 @@ func (server *Server) initHandlers() {
 	}
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

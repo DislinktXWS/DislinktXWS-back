@@ -42,20 +42,18 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	/*newUserId*/
-	_, error := handler.addUser(newUser)
+	newUserId, error := handler.addUser(newUser)
 	if error != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	/*e := handler.addUserNode(newUserId)
+	e := handler.addUserNode(newUserId)
 	if e != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	fmt.Print(err)
-	*/
+
 	response, err := json.Marshal(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

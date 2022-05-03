@@ -47,8 +47,12 @@ func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 
 func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserConnection) error {
 	var session = *store.session
-	_, err := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
-	return err
+	_, e1 := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
+	if e1 != nil {
+		return e1
+	}
+	_, e2 := session.WriteTransaction(connectUsersTxFunc(connection.Connected, connection.Connecting))
+	return e2
 }
 
 func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserConnection) error {
@@ -70,7 +74,11 @@ func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.
 		return er
 	}
 	_, err := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
-	return err
+	if err != nil {
+		return err
+	}
+	_, e := session.WriteTransaction(connectUsersTxFunc(connection.Connected, connection.Connecting))
+	return e
 }
 func (store *ConnectionsDBGraph) DeclineUserConnectionRequest(connection *domain.UserConnection) error {
 	var session = *store.session
