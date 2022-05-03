@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"module/api_gateway/domain"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
 
 	pb "module/common/proto/user_service"
 	user_proto "module/common/proto/user_service"
-	"module/user_service/domain"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -54,7 +54,7 @@ func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter,
 		return
 	}
 
-	users := []domain.User{}
+	users := []domain.UserBasicInfo{}
 
 	_ = handler.getUsers(&users, userIds)
 
@@ -75,7 +75,7 @@ func (handler *UserConnectionsHandler) getUserIds(userId string) ([]string, erro
 	return connections.Ids, err
 }
 
-func (handler *UserConnectionsHandler) getUsers(users *[]domain.User, userIds []string) error {
+func (handler *UserConnectionsHandler) getUsers(users *[]domain.UserBasicInfo, userIds []string) error {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
@@ -87,16 +87,12 @@ func (handler *UserConnectionsHandler) getUsers(users *[]domain.User, userIds []
 	return nil
 }
 
-func mapNewUser(userPb *pb.User) *domain.User {
-	user := &domain.User{
-		Name:        userPb.Name,
-		Surname:     userPb.Surname,
-		Username:    userPb.Username,
-		Password:    userPb.Password,
-		DateOfBirth: userPb.DateOfBirth,
-		Gender:      userPb.Gender,
-		Email:       userPb.Email,
-		Phone:       userPb.Phone,
+func mapNewUser(userPb *pb.User) *domain.UserBasicInfo {
+	user := &domain.UserBasicInfo{
+		Id:       userPb.Id,
+		Name:     userPb.Name,
+		Surname:  userPb.Surname,
+		Username: userPb.Username,
 	}
 	return user
 }
