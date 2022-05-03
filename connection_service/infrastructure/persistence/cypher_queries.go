@@ -29,12 +29,56 @@ func connectUsersTxFunc(connecting string, connected string) neo4j.TransactionWo
 	}
 }
 
+func blockUserTxFunc(blocking string, blocked string) neo4j.TransactionWork {
+	return func(tx neo4j.Transaction) (interface{}, error) {
+		var result, err = tx.Run(
+			"MATCH (user:User {userId: $blocking}) "+
+				"MATCH (secondUser:User {userId: $blocked}) "+
+				"CREATE (user)-[:BLOCKED]->(secondUser)", map[string]interface{}{"blocking": blocking, "blocked": blocked})
+
+		if err != nil {
+			return nil, err
+		}
+
+		return result.Consume()
+	}
+}
+
+func requestConnectionTxFunc(connecting string, connected string) neo4j.TransactionWork {
+	return func(tx neo4j.Transaction) (interface{}, error) {
+		var result, err = tx.Run(
+			"MATCH (user:User {userId: $connecting}) "+
+				"MATCH (secondUser:User {userId: $connected}) "+
+				"CREATE (user)-[:REQUESTED_CONNECTION]->(secondUser)", map[string]interface{}{"connecting": connecting, "connected": connected})
+
+		if err != nil {
+			return nil, err
+		}
+
+		return result.Consume()
+	}
+}
+
 func disconnectUsersTxFunc(disconnecting string, disconnected string) neo4j.TransactionWork {
 	return func(tx neo4j.Transaction) (interface{}, error) {
 		var result, err = tx.Run(
 			"MATCH (user:User {userId: $disconnecting}) "+
 				"- [rel:CONNECTED] -> (secondUser:User {userId: $disconnected}) "+
 				"DELETE rel", map[string]interface{}{"disconnecting": disconnecting, "disconnected": disconnected})
+
+		if err != nil {
+			return nil, err
+		}
+		return result.Consume()
+	}
+}
+
+func unblockUserTxFunc(unblocking string, blocked string) neo4j.TransactionWork {
+	return func(tx neo4j.Transaction) (interface{}, error) {
+		var result, err = tx.Run(
+			"MATCH (user:User {userId: $unblocking}) "+
+				"- [rel:BLOCKED] -> (secondUser:User {userId: $blocked}) "+
+				"DELETE rel", map[string]interface{}{"unblocking": unblocking, "blocked": blocked})
 
 		if err != nil {
 			return nil, err

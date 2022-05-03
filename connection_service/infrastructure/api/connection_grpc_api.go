@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	pb "module/common/proto/connection_service"
 	"module/connection_service/application"
 )
@@ -42,8 +41,29 @@ func (handler *ConnectionHandler) GetAll(ctx context.Context, request *pb.GetAll
 	response := &pb.GetAllConnectionsResponse{}
 
 	for _, connection := range Connections {
-		fmt.Print("         KOnekcija jedna         ")
-		fmt.Print(connection)
+		response.Ids = append(response.Ids, connection)
+	}
+	return response, nil
+}
+
+func (handler *ConnectionHandler) GetBlockedUsers(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+
+	BlockUsers := handler.service.GetBlockedUsers(request.Id)
+
+	response := &pb.GetAllConnectionsResponse{}
+
+	for _, connection := range BlockUsers {
+		response.Ids = append(response.Ids, connection)
+	}
+	return response, nil
+}
+
+func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+
+	ConnectionRequests := handler.service.GetAllConnectionRequests(request.Id)
+
+	response := &pb.GetAllConnectionsResponse{}
+	for _, connection := range ConnectionRequests {
 		response.Ids = append(response.Ids, connection)
 	}
 	return response, nil
