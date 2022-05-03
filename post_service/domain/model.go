@@ -13,7 +13,7 @@ type Comment struct {
 type Post struct {
 	Id       primitive.ObjectID `bson:"_id,omitempty"`
 	Content  string             `bson:"content"`
-	Links    []string           `bson:"links"`
+	Image    string             `bson:"image"`
 	Date     string             `bson:"date"`
 	User     string             `bson:"user"`
 	Likes    []string           `bson:"likes"`

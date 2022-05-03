@@ -3,10 +3,11 @@ package startup
 import (
 	"context"
 	"fmt"
-	"github.com/gorilla/handlers"
 	"module/api_gateway/infrastructure/api"
 	cfg "module/api_gateway/startup/config"
 	"net/http"
+
+	"github.com/gorilla/handlers"
 
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
@@ -48,6 +49,7 @@ func (server *Server) initHandlers() {
 func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 
 	//ovi handler se prave po funkcionalnosti
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
@@ -55,6 +57,9 @@ func (server *Server) initCustomHandlers() {
 
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
+
+	postHandler := api.NewPostHandler(postEndpoint)
+	postHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

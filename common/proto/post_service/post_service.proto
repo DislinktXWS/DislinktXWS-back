@@ -111,7 +111,7 @@ message CommentPostResponse{
 message Post {
     string id = 1;
     string content = 2;
-    repeated string links = 3;
+    string image = 3;
     string date = 4;
     string user = 5;
     repeated string likes = 6;
