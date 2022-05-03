@@ -120,6 +120,19 @@ func mapExperience(experience *domain.Experience) *pb.Experience {
 	return experiencePb
 }
 
+func mapEducation(education *domain.Education) *pb.Education {
+	educationPb := &pb.Education{
+		School:       education.School,
+		Degree:       education.Degree,
+		FieldOfStudy: education.FieldOfStudy,
+		StartDate:    education.StartDate,
+		EndDate:      education.EndDate,
+		Grade:        education.Grade,
+		Description:  education.Description,
+	}
+	return educationPb
+}
+
 func mapProficiencyToPb(proficiency domain.SkillProficiency) pb.Skill_SkillProficiency {
 	switch proficiency {
 	case domain.Novice:

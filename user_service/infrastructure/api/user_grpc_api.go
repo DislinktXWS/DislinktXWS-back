@@ -73,6 +73,26 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 	return &pb.EditUserResponse{}, nil
 }
 
+func (handler *UserHandler) GetEducation(ctx context.Context, request *pb.GetEducationRequest) (*pb.GetEducationResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	education, err := handler.service.GetEducation(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetEducationResponse{
+		Education: []*pb.Education{},
+	}
+
+	for _, educ := range *education {
+		e := mapEducation(&educ)
+		response.Education = append(response.Education, e)
+	}
+
+	return response, nil
+
+}
+
 func (handler *UserHandler) AddEducation(ctx context.Context, request *pb.AddEducationRequest) (*pb.AddEducationResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	education := mapAddEducation(request.Education)
