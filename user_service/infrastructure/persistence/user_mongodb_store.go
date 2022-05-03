@@ -69,7 +69,7 @@ func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint) er
 		context.TODO(),
 		bson.M{"_id": user.Id},
 		bson.D{
-			{"$set", bson.D{{"experience", skillsCurrent}}},
+			{"$set", bson.D{{"skills", skillsCurrent}}},
 		},
 	)
 	return err
