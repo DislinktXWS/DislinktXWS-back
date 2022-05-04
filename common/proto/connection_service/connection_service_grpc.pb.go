@@ -24,7 +24,14 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectionsServiceClient interface {
 	InsertNewUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 	InsertUserConnection(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	InsertConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	BlockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	UnblockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	AcceptConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	DeclineConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	GetAll(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
+	GetBlockedUsers(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
+	GetConnectionRequests(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 }
 
 type connectionsServiceClient struct {
@@ -53,9 +60,72 @@ func (c *connectionsServiceClient) InsertUserConnection(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *connectionsServiceClient) InsertConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/InsertConnectionRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) BlockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/BlockUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) UnblockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/UnblockUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) AcceptConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/AcceptConnectionRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) DeclineConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/DeclineConnectionRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *connectionsServiceClient) GetAll(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error) {
 	out := new(GetAllConnectionsResponse)
 	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) GetBlockedUsers(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error) {
+	out := new(GetAllConnectionsResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetBlockedUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) GetConnectionRequests(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error) {
+	out := new(GetAllConnectionsResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetConnectionRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +138,14 @@ func (c *connectionsServiceClient) GetAll(ctx context.Context, in *GetAllConnect
 type ConnectionsServiceServer interface {
 	InsertNewUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	InsertUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	InsertConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	BlockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	UnblockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	AcceptConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	DeclineConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	GetAll(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
+	GetBlockedUsers(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
+	GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	mustEmbedUnimplementedConnectionsServiceServer()
 }
 
@@ -82,8 +159,29 @@ func (UnimplementedConnectionsServiceServer) InsertNewUser(context.Context, *Ins
 func (UnimplementedConnectionsServiceServer) InsertUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertUserConnection not implemented")
 }
+func (UnimplementedConnectionsServiceServer) InsertConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertConnectionRequest not implemented")
+}
+func (UnimplementedConnectionsServiceServer) BlockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
+}
+func (UnimplementedConnectionsServiceServer) UnblockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnblockUser not implemented")
+}
+func (UnimplementedConnectionsServiceServer) AcceptConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptConnectionRequest not implemented")
+}
+func (UnimplementedConnectionsServiceServer) DeclineConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeclineConnectionRequest not implemented")
+}
 func (UnimplementedConnectionsServiceServer) GetAll(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedConnectionsServiceServer) GetBlockedUsers(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBlockedUsers not implemented")
+}
+func (UnimplementedConnectionsServiceServer) GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnectionRequests not implemented")
 }
 func (UnimplementedConnectionsServiceServer) mustEmbedUnimplementedConnectionsServiceServer() {}
 
@@ -134,6 +232,96 @@ func _ConnectionsService_InsertUserConnection_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionsService_InsertConnectionRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).InsertConnectionRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/InsertConnectionRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).InsertConnectionRequest(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_BlockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).BlockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/BlockUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).BlockUser(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_UnblockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).UnblockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/UnblockUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).UnblockUser(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_AcceptConnectionRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).AcceptConnectionRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/AcceptConnectionRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).AcceptConnectionRequest(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_DeclineConnectionRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).DeclineConnectionRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/DeclineConnectionRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).DeclineConnectionRequest(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConnectionsService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllConnectionsRequest)
 	if err := dec(in); err != nil {
@@ -148,6 +336,42 @@ func _ConnectionsService_GetAll_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConnectionsServiceServer).GetAll(ctx, req.(*GetAllConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_GetBlockedUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).GetBlockedUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/GetBlockedUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).GetBlockedUsers(ctx, req.(*GetAllConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_GetConnectionRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).GetConnectionRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/GetConnectionRequests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).GetConnectionRequests(ctx, req.(*GetAllConnectionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,8 +392,36 @@ var ConnectionsService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConnectionsService_InsertUserConnection_Handler,
 		},
 		{
+			MethodName: "InsertConnectionRequest",
+			Handler:    _ConnectionsService_InsertConnectionRequest_Handler,
+		},
+		{
+			MethodName: "BlockUser",
+			Handler:    _ConnectionsService_BlockUser_Handler,
+		},
+		{
+			MethodName: "UnblockUser",
+			Handler:    _ConnectionsService_UnblockUser_Handler,
+		},
+		{
+			MethodName: "AcceptConnectionRequest",
+			Handler:    _ConnectionsService_AcceptConnectionRequest_Handler,
+		},
+		{
+			MethodName: "DeclineConnectionRequest",
+			Handler:    _ConnectionsService_DeclineConnectionRequest_Handler,
+		},
+		{
 			MethodName: "GetAll",
 			Handler:    _ConnectionsService_GetAll_Handler,
+		},
+		{
+			MethodName: "GetBlockedUsers",
+			Handler:    _ConnectionsService_GetBlockedUsers_Handler,
+		},
+		{
+			MethodName: "GetConnectionRequests",
+			Handler:    _ConnectionsService_GetConnectionRequests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

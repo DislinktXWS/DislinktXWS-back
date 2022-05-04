@@ -63,6 +63,12 @@ func (server *Server) initCustomHandlers() {
 
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
+
+	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
+	blockedUsersHandler.Init(server.mux)
+
+	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
+	connectionReqHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

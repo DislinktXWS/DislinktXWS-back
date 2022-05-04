@@ -47,26 +47,75 @@ func (handler *ConnectionHandler) GetAll(ctx context.Context, request *pb.GetAll
 	}
 	return response, nil
 }
-
 func (handler *ConnectionHandler) GetBlockedUsers(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
 
-	BlockUsers := handler.service.GetBlockedUsers(request.Id)
+	Connections := handler.service.GetBlockedUsers(request.Id)
 
 	response := &pb.GetAllConnectionsResponse{}
 
-	for _, connection := range BlockUsers {
+	for _, connection := range Connections {
+		response.Ids = append(response.Ids, connection)
+	}
+	return response, nil
+}
+func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+
+	Connections := handler.service.GetAllConnectionRequests(request.Id)
+
+	response := &pb.GetAllConnectionsResponse{}
+
+	for _, connection := range Connections {
 		response.Ids = append(response.Ids, connection)
 	}
 	return response, nil
 }
 
-func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
 
-	ConnectionRequests := handler.service.GetAllConnectionRequests(request.Id)
-
-	response := &pb.GetAllConnectionsResponse{}
-	for _, connection := range ConnectionRequests {
-		response.Ids = append(response.Ids, connection)
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.InsertUserConnectionRequest(connection)
+	if err != nil {
+		return nil, err
 	}
-	return response, nil
+	return &pb.InsertUserConnectionResponse{}, nil
+}
+
+func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.BlockUser(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
+}
+
+func (handler *ConnectionHandler) UnblockUser(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.UnblockUser(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
+}
+
+func (handler *ConnectionHandler) AcceptConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.AcceptUserConnection(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
+}
+
+func (handler *ConnectionHandler) DeclineConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.DeclineUserConnection(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
 }
