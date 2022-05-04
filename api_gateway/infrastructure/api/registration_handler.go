@@ -41,18 +41,20 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	newUserId, error := handler.addUser(newUser)
+	/*newUserId*/
+	_, error := handler.addUser(newUser)
 	if error != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	//sori sto stalno morate za komentarisete..
-	e := handler.addUserNode(newUserId)
-	if e != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
+	/*
+		e := handler.addUserNode(newUserId)
+		if e != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+	*/
 
 	//newUser.Id, _ = primitive.ObjectIDFromHex(newUserId)
 	response, err := json.Marshal(newUser)
