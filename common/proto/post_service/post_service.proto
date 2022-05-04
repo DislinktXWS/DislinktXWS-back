@@ -83,6 +83,7 @@ message InsertPostRequest {
 }
 
 message InsertPostResponse {
+    string id = 1;
 }
 
 message LikePostRequest{

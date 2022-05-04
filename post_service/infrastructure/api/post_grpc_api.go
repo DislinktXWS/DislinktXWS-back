@@ -97,7 +97,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertPostRe
 	if err != nil {
 		return nil, err
 	}
-	return &pb.InsertPostResponse{}, nil
+	return &pb.InsertPostResponse{Id: Post.Id.String()}, nil
 }
 
 func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.CommentPostRequest) (*pb.CommentPostResponse, error) {

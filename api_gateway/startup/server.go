@@ -60,6 +60,9 @@ func (server *Server) initCustomHandlers() {
 
 	postHandler := api.NewPostHandler(postEndpoint)
 	postHandler.Init(server.mux)
+
+	getImageHandler := api.NewGetImageHandler(postEndpoint)
+	getImageHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

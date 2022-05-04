@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +11,10 @@ import (
 
 type PostHandler struct {
 	postClientAddress string
+}
+
+type Image struct {
+	ImageName string
 }
 
 func NewPostHandler(postClientAddress string) Handler {
@@ -45,10 +50,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 
 	// Create a temporary file within our temp-images directory that follows
 	// a particular naming pattern
-	tempFile, err := ioutil.TempFile("D:\\DislinktXWS-back\\temp-images", "upload-*.png")
+	tempFile, err := ioutil.TempFile("D:\\DislinktXWS-back\\temp-images", "post-*.png")
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(tempFile.Name())
 	defer tempFile.Close()
 
 	fileBytes, err := ioutil.ReadAll(file)
@@ -56,4 +62,10 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	tempFile.Write(fileBytes)
+
+	image := Image{ImageName: tempFile.Name()}
+
+	response, _ := json.Marshal(image)
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
