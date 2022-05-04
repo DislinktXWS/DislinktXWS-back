@@ -19,6 +19,30 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Education, err
+}
+
+func (store *UserMongoDBStore) GetExperience(id primitive.ObjectID) (*[]domain.Experience, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Experience, err
+}
+
+func (store *UserMongoDBStore) GetInterests(id primitive.ObjectID) ([]string, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return user.Interests, err
+}
+
+func (store *UserMongoDBStore) GetSkills(id primitive.ObjectID) (*[]domain.Skill, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return &user.Skills, err
+}
+
 func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.ObjectID) (*domain.Skill, error) {
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
@@ -45,7 +69,7 @@ func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint) er
 		context.TODO(),
 		bson.M{"_id": user.Id},
 		bson.D{
-			{"$set", bson.D{{"experience", skillsCurrent}}},
+			{"$set", bson.D{{"skills", skillsCurrent}}},
 		},
 	)
 	return err
@@ -168,11 +192,16 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 	fmt.Print("*******************USLI SMO U STORE")
+	User.Skills = make([]domain.Skill, 0)
+	User.Interests = make([]string, 0)
+	User.Experience = make([]domain.Experience, 0)
+	User.Education = make([]domain.Education, 0)
 	result, err := store.users.InsertOne(context.TODO(), User)
 	if err != nil {
 		return err, &domain.User{}
 	}
 	User.Id = result.InsertedID.(primitive.ObjectID)
+	fmt.Println(User.Education)
 	//ne znam kako za ostala polja, ali skontace se kako se citav obj vraca
 	return nil, User
 }

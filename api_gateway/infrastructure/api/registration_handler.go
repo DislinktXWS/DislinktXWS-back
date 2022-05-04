@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
 	pb "module/common/proto/user_service"
@@ -54,7 +53,6 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	fmt.Print(err)
 
 	response, err := json.Marshal(newUser)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/handlers"
 
+	connectionGw "module/common/proto/connection_service"
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 
@@ -44,6 +45,12 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
+	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (server *Server) initCustomHandlers() {
@@ -63,6 +70,11 @@ func (server *Server) initCustomHandlers() {
 
 	getImageHandler := api.NewGetImageHandler(postEndpoint)
 	getImageHandler.Init(server.mux)
+	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
+	blockedUsersHandler.Init(server.mux)
+
+	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
+	connectionReqHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

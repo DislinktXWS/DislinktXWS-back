@@ -26,12 +26,16 @@ type UserServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*EditUserResponse, error)
+	GetEducation(ctx context.Context, in *GetEducationRequest, opts ...grpc.CallOption) (*GetEducationResponse, error)
 	AddEducation(ctx context.Context, in *AddEducationRequest, opts ...grpc.CallOption) (*AddEducationResponse, error)
 	DeleteEducation(ctx context.Context, in *DeleteEducationRequest, opts ...grpc.CallOption) (*DeleteEducationResponse, error)
+	GetExperience(ctx context.Context, in *GetExperienceRequest, opts ...grpc.CallOption) (*GetExperienceResponse, error)
 	AddExperience(ctx context.Context, in *AddExperienceRequest, opts ...grpc.CallOption) (*AddExperienceResponse, error)
 	DeleteExperience(ctx context.Context, in *DeleteExperienceRequest, opts ...grpc.CallOption) (*DeleteExperienceResponse, error)
+	GetInterests(ctx context.Context, in *GetInterestsRequest, opts ...grpc.CallOption) (*GetInterestsResponse, error)
 	AddInterest(ctx context.Context, in *AddInterestRequest, opts ...grpc.CallOption) (*AddInterestResponse, error)
 	DeleteInterest(ctx context.Context, in *DeleteInterestRequest, opts ...grpc.CallOption) (*DeleteInterestResponse, error)
+	GetSkills(ctx context.Context, in *GetSkillsRequest, opts ...grpc.CallOption) (*GetSkillsResponse, error)
 	AddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*AddSkillResponse, error)
 	DeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*DeleteSkillResponse, error)
 }
@@ -80,6 +84,15 @@ func (c *userServiceClient) EditUser(ctx context.Context, in *InsertUserRequest,
 	return out, nil
 }
 
+func (c *userServiceClient) GetEducation(ctx context.Context, in *GetEducationRequest, opts ...grpc.CallOption) (*GetEducationResponse, error) {
+	out := new(GetEducationResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetEducation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) AddEducation(ctx context.Context, in *AddEducationRequest, opts ...grpc.CallOption) (*AddEducationResponse, error) {
 	out := new(AddEducationResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/AddEducation", in, out, opts...)
@@ -92,6 +105,15 @@ func (c *userServiceClient) AddEducation(ctx context.Context, in *AddEducationRe
 func (c *userServiceClient) DeleteEducation(ctx context.Context, in *DeleteEducationRequest, opts ...grpc.CallOption) (*DeleteEducationResponse, error) {
 	out := new(DeleteEducationResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/DeleteEducation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetExperience(ctx context.Context, in *GetExperienceRequest, opts ...grpc.CallOption) (*GetExperienceResponse, error) {
+	out := new(GetExperienceResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetExperience", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,6 +138,15 @@ func (c *userServiceClient) DeleteExperience(ctx context.Context, in *DeleteExpe
 	return out, nil
 }
 
+func (c *userServiceClient) GetInterests(ctx context.Context, in *GetInterestsRequest, opts ...grpc.CallOption) (*GetInterestsResponse, error) {
+	out := new(GetInterestsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetInterests", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) AddInterest(ctx context.Context, in *AddInterestRequest, opts ...grpc.CallOption) (*AddInterestResponse, error) {
 	out := new(AddInterestResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/AddInterest", in, out, opts...)
@@ -128,6 +159,15 @@ func (c *userServiceClient) AddInterest(ctx context.Context, in *AddInterestRequ
 func (c *userServiceClient) DeleteInterest(ctx context.Context, in *DeleteInterestRequest, opts ...grpc.CallOption) (*DeleteInterestResponse, error) {
 	out := new(DeleteInterestResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/DeleteInterest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetSkills(ctx context.Context, in *GetSkillsRequest, opts ...grpc.CallOption) (*GetSkillsResponse, error) {
+	out := new(GetSkillsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetSkills", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -160,12 +200,16 @@ type UserServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	EditUser(context.Context, *InsertUserRequest) (*EditUserResponse, error)
+	GetEducation(context.Context, *GetEducationRequest) (*GetEducationResponse, error)
 	AddEducation(context.Context, *AddEducationRequest) (*AddEducationResponse, error)
 	DeleteEducation(context.Context, *DeleteEducationRequest) (*DeleteEducationResponse, error)
+	GetExperience(context.Context, *GetExperienceRequest) (*GetExperienceResponse, error)
 	AddExperience(context.Context, *AddExperienceRequest) (*AddExperienceResponse, error)
 	DeleteExperience(context.Context, *DeleteExperienceRequest) (*DeleteExperienceResponse, error)
+	GetInterests(context.Context, *GetInterestsRequest) (*GetInterestsResponse, error)
 	AddInterest(context.Context, *AddInterestRequest) (*AddInterestResponse, error)
 	DeleteInterest(context.Context, *DeleteInterestRequest) (*DeleteInterestResponse, error)
+	GetSkills(context.Context, *GetSkillsRequest) (*GetSkillsResponse, error)
 	AddSkill(context.Context, *AddSkillRequest) (*AddSkillResponse, error)
 	DeleteSkill(context.Context, *DeleteSkillRequest) (*DeleteSkillResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -187,11 +231,17 @@ func (UnimplementedUserServiceServer) Insert(context.Context, *InsertUserRequest
 func (UnimplementedUserServiceServer) EditUser(context.Context, *InsertUserRequest) (*EditUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUser not implemented")
 }
+func (UnimplementedUserServiceServer) GetEducation(context.Context, *GetEducationRequest) (*GetEducationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEducation not implemented")
+}
 func (UnimplementedUserServiceServer) AddEducation(context.Context, *AddEducationRequest) (*AddEducationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddEducation not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteEducation(context.Context, *DeleteEducationRequest) (*DeleteEducationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEducation not implemented")
+}
+func (UnimplementedUserServiceServer) GetExperience(context.Context, *GetExperienceRequest) (*GetExperienceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExperience not implemented")
 }
 func (UnimplementedUserServiceServer) AddExperience(context.Context, *AddExperienceRequest) (*AddExperienceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddExperience not implemented")
@@ -199,11 +249,17 @@ func (UnimplementedUserServiceServer) AddExperience(context.Context, *AddExperie
 func (UnimplementedUserServiceServer) DeleteExperience(context.Context, *DeleteExperienceRequest) (*DeleteExperienceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExperience not implemented")
 }
+func (UnimplementedUserServiceServer) GetInterests(context.Context, *GetInterestsRequest) (*GetInterestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInterests not implemented")
+}
 func (UnimplementedUserServiceServer) AddInterest(context.Context, *AddInterestRequest) (*AddInterestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddInterest not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteInterest(context.Context, *DeleteInterestRequest) (*DeleteInterestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteInterest not implemented")
+}
+func (UnimplementedUserServiceServer) GetSkills(context.Context, *GetSkillsRequest) (*GetSkillsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSkills not implemented")
 }
 func (UnimplementedUserServiceServer) AddSkill(context.Context, *AddSkillRequest) (*AddSkillResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddSkill not implemented")
@@ -296,6 +352,24 @@ func _UserService_EditUser_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetEducation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEducationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetEducation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetEducation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetEducation(ctx, req.(*GetEducationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_AddEducation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddEducationRequest)
 	if err := dec(in); err != nil {
@@ -328,6 +402,24 @@ func _UserService_DeleteEducation_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).DeleteEducation(ctx, req.(*DeleteEducationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetExperience_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetExperienceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetExperience(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetExperience",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetExperience(ctx, req.(*GetExperienceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -368,6 +460,24 @@ func _UserService_DeleteExperience_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetInterests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetInterestsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetInterests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetInterests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetInterests(ctx, req.(*GetInterestsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_AddInterest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddInterestRequest)
 	if err := dec(in); err != nil {
@@ -400,6 +510,24 @@ func _UserService_DeleteInterest_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).DeleteInterest(ctx, req.(*DeleteInterestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetSkills_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSkillsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetSkills(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetSkills",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetSkills(ctx, req.(*GetSkillsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -464,12 +592,20 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_EditUser_Handler,
 		},
 		{
+			MethodName: "GetEducation",
+			Handler:    _UserService_GetEducation_Handler,
+		},
+		{
 			MethodName: "AddEducation",
 			Handler:    _UserService_AddEducation_Handler,
 		},
 		{
 			MethodName: "DeleteEducation",
 			Handler:    _UserService_DeleteEducation_Handler,
+		},
+		{
+			MethodName: "GetExperience",
+			Handler:    _UserService_GetExperience_Handler,
 		},
 		{
 			MethodName: "AddExperience",
@@ -480,12 +616,20 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_DeleteExperience_Handler,
 		},
 		{
+			MethodName: "GetInterests",
+			Handler:    _UserService_GetInterests_Handler,
+		},
+		{
 			MethodName: "AddInterest",
 			Handler:    _UserService_AddInterest_Handler,
 		},
 		{
 			MethodName: "DeleteInterest",
 			Handler:    _UserService_DeleteInterest_Handler,
+		},
+		{
+			MethodName: "GetSkills",
+			Handler:    _UserService_GetSkills_Handler,
 		},
 		{
 			MethodName: "AddSkill",

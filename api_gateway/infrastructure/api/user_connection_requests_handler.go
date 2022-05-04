@@ -14,20 +14,20 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-type UserConnectionsHandler struct {
+type UserConnectionRequestsHandler struct {
 	userClientAddress       string
 	connectionClientAddress string
 }
 
-func NewUserConnectionsHandler(userClientAddress, connectionClientAddress string) Handler {
+func NewUserConnectionRequestsHandler(userClientAddress, connectionClientAddress string) Handler {
 	return &UserConnectionsHandler{
 		userClientAddress:       userClientAddress,
 		connectionClientAddress: connectionClientAddress,
 	}
 }
 
-func (handler *UserConnectionsHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("GET", "/connections/{id}", handler.GetUserConnections)
+func (handler *UserConnectionRequestsHandler) Init(mux *runtime.ServeMux) {
+	err := mux.HandlePath("GET", "/connections/requests/{id}", handler.GetUserConnections)
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func (handler *UserConnectionsHandler) Init(mux *runtime.ServeMux) {
 
 //ovo je logika za slucaj da dobavljamo konekcije preko id, ako je nesto drugo onda jos jedan poziv user servisa
 
-func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+func (handler *UserConnectionRequestsHandler) GetUserConnections(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
 	id := pathParams["id"]
 	if id == "" {
@@ -67,14 +67,14 @@ func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter,
 
 }
 
-func (handler *UserConnectionsHandler) getUserIds(userId string) ([]string, error) {
+func (handler *UserConnectionRequestsHandler) getUserIds(userId string) ([]string, error) {
 
 	connectionsClient := services.NewConnectionClient(handler.connectionClientAddress)
-	connections, err := connectionsClient.GetAll(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
+	connections, err := connectionsClient.GetConnectionRequests(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
 	return connections.Ids, err
 }
 
-func (handler *UserConnectionsHandler) getUsers(users *[]domain.UserBasicInfo, userIds []string) error {
+func (handler *UserConnectionRequestsHandler) getUsers(users *[]domain.UserBasicInfo, userIds []string) error {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
