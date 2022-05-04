@@ -1,6 +1,6 @@
 package domain
 
-type User struct {
+type UserRegistration struct {
 	Id          string
 	Name        string
 	Surname     string
@@ -10,6 +10,7 @@ type User struct {
 	Gender      string
 	Email       string
 	Phone       string
+	Biography   string
 }
 
 type UserBasicInfo struct {

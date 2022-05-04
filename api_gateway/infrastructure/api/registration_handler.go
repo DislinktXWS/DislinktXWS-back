@@ -3,12 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"module/api_gateway/domain"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
-	pb "module/common/proto/user_service"
 	user_proto "module/common/proto/user_service"
-	"module/user_service/domain"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -35,7 +33,7 @@ func (handler *RegistrationHandler) Init(mux *runtime.ServeMux) {
 
 func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
-	var newUser domain.User
+	var newUser domain.UserRegistration
 
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
@@ -43,20 +41,22 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	newUserId, error := handler.addUser(newUser)
+	/*newUserId*/
+	_, error := handler.addUser(newUser)
 	if error != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	/*e := handler.addUserNode(newUserId)
-	if e != nil {
-		//Zakomentarisao sam jer nemam bazu tu
-		/*w.WriteHeader(http.StatusNotFound)
-		return
-	}*/
+	/*
+		e := handler.addUserNode(newUserId)
+		if e != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+	*/
 
-	newUser.Id, _ = primitive.ObjectIDFromHex(newUserId)
+	//newUser.Id, _ = primitive.ObjectIDFromHex(newUserId)
 	response, err := json.Marshal(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -66,36 +66,19 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 	w.Write(response)
 }
 
-func (handler *RegistrationHandler) addUser(newUser domain.User) (string, error) {
+func (handler *RegistrationHandler) addUser(newUser domain.UserRegistration) (string, error) {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
-	UserPb := mapUser(&newUser)
+	UserPb := mapToUserPb(&newUser)
 
 	insertedUser, err := userClient.Insert(context.TODO(), &user_proto.InsertUserRequest{User: UserPb})
 
 	return insertedUser.User.Id, err
 }
-
 func (handler *RegistrationHandler) addUserNode(userId string) error {
 
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	_, err := connectionClient.InsertNewUser(context.TODO(), &connection_proto.InsertUserRequest{User: userId})
 
 	return err
-}
-
-//ovo je samo zasad kopirano
-func mapUser(user *domain.User) *pb.User {
-	userPb := &pb.User{
-		Id:          user.Id.Hex(),
-		Name:        user.Name,
-		Surname:     user.Surname,
-		Username:    user.Username,
-		Password:    user.Password,
-		DateOfBirth: user.DateOfBirth,
-		Gender:      user.Gender,
-		Email:       user.Email,
-		Phone:       user.Phone,
-	}
-	return userPb
 }

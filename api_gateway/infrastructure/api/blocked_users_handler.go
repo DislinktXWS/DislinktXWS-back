@@ -21,7 +21,7 @@ type BlockedUsersHandler struct {
 }
 
 func NewBlockedUsersHandler(userClientAddress, connectionClientAddress string) Handler {
-	return &UserConnectionsHandler{
+	return &BlockedUsersHandler{
 		userClientAddress:       userClientAddress,
 		connectionClientAddress: connectionClientAddress,
 	}

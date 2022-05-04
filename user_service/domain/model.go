@@ -9,11 +9,12 @@ type User struct {
 	Name        string             `bson:"name"`
 	Surname     string             `bson:"surname"`
 	Username    string             `bson:"username"`
-	Password    string             `bson:"password"`
 	DateOfBirth string             `bson:"dateOfBirth"`
 	Gender      string             `bson:"gender"`
 	Email       string             `bson:"email"`
 	Phone       string             `bson:"phone"`
+	Biograpy    string             `bson:"biograpy"`
+	IsPublic    bool               `bson:"isPublic"`
 	Education   []Education        `bson:"education"`
 	Experience  []Experience       `bson:"experience"`
 	Interests   []string           `bson:"interests"`

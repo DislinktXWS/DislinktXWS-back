@@ -1,9 +1,10 @@
 package api
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	pb "module/common/proto/user_service"
 	"module/user_service/domain"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func mapUser(user *domain.User) *pb.User {
@@ -12,7 +13,6 @@ func mapUser(user *domain.User) *pb.User {
 		Name:        user.Name,
 		Surname:     user.Surname,
 		Username:    user.Username,
-		Password:    user.Password,
 		DateOfBirth: user.DateOfBirth,
 		Gender:      user.Gender,
 		Email:       user.Email,
@@ -26,7 +26,6 @@ func mapNewUser(userPb *pb.User) *domain.User {
 		Name:        userPb.Name,
 		Surname:     userPb.Surname,
 		Username:    userPb.Username,
-		Password:    userPb.Password,
 		DateOfBirth: userPb.DateOfBirth,
 		Gender:      userPb.Gender,
 		Email:       userPb.Email,
@@ -42,11 +41,11 @@ func mapEditUser(userPb *pb.User) *domain.User {
 		Name:        userPb.Name,
 		Surname:     userPb.Surname,
 		Username:    userPb.Username,
-		Password:    userPb.Password,
 		DateOfBirth: userPb.DateOfBirth,
 		Gender:      userPb.Gender,
 		Email:       userPb.Email,
 		Phone:       userPb.Phone,
+		Biograpy:    "",
 	}
 	return user
 }
