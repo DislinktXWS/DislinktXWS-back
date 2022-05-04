@@ -12,11 +12,12 @@ var users = []*domain.User{
 		Name:        "Milica",
 		Surname:     "Vucinic",
 		Username:    "mici",
-		Password:    "mici123",
 		DateOfBirth: "12.12.1999.",
 		Gender:      "f",
 		Email:       "mici@gmail.com",
 		Phone:       "063123456",
+		Biograpy:    "moja biografija",
+		IsPublic:    true,
 	},
 }
 

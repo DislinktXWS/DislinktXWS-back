@@ -20,7 +20,7 @@ type UserConnectionRequestsHandler struct {
 }
 
 func NewUserConnectionRequestsHandler(userClientAddress, connectionClientAddress string) Handler {
-	return &UserConnectionsHandler{
+	return &UserConnectionRequestsHandler{
 		userClientAddress:       userClientAddress,
 		connectionClientAddress: connectionClientAddress,
 	}
