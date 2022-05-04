@@ -630,7 +630,7 @@ func RegisterConnectionsServiceHandlerServer(ctx context.Context, mux *runtime.S
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connections.ConnectionsService/GetBlockedUsers", runtime.WithHTTPPathPattern("/connections/blocked/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connections.ConnectionsService/GetBlockedUsers", runtime.WithHTTPPathPattern("/connections/connections/blocked/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -654,7 +654,7 @@ func RegisterConnectionsServiceHandlerServer(ctx context.Context, mux *runtime.S
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connections.ConnectionsService/GetConnectionRequests", runtime.WithHTTPPathPattern("/connections/requests/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connections.ConnectionsService/GetConnectionRequests", runtime.WithHTTPPathPattern("/connections/connections/requests/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -885,7 +885,7 @@ func RegisterConnectionsServiceHandlerClient(ctx context.Context, mux *runtime.S
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connections.ConnectionsService/GetBlockedUsers", runtime.WithHTTPPathPattern("/connections/blocked/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connections.ConnectionsService/GetBlockedUsers", runtime.WithHTTPPathPattern("/connections/connections/blocked/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -906,7 +906,7 @@ func RegisterConnectionsServiceHandlerClient(ctx context.Context, mux *runtime.S
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connections.ConnectionsService/GetConnectionRequests", runtime.WithHTTPPathPattern("/connections/requests/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connections.ConnectionsService/GetConnectionRequests", runtime.WithHTTPPathPattern("/connections/connections/requests/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -942,9 +942,9 @@ var (
 
 	pattern_ConnectionsService_GetAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"connections", "id"}, ""))
 
-	pattern_ConnectionsService_GetBlockedUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"connections", "blocked", "id"}, ""))
+	pattern_ConnectionsService_GetBlockedUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"connections", "blocked", "id"}, ""))
 
-	pattern_ConnectionsService_GetConnectionRequests_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"connections", "requests", "id"}, ""))
+	pattern_ConnectionsService_GetConnectionRequests_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"connections", "requests", "id"}, ""))
 )
 
 var (

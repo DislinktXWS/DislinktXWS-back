@@ -2,7 +2,14 @@ package startup
 
 import (
 	"fmt"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
 	"log"
+	api_gw "module/api_gateway/startup"
 	post_service "module/common/proto/post_service"
 	"module/post_service/application"
 	"module/post_service/domain"
@@ -10,9 +17,6 @@ import (
 	"module/post_service/infrastructure/persistence"
 	"module/post_service/startup/config"
 	"net"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -73,7 +77,13 @@ func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_ctxtags.StreamServerInterceptor(),
+			grpc_auth.StreamServerInterceptor(api_gw.AuthRequired),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+	)
 	post_service.RegisterPostServiceServer(grpcServer, PostHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
