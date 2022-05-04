@@ -19,3 +19,7 @@ func (service *AuthenticationService) Login(auth *domain.Auth) (int64, string, s
 func (service *AuthenticationService) Validate(token string) (int64, string, string) {
 	return service.store.Validate(token)
 }
+
+func (service *AuthenticationService) Register(auth *domain.Auth) error {
+	return service.store.Register(auth)
+}

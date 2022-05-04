@@ -11,7 +11,7 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		Host:         "localhost",
-		Port:         "8083",
+		Port:         "8082",
 		PostDBHost:   "localhost",
 		PostDBPort:   "27017",
 		JWTSecretKey: "r43t18sc",

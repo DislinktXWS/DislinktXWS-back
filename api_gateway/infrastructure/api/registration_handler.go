@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
 	pb "module/common/proto/user_service"
@@ -48,12 +49,14 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	e := handler.addUserNode(newUserId)
+	/*e := handler.addUserNode(newUserId)
 	if e != nil {
-		w.WriteHeader(http.StatusNotFound)
+		//Zakomentarisao sam jer nemam bazu tu
+		/*w.WriteHeader(http.StatusNotFound)
 		return
-	}
+	}*/
 
+	newUser.Id, _ = primitive.ObjectIDFromHex(newUserId)
 	response, err := json.Marshal(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
