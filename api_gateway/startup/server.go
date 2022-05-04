@@ -56,6 +56,7 @@ func (server *Server) initHandlers() {
 func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 
 	//ovi handler se prave po funkcionalnosti
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
@@ -64,6 +65,11 @@ func (server *Server) initCustomHandlers() {
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
 
+	postHandler := api.NewPostHandler(postEndpoint)
+	postHandler.Init(server.mux)
+
+	getImageHandler := api.NewGetImageHandler(postEndpoint)
+	getImageHandler.Init(server.mux)
 	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
 	blockedUsersHandler.Init(server.mux)
 
