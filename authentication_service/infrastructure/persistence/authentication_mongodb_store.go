@@ -43,7 +43,8 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	if err != nil {
 		return http.StatusBadRequest, "Invalid token", ""
 	}
-	filter := bson.M{"_id": claims.Id}
+
+	filter := bson.M{"username": claims.Username}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
