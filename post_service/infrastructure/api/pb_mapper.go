@@ -9,7 +9,7 @@ func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:       post.Id.Hex(),
 		Content:  post.Content,
-		Links:    post.Links,
+		Image:    post.Image,
 		Date:     post.Date,
 		User:     post.User,
 		Likes:    post.Likes,
@@ -29,7 +29,7 @@ func mapPost(post *domain.Post) *pb.Post {
 func mapNewPost(postPb *pb.Post) *domain.Post {
 	post := &domain.Post{
 		Content:  postPb.Content,
-		Links:    postPb.Links,
+		Image:    postPb.Image,
 		Date:     postPb.Date,
 		User:     postPb.User,
 		Likes:    postPb.Likes,
@@ -40,9 +40,9 @@ func mapNewPost(postPb *pb.Post) *domain.Post {
 
 func mapNewComment(commentPb *pb.Comment) *domain.Comment {
 	comment := &domain.Comment{
-		PostId: commentPb.PostId,
-		User: commentPb.User,
-		Content:  commentPb.Content,
+		PostId:  commentPb.PostId,
+		User:    commentPb.User,
+		Content: commentPb.Content,
 	}
 	return comment
 }

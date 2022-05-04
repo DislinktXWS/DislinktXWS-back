@@ -25,10 +25,55 @@ service ConnectionsService{
         };
     }
 
+    rpc InsertConnectionRequest(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/request"
+                body: "connection"
+        };
+    }
+
+    rpc BlockUser(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/block"
+                body: "connection"
+        };
+    }
+
+    rpc UnblockUser(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/unblock"
+                body: "connection"
+        };
+    }
+
+    rpc AcceptConnectionRequest(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/accept"
+                body: "connection"
+        };
+    }
+
+    rpc DeclineConnectionRequest(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/decline"
+                body: "connection"
+        };
+    }
+
     rpc GetAll(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
         	option (google.api.http) = {
 			get: "/connections/{id}"
 		};
+    }
+    rpc GetBlockedUsers(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
+        option (google.api.http) = {
+        get: "/connections/connections/blocked/{id}"
+        };
+    }
+    rpc GetConnectionRequests(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
+        option (google.api.http) = {
+        get: "/connections/connections/requests/{id}"
+        };
     }
 }
 

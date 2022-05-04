@@ -7,6 +7,7 @@ import (
 	"module/api_gateway/domain"
 	"module/api_gateway/infrastructure/services"
 	connection_proto "module/common/proto/connection_service"
+	pb "module/common/proto/user_service"
 
 	user_proto "module/common/proto/user_service"
 	"net/http"
@@ -14,20 +15,20 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-type UserConnectionsHandler struct {
+type BlockedUsersHandler struct {
 	userClientAddress       string
 	connectionClientAddress string
 }
 
-func NewUserConnectionsHandler(userClientAddress, connectionClientAddress string) Handler {
+func NewBlockedUsersHandler(userClientAddress, connectionClientAddress string) Handler {
 	return &UserConnectionsHandler{
 		userClientAddress:       userClientAddress,
 		connectionClientAddress: connectionClientAddress,
 	}
 }
 
-func (handler *UserConnectionsHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("GET", "/connections/{id}", handler.GetUserConnections)
+func (handler *BlockedUsersHandler) Init(mux *runtime.ServeMux) {
+	err := mux.HandlePath("GET", "/connections/blocked/{id}", handler.GetBlockedUsers)
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +36,7 @@ func (handler *UserConnectionsHandler) Init(mux *runtime.ServeMux) {
 
 //ovo je logika za slucaj da dobavljamo konekcije preko id, ako je nesto drugo onda jos jedan poziv user servisa
 
-func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+func (handler *BlockedUsersHandler) GetBlockedUsers(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
 	id := pathParams["id"]
 	if id == "" {
@@ -67,14 +68,14 @@ func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter,
 
 }
 
-func (handler *UserConnectionsHandler) getUserIds(userId string) ([]string, error) {
+func (handler *BlockedUsersHandler) getUserIds(userId string) ([]string, error) {
 
 	connectionsClient := services.NewConnectionClient(handler.connectionClientAddress)
-	connections, err := connectionsClient.GetAll(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
+	connections, err := connectionsClient.GetBlockedUsers(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
 	return connections.Ids, err
 }
 
-func (handler *UserConnectionsHandler) getUsers(users *[]domain.UserBasicInfo, userIds []string) error {
+func (handler *BlockedUsersHandler) getUsers(users *[]domain.UserBasicInfo, userIds []string) error {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
@@ -84,4 +85,14 @@ func (handler *UserConnectionsHandler) getUsers(users *[]domain.UserBasicInfo, u
 		*users = append(*users, *domainUser)
 	}
 	return nil
+}
+
+func mapNewUser(userPb *pb.User) *domain.UserBasicInfo {
+	user := &domain.UserBasicInfo{
+		Id:       userPb.Id,
+		Name:     userPb.Name,
+		Surname:  userPb.Surname,
+		Username: userPb.Username,
+	}
+	return user
 }

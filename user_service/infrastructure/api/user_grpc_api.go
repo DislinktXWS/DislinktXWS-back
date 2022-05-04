@@ -73,6 +73,26 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 	return &pb.EditUserResponse{}, nil
 }
 
+func (handler *UserHandler) GetEducation(ctx context.Context, request *pb.GetEducationRequest) (*pb.GetEducationResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	education, err := handler.service.GetEducation(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetEducationResponse{
+		Education: []*pb.Education{},
+	}
+
+	for _, educ := range *education {
+		e := mapEducation(&educ)
+		response.Education = append(response.Education, e)
+	}
+
+	return response, nil
+
+}
+
 func (handler *UserHandler) AddEducation(ctx context.Context, request *pb.AddEducationRequest) (*pb.AddEducationResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	education := mapAddEducation(request.Education)
@@ -91,6 +111,23 @@ func (handler *UserHandler) DeleteEducation(ctx context.Context, request *pb.Del
 		return nil, err
 	}
 	return &pb.DeleteEducationResponse{}, nil
+}
+func (handler *UserHandler) GetExperience(ctx context.Context, request *pb.GetExperienceRequest) (*pb.GetExperienceResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	experience, err := handler.service.GetExperience(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetExperienceResponse{
+		Experience: []*pb.Experience{},
+	}
+
+	for _, exper := range *experience {
+		exp := mapExperience(&exper)
+		response.Experience = append(response.Experience, exp)
+	}
+
+	return response, nil
 }
 
 func (handler *UserHandler) AddExperience(ctx context.Context, request *pb.AddExperienceRequest) (*pb.AddExperienceResponse, error) {
@@ -113,6 +150,20 @@ func (handler *UserHandler) DeleteExperience(ctx context.Context, request *pb.De
 	return &pb.DeleteExperienceResponse{}, nil
 }
 
+func (handler *UserHandler) GetInterests(ctx context.Context, request *pb.GetInterestsRequest) (*pb.GetInterestsResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	interests, err := handler.service.GetInterests(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetInterestsResponse{
+		Interests: interests,
+	}
+
+	return response, nil
+
+}
+
 func (handler *UserHandler) AddInterest(ctx context.Context, request *pb.AddInterestRequest) (*pb.AddInterestResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	interest := request.Interest
@@ -131,6 +182,26 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 		return nil, err
 	}
 	return &pb.DeleteInterestResponse{}, nil
+}
+
+func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkillsRequest) (*pb.GetSkillsResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	skills, err := handler.service.GetSkills(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetSkillsResponse{
+		Skills: []*pb.Skill{},
+	}
+
+	for _, skill := range *skills {
+		s := mapSkill(&skill)
+		response.Skills = append(response.Skills, s)
+	}
+
+	return response, nil
+
 }
 
 func (handler *UserHandler) AddSkill(ctx context.Context, request *pb.AddSkillRequest) (*pb.AddSkillResponse, error) {

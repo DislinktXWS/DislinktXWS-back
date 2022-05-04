@@ -34,6 +34,12 @@ service UserService{
                 };
         }
 
+        rpc GetEducation(GetEducationRequest) returns (GetEducationResponse){
+                option(google.api.http) = {
+                        get: "/users/user/education/{id}"
+                };
+        }
+
         rpc AddEducation(AddEducationRequest) returns (AddEducationResponse){
                 option(google.api.http)  = {
                         put: "/users/user/education/{id}"
@@ -44,6 +50,12 @@ service UserService{
         rpc DeleteEducation(DeleteEducationRequest) returns (DeleteEducationResponse){
                 option(google.api.http) = {
                         delete: "/users/user/education/{id}/{index}"
+                };
+        }
+
+        rpc GetExperience(GetExperienceRequest) returns (GetExperienceResponse){
+                option(google.api.http) = {
+                        get: "/users/user/experience/{id}"
                 };
         }
 
@@ -60,6 +72,12 @@ service UserService{
                 };
         }
 
+        rpc GetInterests(GetInterestsRequest) returns (GetInterestsResponse){
+                option(google.api.http) = {
+                        get: "/users/user/interest/{id}"
+                };
+        }
+
         rpc AddInterest(AddInterestRequest) returns (AddInterestResponse){
                 option(google.api.http) = {
                         put: "/users/user/interest/{id}/{interest}"
@@ -69,6 +87,12 @@ service UserService{
         rpc DeleteInterest(DeleteInterestRequest) returns (DeleteInterestResponse) {
                 option(google.api.http) = {
                         delete: "/users/user/interest/{id}/{index}"
+                };
+        }
+
+        rpc GetSkills(GetSkillsRequest) returns (GetSkillsResponse){
+                option(google.api.http) = {
+                        get: "/users/user/skill/{id}"
                 };
         }
 
@@ -112,6 +136,14 @@ message InsertUserResponse {
 message EditUserResponse {
 }
 
+message GetEducationRequest{
+        string id = 1;
+}
+
+message GetEducationResponse{
+        repeated Education education = 1;
+}
+
 message AddEducationRequest{
         Education education = 1;
         string id = 2;
@@ -128,6 +160,14 @@ message DeleteEducationRequest{
 
 message DeleteEducationResponse{
 
+}
+
+message GetExperienceRequest{
+        string id = 1;
+}
+
+message GetExperienceResponse{
+        repeated Experience experience = 1;
 }
 
 message AddExperienceRequest{
@@ -148,6 +188,14 @@ message DeleteExperienceResponse{
 
 }
 
+message GetInterestsRequest{
+        string id = 1;
+}
+
+message GetInterestsResponse{
+        repeated string interests = 1;
+}
+
 message AddInterestRequest{
         string id = 1;
         string interest = 2;
@@ -164,6 +212,14 @@ message DeleteInterestRequest{
 
 message DeleteInterestResponse{
 
+}
+
+message GetSkillsRequest{
+        string id = 1;
+}
+
+message GetSkillsResponse{
+        repeated Skill skills = 1;
 }
 
 message AddSkillRequest{

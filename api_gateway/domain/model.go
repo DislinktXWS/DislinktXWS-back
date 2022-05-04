@@ -11,3 +11,10 @@ type User struct {
 	Email       string
 	Phone       string
 }
+
+type UserBasicInfo struct {
+	Id       string
+	Name     string
+	Surname  string
+	Username string
+}

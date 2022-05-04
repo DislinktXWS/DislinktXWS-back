@@ -3,16 +3,22 @@ package startup
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/handlers"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"module/api_gateway/infrastructure/api"
 	cfg "module/api_gateway/startup/config"
 	authService "module/authentication_service/infrastructure/api"
 	authGw "module/common/proto/authentication_service"
 	pb "module/common/proto/authentication_service"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/handlers"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/gorilla/handlers"
+
+	connectionGw "module/common/proto/connection_service"
 	postGw "module/common/proto/post_service"
 	userGw "module/common/proto/user_service"
 	"net/http"
@@ -53,11 +59,17 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 
+	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 
 	//ovi handler se prave po funkcionalnosti
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
@@ -65,6 +77,17 @@ func (server *Server) initCustomHandlers() {
 
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
+
+	postHandler := api.NewPostHandler(postEndpoint)
+	postHandler.Init(server.mux)
+
+	getImageHandler := api.NewGetImageHandler(postEndpoint)
+	getImageHandler.Init(server.mux)
+	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
+	blockedUsersHandler.Init(server.mux)
+
+	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
+	connectionReqHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
