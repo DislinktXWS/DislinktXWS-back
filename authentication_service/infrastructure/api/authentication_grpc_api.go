@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"module/authentication_service/application"
+	"module/authentication_service/utils"
 	pb "module/common/proto/authentication_service"
 )
 
@@ -18,8 +19,7 @@ func NewAuthenticationHandler(service *application.AuthenticationService) *Authe
 }
 
 func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	auth := request.Auth
-	newAuth := mapAuth(auth)
+	newAuth := mapAuth(request.Auth)
 	status, err, token := handler.service.Login(newAuth)
 	return &pb.LoginResponse{
 		Status: status,
@@ -30,10 +30,21 @@ func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.Log
 
 func (handler *AuthenticationHandler) Validate(ctx context.Context, request *pb.ValidateRequest) (*pb.ValidateResponse, error) {
 	token := request.Token
-	status, err, username := handler.service.Validate(token)
+	status, err, user := handler.service.Validate(token)
 	return &pb.ValidateResponse{
-		Status:   status,
-		Error:    err,
-		Username: username,
+		Status: status,
+		Error:  err,
+		User:   user,
 	}, nil
+}
+
+func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	Auth := mapAuth(request.Auth)
+	Auth.Password = utils.HashPassword(Auth.Password)
+	err := handler.service.Register(Auth)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RegisterResponse{}, nil
+
 }

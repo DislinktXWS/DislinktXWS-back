@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"module/authentication_service/domain"
 	"module/authentication_service/startup/config"
@@ -26,6 +27,15 @@ func NewAuthMongoDBStore(client *mongo.Client) domain.AuthenticationStore {
 	}
 }
 
+func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {
+	result, err := store.authentications.InsertOne(context.TODO(), auth)
+	if err != nil {
+		return err
+	}
+	auth.Id = result.InsertedID.(primitive.ObjectID)
+	return nil
+}
+
 func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
@@ -33,12 +43,12 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	if err != nil {
 		return http.StatusBadRequest, "Invalid token", ""
 	}
-	filter := bson.M{"username": claims.Username}
+	filter := bson.M{"_id": claims.Id}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
 	}
-	return http.StatusOK, "", authentication.Username
+	return http.StatusOK, "", authentication.Id.Hex()
 }
 
 func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) {
@@ -47,13 +57,13 @@ func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) 
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
 	}
-	if auth.Password != authentication.Password {
+	/*if auth.Password != authentication.Password {
 		return http.StatusNotFound, "Wrong password", ""
-	}
-	/*match := utils.CheckPasswordHash(auth.Password, authentication.Password)
+	}*/
+	match := utils.CheckPasswordHash(auth.Password, authentication.Password)
 	if !match {
 		return http.StatusNotFound, "User not found", ""
-	}*/
+	}
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
 	token, _ := wrapper.GenerateToken(authentication)

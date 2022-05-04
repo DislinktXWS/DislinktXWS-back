@@ -20,6 +20,21 @@ service AuthenticationService{
       get: "/authentication/validate/{token}"
     };
   }
+
+  rpc Register(RegisterRequest) returns (RegisterResponse){
+    option (google.api.http) = {
+      post: "/authentication/register"
+      body: "auth"
+    };
+  }
+}
+
+message RegisterRequest{
+  Auth auth = 1;
+}
+
+message RegisterResponse{
+  
 }
 
 message LoginRequest {
@@ -39,12 +54,13 @@ message ValidateRequest{
 message ValidateResponse{
   int64 status = 1;
   string error = 2;
-  string username = 3;
+  string user = 3;
 }
 
 message Auth{
-  string username = 1;
-  string password = 2;
+  string id = 1;
+  string username = 2;
+  string password = 3;
 }
 
 

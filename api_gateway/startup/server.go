@@ -8,10 +8,8 @@ import (
 	authService "module/authentication_service/infrastructure/api"
 	authGw "module/common/proto/authentication_service"
 	pb "module/common/proto/authentication_service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -126,7 +124,7 @@ func AuthRequired(context.Context) (context.Context, error) {
 		return nil, nil
 	}
 
-	ctx.Set("username", res.Username)
+	ctx.Set("user", res.User)
 
 	ctx.Next()
 	return nil, nil
