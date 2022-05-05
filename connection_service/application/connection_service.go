@@ -14,16 +14,14 @@ func NewConnectionsService(graph domain.ConnectionsGraph) *ConnectionsService {
 	}
 }
 
-/*
-func (service *ConnectionsService) Get(connection *domain.UserConnection) bool {
-	return service.graph.Get(connection)
-}*/
-
 func (service *ConnectionsService) GetAll(userId string) []string {
 	return service.graph.GetAll(userId)
 }
 func (service *ConnectionsService) GetAllConnectionRequests(userId string) []string {
 	return service.graph.GetConnectionRequests(userId)
+}
+func (service *ConnectionsService) GetConnectionStatus(user1 string, user2 string) string {
+	return service.graph.GetConnectionStatus(user1, user2)
 }
 func (service *ConnectionsService) GetBlockedUsers(userId string) []string {
 	return service.graph.GetBlockedUsers(userId)
