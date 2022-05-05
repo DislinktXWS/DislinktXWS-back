@@ -32,6 +32,7 @@ type ConnectionsServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 	GetBlockedUsers(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 	GetConnectionRequests(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
+	GetConnectionStatus(ctx context.Context, in *ConnectionStatusRequest, opts ...grpc.CallOption) (*ConnectionStatusResponse, error)
 }
 
 type connectionsServiceClient struct {
@@ -132,6 +133,15 @@ func (c *connectionsServiceClient) GetConnectionRequests(ctx context.Context, in
 	return out, nil
 }
 
+func (c *connectionsServiceClient) GetConnectionStatus(ctx context.Context, in *ConnectionStatusRequest, opts ...grpc.CallOption) (*ConnectionStatusResponse, error) {
+	out := new(ConnectionStatusResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetConnectionStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConnectionsServiceServer is the server API for ConnectionsService service.
 // All implementations must embed UnimplementedConnectionsServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type ConnectionsServiceServer interface {
 	GetAll(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	GetBlockedUsers(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
+	GetConnectionStatus(context.Context, *ConnectionStatusRequest) (*ConnectionStatusResponse, error)
 	mustEmbedUnimplementedConnectionsServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedConnectionsServiceServer) GetBlockedUsers(context.Context, *G
 }
 func (UnimplementedConnectionsServiceServer) GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConnectionRequests not implemented")
+}
+func (UnimplementedConnectionsServiceServer) GetConnectionStatus(context.Context, *ConnectionStatusRequest) (*ConnectionStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnectionStatus not implemented")
 }
 func (UnimplementedConnectionsServiceServer) mustEmbedUnimplementedConnectionsServiceServer() {}
 
@@ -376,6 +390,24 @@ func _ConnectionsService_GetConnectionRequests_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionsService_GetConnectionStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConnectionStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).GetConnectionStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/GetConnectionStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).GetConnectionStatus(ctx, req.(*ConnectionStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConnectionsService_ServiceDesc is the grpc.ServiceDesc for ConnectionsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var ConnectionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetConnectionRequests",
 			Handler:    _ConnectionsService_GetConnectionRequests_Handler,
+		},
+		{
+			MethodName: "GetConnectionStatus",
+			Handler:    _ConnectionsService_GetConnectionStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
