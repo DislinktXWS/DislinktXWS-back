@@ -2,13 +2,13 @@ package api
 
 import (
 	"module/api_gateway/domain"
-	pb "module/common/proto/user_service"
+	pbPost "module/common/proto/post_service"
+	pbUser "module/common/proto/user_service"
+	domainP "module/post_service/domain"
 )
 
-//ovoaj recimo mapira userRegistration na User, trebace i UserRegistration u UserAuth
-
-func mapToUserPb(user *domain.UserRegistration) *pb.User {
-	userPb := &pb.User{
+func mapToUserPb(user *domain.UserRegistration) *pbUser.User {
+	userPb := &pbUser.User{
 		Id:          user.Id,
 		Name:        user.Name,
 		Surname:     user.Surname,
@@ -20,4 +20,16 @@ func mapToUserPb(user *domain.UserRegistration) *pb.User {
 		Biography:   user.Biography,
 	}
 	return userPb
+}
+
+func mapNewPost(postPb *pbPost.Post) *domainP.Post {
+	post := &domainP.Post{
+		Content:  postPb.Content,
+		Image:    postPb.Image,
+		Date:     postPb.Date,
+		User:     postPb.User,
+		Likes:    postPb.Likes,
+		Dislikes: postPb.Dislikes,
+	}
+	return post
 }
