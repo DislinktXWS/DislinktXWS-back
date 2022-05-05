@@ -76,6 +76,9 @@ func (server *Server) initCustomHandlers() {
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
 
+	userPostHandler := api.NewUserPostHandler(userEndpoint, postEndpoint)
+	userPostHandler.Init(server.mux)
+
 	postHandler := api.NewPostHandler(postEndpoint)
 	postHandler.Init(server.mux)
 
