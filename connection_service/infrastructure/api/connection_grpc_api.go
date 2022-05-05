@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	connections "module/common/proto/connection_service"
 	pb "module/common/proto/connection_service"
 	"module/connection_service/application"
 )
@@ -70,6 +71,13 @@ func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, req
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, request *pb.ConnectionStatusRequest) (*pb.ConnectionStatusResponse, error) {
+
+	status := handler.service.GetConnectionStatus(request.Id1, request.Id2)
+	print(status)
+	response := &pb.ConnectionStatusResponse{Status: connections.ConnectionStatusEnum(0)}
+	return response, nil
+}
 func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
 
 	connection := mapNewUserConnection(request.Connection)

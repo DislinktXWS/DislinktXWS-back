@@ -7,6 +7,7 @@ type ConnectionsGraph interface {
 	GetConnectionRequests(username string) []string
 
 	InsertNewUser(user string) error
+	GetConnectionStatus(user1 string, user2 string) string
 
 	DeleteUserConnection(connection *UserConnection) error
 	InsertUserConnection(connection *UserConnection) error
