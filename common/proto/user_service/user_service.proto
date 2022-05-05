@@ -108,6 +108,12 @@ service UserService{
                         delete: "/users/user/skill/{id}/{index}"
                 };
         }
+
+        rpc SearchProfiles(SearchProfilesRequest) returns (SearchProfilesResponse){
+                option(google.api.http) = {
+                        get: "/users/user/search/{search}"
+                };
+        }
 }
 
 message GetRequest {
@@ -238,6 +244,14 @@ message DeleteSkillRequest{
 
 message DeleteSkillResponse{
 
+}
+
+message SearchProfilesRequest{
+        string search = 1;
+}
+
+message SearchProfilesResponse{
+        repeated User users = 1;
 }
 
 message User {

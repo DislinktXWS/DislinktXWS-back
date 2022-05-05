@@ -38,6 +38,7 @@ type UserServiceClient interface {
 	GetSkills(ctx context.Context, in *GetSkillsRequest, opts ...grpc.CallOption) (*GetSkillsResponse, error)
 	AddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*AddSkillResponse, error)
 	DeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*DeleteSkillResponse, error)
+	SearchProfiles(ctx context.Context, in *SearchProfilesRequest, opts ...grpc.CallOption) (*SearchProfilesResponse, error)
 }
 
 type userServiceClient struct {
@@ -192,6 +193,15 @@ func (c *userServiceClient) DeleteSkill(ctx context.Context, in *DeleteSkillRequ
 	return out, nil
 }
 
+func (c *userServiceClient) SearchProfiles(ctx context.Context, in *SearchProfilesRequest, opts ...grpc.CallOption) (*SearchProfilesResponse, error) {
+	out := new(SearchProfilesResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/SearchProfiles", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -212,6 +222,7 @@ type UserServiceServer interface {
 	GetSkills(context.Context, *GetSkillsRequest) (*GetSkillsResponse, error)
 	AddSkill(context.Context, *AddSkillRequest) (*AddSkillResponse, error)
 	DeleteSkill(context.Context, *DeleteSkillRequest) (*DeleteSkillResponse, error)
+	SearchProfiles(context.Context, *SearchProfilesRequest) (*SearchProfilesResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -266,6 +277,9 @@ func (UnimplementedUserServiceServer) AddSkill(context.Context, *AddSkillRequest
 }
 func (UnimplementedUserServiceServer) DeleteSkill(context.Context, *DeleteSkillRequest) (*DeleteSkillResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSkill not implemented")
+}
+func (UnimplementedUserServiceServer) SearchProfiles(context.Context, *SearchProfilesRequest) (*SearchProfilesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchProfiles not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -568,6 +582,24 @@ func _UserService_DeleteSkill_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SearchProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchProfilesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SearchProfiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/SearchProfiles",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SearchProfiles(ctx, req.(*SearchProfilesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -638,6 +670,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteSkill",
 			Handler:    _UserService_DeleteSkill_Handler,
+		},
+		{
+			MethodName: "SearchProfiles",
+			Handler:    _UserService_SearchProfiles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

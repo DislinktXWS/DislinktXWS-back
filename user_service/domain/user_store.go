@@ -20,4 +20,5 @@ type UserStore interface {
 	GetSkills(id primitive.ObjectID) (*[]Skill, error)
 	AddSkill(skill *Skill, id primitive.ObjectID) (*Skill, error)
 	DeleteSkill(id primitive.ObjectID, index uint) error
+	SearchProfiles(search string) (*[]User, error)
 }

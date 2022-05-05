@@ -223,3 +223,18 @@ func (handler *UserHandler) DeleteSkill(ctx context.Context, request *pb.DeleteS
 	}
 	return &pb.DeleteSkillResponse{}, nil
 }
+
+func (handler *UserHandler) SearchProfiles(ctx context.Context, request *pb.SearchProfilesRequest) (*pb.SearchProfilesResponse, error) {
+	Users, err := handler.service.SearchProfiles(request.Search)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.SearchProfilesResponse{
+		Users: []*pb.User{},
+	}
+	for _, User := range *Users {
+		current := mapUser(&User)
+		response.Users = append(response.Users, current)
+	}
+	return response, nil
+}

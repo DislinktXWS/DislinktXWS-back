@@ -79,3 +79,7 @@ func (service *UserService) AddSkill(skill *domain.Skill, id primitive.ObjectID)
 func (service *UserService) DeleteSkill(id primitive.ObjectID, index uint) error {
 	return service.store.DeleteSkill(id, index)
 }
+
+func (service *UserService) SearchProfiles(search string) (*[]domain.User, error) {
+	return service.store.SearchProfiles(search)
+}

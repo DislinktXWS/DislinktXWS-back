@@ -19,6 +19,52 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
+func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
+	//model := mongo.IndexModel{Keys: bson.D{{"name", "text"}}}
+	//name, err := store.users.Indexes().CreateOne(context.TODO(), model)
+	/*if err != nil {
+		panic(err)
+	}
+	fmt.Println("name of index created: " + name)*/
+
+	//filter := bson.D{{"$text", bson.D{{"$search", search}}}}
+	filter := bson.M{
+		"$or": []bson.M{
+			{
+				"name": bson.M{
+					"$regex": primitive.Regex{
+						Pattern: search,
+						Options: "i",
+					},
+				},
+			},
+			{
+				"surname": bson.M{
+					"$regex": primitive.Regex{
+						Pattern: search,
+						Options: "i",
+					},
+				},
+			},
+		},
+	}
+
+	cursor, err1 := store.users.Find(context.TODO(), filter)
+
+	var results []bson.D
+	//var users *[]domain.User
+	if err1 = cursor.All(context.TODO(), &results); err1 != nil {
+		panic(err1)
+	}
+
+	for _, result := range results {
+		fmt.Println(result)
+	}
+	//bson.Unmarshal(results, users)
+	//return users, err1
+	return nil, err1
+}
+
 func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
