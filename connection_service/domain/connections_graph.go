@@ -1,7 +1,6 @@
 package domain
 
 type ConnectionsGraph interface {
-	//Get(connection *UserConnection) bool
 	GetAll(username string) []string
 	GetBlockedUsers(username string) []string
 	GetConnectionRequests(username string) []string
