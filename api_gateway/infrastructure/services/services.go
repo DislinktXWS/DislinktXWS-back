@@ -18,6 +18,14 @@ func NewUserClient(address string) user_service.UserServiceClient {
 	return user_service.NewUserServiceClient(connection)
 }
 
+func NewPostClient(address string) post_service.PostServiceClient {
+	connection, err := getClientConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
+	}
+	return post_service.NewPostServiceClient(connection)
+}
+
 func NewConnectionClient(address string) connection_service.ConnectionsServiceClient {
 	connection, err := getClientConnection(address)
 	if err != nil {
