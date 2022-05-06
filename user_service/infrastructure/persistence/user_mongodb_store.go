@@ -3,11 +3,10 @@ package persistence
 import (
 	"context"
 	"fmt"
-	"module/user_service/domain"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"module/user_service/domain"
 )
 
 const (
@@ -20,14 +19,6 @@ type UserMongoDBStore struct {
 }
 
 func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
-	//model := mongo.IndexModel{Keys: bson.D{{"name", "text"}}}
-	//name, err := store.users.Indexes().CreateOne(context.TODO(), model)
-	/*if err != nil {
-		panic(err)
-	}
-	fmt.Println("name of index created: " + name)*/
-
-	//filter := bson.D{{"$text", bson.D{{"$search", search}}}}
 	filter := bson.M{
 		"$or": []bson.M{
 			{
@@ -46,23 +37,25 @@ func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, er
 					},
 				},
 			},
+			{
+				"username": bson.M{
+					"$regex": primitive.Regex{
+						Pattern: search,
+						Options: "i",
+					},
+				},
+			},
 		},
 	}
 
 	cursor, err1 := store.users.Find(context.TODO(), filter)
 
-	var results []bson.D
-	//var users *[]domain.User
+	var results []domain.User
 	if err1 = cursor.All(context.TODO(), &results); err1 != nil {
 		panic(err1)
 	}
 
-	for _, result := range results {
-		fmt.Println(result)
-	}
-	//bson.Unmarshal(results, users)
-	//return users, err1
-	return nil, err1
+	return &results, err1
 }
 
 func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
