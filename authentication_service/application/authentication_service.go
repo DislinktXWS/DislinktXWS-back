@@ -23,3 +23,7 @@ func (service *AuthenticationService) Validate(token string) (int64, string, str
 func (service *AuthenticationService) Register(auth *domain.Auth) error {
 	return service.store.Register(auth)
 }
+
+func (service *AuthenticationService) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
+	return service.store.EditUsername(auth)
+}

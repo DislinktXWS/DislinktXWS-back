@@ -25,6 +25,7 @@ type AuthenticationServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	EditUsername(ctx context.Context, in *EditUsernameRequest, opts ...grpc.CallOption) (*EditUsernameResponse, error)
 }
 
 type authenticationServiceClient struct {
@@ -62,6 +63,15 @@ func (c *authenticationServiceClient) Register(ctx context.Context, in *Register
 	return out, nil
 }
 
+func (c *authenticationServiceClient) EditUsername(ctx context.Context, in *EditUsernameRequest, opts ...grpc.CallOption) (*EditUsernameResponse, error) {
+	out := new(EditUsernameResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/EditUsername", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 // All implementations must embed UnimplementedAuthenticationServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type AuthenticationServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error)
 	mustEmbedUnimplementedAuthenticationServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedAuthenticationServiceServer) Validate(context.Context, *Valid
 }
 func (UnimplementedAuthenticationServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditUsername not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) mustEmbedUnimplementedAuthenticationServiceServer() {}
 
@@ -152,6 +166,24 @@ func _AuthenticationService_Register_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_EditUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditUsernameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).EditUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/EditUsername",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).EditUsername(ctx, req.(*EditUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthenticationService_ServiceDesc is the grpc.ServiceDesc for AuthenticationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _AuthenticationService_Register_Handler,
+		},
+		{
+			MethodName: "EditUsername",
+			Handler:    _AuthenticationService_EditUsername_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

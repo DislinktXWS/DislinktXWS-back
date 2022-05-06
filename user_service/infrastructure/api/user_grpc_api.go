@@ -85,6 +85,20 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 	if err != nil {
 		return nil, err
 	}
+	users, _ := handler.service.GetAll()
+	exists := false
+	for _, currentUser := range users {
+		if user.Id != currentUser.Id && user.Username == currentUser.Username {
+			exists = true
+			break
+		}
+	}
+	if !exists {
+		_, err = handler.service.EditUsername(user)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &pb.EditUserResponse{}, nil
 }
 
