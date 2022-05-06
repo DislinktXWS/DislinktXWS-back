@@ -46,5 +46,13 @@ func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.
 		return nil, err
 	}
 	return &pb.RegisterResponse{}, nil
+}
 
+func (handler *AuthenticationHandler) EditUsername(ctx context.Context, request *pb.EditUsernameRequest) (*pb.EditUsernameResponse, error) {
+	auth := mapAuth(request.Auth)
+	_, err := handler.service.EditUsername(auth)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.EditUsernameResponse{}, nil
 }

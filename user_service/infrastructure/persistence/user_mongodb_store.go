@@ -278,11 +278,23 @@ func (store *UserMongoDBStore) EditUser(user *domain.User) (*domain.User, error)
 		bson.D{
 			{"$set", bson.D{{"name", user.Name},
 				{"surname", user.Surname},
-				{"username", user.Username},
 				{"dateOfBirth", user.DateOfBirth},
 				{"gender", user.Gender},
 				{"email", user.Email},
 				{"phone", user.Phone}}},
+		},
+	)
+	return user, err
+}
+
+func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, error) {
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{
+				{"username", user.Username},
+			}},
 		},
 	)
 	return user, err

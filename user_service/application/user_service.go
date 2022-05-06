@@ -36,6 +36,10 @@ func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 	return service.store.EditUser(user)
 }
 
+func (service *UserService) EditUsername(user *domain.User) (*domain.User, error) {
+	return service.store.EditUsername(user)
+}
+
 func (service *UserService) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
 	return service.store.GetEducation(id)
 }

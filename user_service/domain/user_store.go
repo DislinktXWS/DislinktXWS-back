@@ -9,6 +9,7 @@ type UserStore interface {
 	Insert(user *User) (error, *User)
 	DeleteAll()
 	EditUser(user *User) (*User, error)
+	EditUsername(user *User) (*User, error)
 	GetEducation(id primitive.ObjectID) (*[]Education, error)
 	AddEducation(education *Education, id primitive.ObjectID) (*Education, error)
 	DeleteEducation(id primitive.ObjectID, index uint) error

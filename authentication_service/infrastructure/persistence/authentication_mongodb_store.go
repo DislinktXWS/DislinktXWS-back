@@ -73,6 +73,31 @@ func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) 
 	return http.StatusOK, "", token
 }
 
+func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
+	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
+	auths, _ := store.filter(filter)
+	exists := false
+	for _, currentAuth := range auths {
+		if currentAuth.Id != auth.Id && currentAuth.Username == auth.Username {
+			exists = true
+			break
+		}
+	}
+	if !exists {
+		_, err := store.authentications.UpdateOne(
+			context.TODO(),
+			bson.M{"_id": auth.Id},
+			bson.D{
+				{"$set", bson.D{
+					{"username", auth.Username},
+				}},
+			},
+		)
+		return auth, err
+	}
+	return auth, nil
+}
+
 func (store *AuthMongoDBStore) filter(filter interface{}) ([]*domain.Auth, error) {
 	cursor, err := store.authentications.Find(context.TODO(), filter)
 	defer cursor.Close(context.TODO())
