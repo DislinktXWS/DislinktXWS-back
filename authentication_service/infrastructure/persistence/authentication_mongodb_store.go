@@ -9,6 +9,7 @@ import (
 	"module/authentication_service/startup/config"
 	utils "module/authentication_service/utils"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -43,8 +44,9 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	if err != nil {
 		return http.StatusBadRequest, "Invalid token", ""
 	}
-
-	filter := bson.M{"username": claims.Username}
+	split := strings.Split(claims.Id, "\"")
+	id, _ := primitive.ObjectIDFromHex(split[1])
+	filter := bson.M{"_id": id}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
