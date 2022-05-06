@@ -11,13 +11,20 @@ service UserService{
         rpc Get(GetRequest) returns(GetResponse) {
         	      option (google.api.http) = {
 			                  get: "/users/user/{id}"
-		};
+		            };
         }
 
         rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         	      option (google.api.http) = {
 			                  get: "/users/user"
-		};
+		            };
+        }
+
+
+        rpc GetPublicUsers(GetPublicUsersRequest) returns (GetPublicUsersResponse){
+                option(google.api.http) = {
+                        get: "/users/user/public"
+                };
         }
 
         rpc Insert(InsertUserRequest) returns (InsertUserResponse) {
@@ -128,6 +135,14 @@ message GetAllRequest {
 }
 
 message GetAllResponse {
+        repeated User users = 1;
+}
+
+message GetPublicUsersRequest{
+
+}
+
+message GetPublicUsersResponse{
         repeated User users = 1;
 }
 
@@ -265,6 +280,7 @@ message User {
         string email = 8;
         string phone = 9;
         string biography = 10;
+        bool isPublic = 11;
 }
 
 message Education {

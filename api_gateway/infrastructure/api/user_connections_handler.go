@@ -33,8 +33,6 @@ func (handler *UserConnectionsHandler) Init(mux *runtime.ServeMux) {
 	}
 }
 
-//ovo je logika za slucaj da dobavljamo konekcije preko id, ako je nesto drugo onda jos jedan poziv user servisa
-
 func (handler *UserConnectionsHandler) GetUserConnections(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
 	id := pathParams["id"]

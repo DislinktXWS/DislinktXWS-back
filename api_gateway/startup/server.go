@@ -69,23 +69,29 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 
-	//ovi handler se prave po funkcionalnosti
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
 
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
 
+	userPostHandler := api.NewUserPostHandler(userEndpoint, postEndpoint)
+	userPostHandler.Init(server.mux)
+
 	postHandler := api.NewPostHandler(postEndpoint)
 	postHandler.Init(server.mux)
 
 	getImageHandler := api.NewGetImageHandler(postEndpoint)
 	getImageHandler.Init(server.mux)
+
 	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
 	blockedUsersHandler.Init(server.mux)
 
 	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
 	connectionReqHandler.Init(server.mux)
+
+	userFeedHandler := api.NewUserFeedHandler(connectionEndpoint, postEndpoint)
+	userFeedHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

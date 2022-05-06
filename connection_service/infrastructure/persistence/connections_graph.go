@@ -21,6 +21,32 @@ func (store *ConnectionsDBGraph) Get(connection *domain.UserConnection) bool {
 	return true
 }
 
+func (store *ConnectionsDBGraph) GetConnectionStatus(user1 string, user2 string) string {
+	var session = *store.session
+
+	connected, _ := checkIfConnectionExists(session, user1, user2, "CONNECTED")
+	if connected {
+		return "connected"
+	}
+	blockedByYou, _ := checkIfConnectionExists(session, user1, user2, "BLOCKED")
+	if blockedByYou {
+		return "blockedByYou"
+	}
+	blockedYou, _ := checkIfConnectionExists(session, user2, user1, "BLOCKED")
+	if blockedYou {
+		return "blockedYou"
+	}
+	connectionRequestedByYou, _ := checkIfConnectionExists(session, user1, user2, "REQUESTED_CONNECTION")
+	if connectionRequestedByYou {
+		return "connectionRequestedByYou"
+	}
+	connectionRequestedByUser, _ := checkIfConnectionExists(session, user2, user1, "REQUESTED_CONNECTION")
+	if connectionRequestedByUser {
+		return "connectionRequestedByUser"
+	}
+
+	return "none"
+}
 func (store *ConnectionsDBGraph) GetAll(user string) []string {
 	var session = *store.session
 	connections, _ := getUserConnections(session, user)

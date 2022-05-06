@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	connections "module/common/proto/connection_service"
 	pb "module/common/proto/connection_service"
 	"module/connection_service/application"
 )
@@ -70,6 +71,31 @@ func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, req
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, request *pb.ConnectionStatusRequest) (*pb.ConnectionStatusResponse, error) {
+
+	var enums int32
+	status := handler.service.GetConnectionStatus(request.Id1, request.Id2)
+	if status == "connected" {
+		enums = 0
+	}
+	if status == "connectionRequestedByYou" {
+		enums = 1
+	}
+	if status == "connectionRequestedByUser" {
+		enums = 2
+	}
+	if status == "blockedYou" {
+		enums = 3
+	}
+	if status == "blockedByYou" {
+		enums = 4
+	}
+	if status == "none" {
+		enums = 5
+	}
+	response := &pb.ConnectionStatusResponse{Status: connections.ConnectionStatusEnum(enums)}
+	return response, nil
+}
 func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
 
 	connection := mapNewUserConnection(request.Connection)

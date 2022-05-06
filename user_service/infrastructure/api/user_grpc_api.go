@@ -51,6 +51,21 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	return response, nil
 }
 
+func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetPublicUsersRequest) (*pb.GetPublicUsersResponse, error) {
+	Users, err := handler.service.GetPublicUsers()
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetPublicUsersResponse{
+		Users: []*pb.User{},
+	}
+	for _, User := range Users {
+		current := mapUser(User)
+		response.Users = append(response.Users, current)
+	}
+	return response, nil
+}
+
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := mapNewUser(request.User)
 	err, newUser := handler.service.Insert(user)

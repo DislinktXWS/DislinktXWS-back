@@ -228,6 +228,11 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	return store.filter(filter)
 }
 
+func (store *UserMongoDBStore) GetPublicUsers() ([]*domain.User, error) {
+	filter := bson.M{"isPublic": true}
+	return store.filter(filter)
+}
+
 func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 	fmt.Print("*******************USLI SMO U STORE")
@@ -235,6 +240,7 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 	User.Interests = make([]string, 0)
 	User.Experience = make([]domain.Experience, 0)
 	User.Education = make([]domain.Education, 0)
+	User.IsPublic = true
 	result, err := store.users.InsertOne(context.TODO(), User)
 	if err != nil {
 		return err, &domain.User{}

@@ -75,6 +75,11 @@ service ConnectionsService{
         get: "/connections/connections/requests/{id}"
         };
     }
+    rpc GetConnectionStatus(ConnectionStatusRequest) returns(ConnectionStatusResponse) {
+        option (google.api.http) = {
+        get: "/connections/connection/status/{id1}/{id2}"
+        };
+    }
 }
 
 message InsertUserRequest {
@@ -99,8 +104,26 @@ message GetAllConnectionsResponse {
     repeated string ids = 1;
 }
 
+message ConnectionStatusResponse{
+    ConnectionStatusEnum status = 1;
+}
+
+message ConnectionStatusRequest{
+    string id1 = 1;
+    string id2 = 2;
+}
+
 
 message UserConnection {
         string connecting = 1;
         string connected = 2;
+}
+
+enum ConnectionStatusEnum {
+    connected = 0;
+    connectionRequestedByYou = 1;
+    connectionRequestedByUser= 2;
+    blockedYou = 3;
+    blockedByYou = 4;
+    none=5;
 }
