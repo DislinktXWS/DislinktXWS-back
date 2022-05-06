@@ -48,11 +48,11 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	/*e := handler.addUserNode(newUserId)
+	e := handler.addUserNode(newUserId)
 	if e != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
-	}*/
+	}
 
 	newUser.Id = newUserId
 	response, err := json.Marshal(newUser)
