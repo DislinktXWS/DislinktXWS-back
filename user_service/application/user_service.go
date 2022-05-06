@@ -24,6 +24,10 @@ func (service *UserService) GetAll() ([]*domain.User, error) {
 	return service.store.GetAll()
 }
 
+func (service *UserService) GetPublicUsers() ([]*domain.User, error) {
+	return service.store.GetPublicUsers()
+}
+
 func (service *UserService) Insert(user *domain.User) (error, *domain.User) {
 	return service.store.Insert(user)
 }

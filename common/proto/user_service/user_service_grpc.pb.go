@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	GetPublicUsers(ctx context.Context, in *GetPublicUsersRequest, opts ...grpc.CallOption) (*GetPublicUsersResponse, error)
 	Insert(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 	EditUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*EditUserResponse, error)
 	GetEducation(ctx context.Context, in *GetEducationRequest, opts ...grpc.CallOption) (*GetEducationResponse, error)
@@ -60,6 +61,15 @@ func (c *userServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grp
 func (c *userServiceClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
 	out := new(GetAllResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetPublicUsers(ctx context.Context, in *GetPublicUsersRequest, opts ...grpc.CallOption) (*GetPublicUsersResponse, error) {
+	out := new(GetPublicUsersResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetPublicUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +208,7 @@ func (c *userServiceClient) DeleteSkill(ctx context.Context, in *DeleteSkillRequ
 type UserServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	GetPublicUsers(context.Context, *GetPublicUsersRequest) (*GetPublicUsersResponse, error)
 	Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	EditUser(context.Context, *InsertUserRequest) (*EditUserResponse, error)
 	GetEducation(context.Context, *GetEducationRequest) (*GetEducationResponse, error)
@@ -224,6 +235,9 @@ func (UnimplementedUserServiceServer) Get(context.Context, *GetRequest) (*GetRes
 }
 func (UnimplementedUserServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedUserServiceServer) GetPublicUsers(context.Context, *GetPublicUsersRequest) (*GetPublicUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPublicUsers not implemented")
 }
 func (UnimplementedUserServiceServer) Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
@@ -312,6 +326,24 @@ func _UserService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetAll(ctx, req.(*GetAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetPublicUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublicUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetPublicUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetPublicUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetPublicUsers(ctx, req.(*GetPublicUsersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -582,6 +614,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _UserService_GetAll_Handler,
+		},
+		{
+			MethodName: "GetPublicUsers",
+			Handler:    _UserService_GetPublicUsers_Handler,
 		},
 		{
 			MethodName: "Insert",

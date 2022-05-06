@@ -189,6 +189,11 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	return store.filter(filter)
 }
 
+func (store *UserMongoDBStore) GetPublicUsers() ([]*domain.User, error) {
+	filter := bson.M{"isPublic": true}
+	return store.filter(filter)
+}
+
 func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 	fmt.Print("*******************USLI SMO U STORE")
