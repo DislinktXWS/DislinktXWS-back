@@ -83,13 +83,23 @@ func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserCon
 
 func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserConnection) error {
 	var session = *store.session
-	_, err := session.WriteTransaction(disconnectUsersTxFunc(connection.Connecting, connection.Connected))
+	_, e1 := session.WriteTransaction(disconnectUsersTxFunc(connection.Connecting, connection.Connected))
+	if e1 != nil {
+		return e1
+	}
+	_, e2 := session.WriteTransaction(disconnectUsersTxFunc(connection.Connected, connection.Connecting))
+	return e2
+}
+
+func (store *ConnectionsDBGraph) InsertConnectionRequest(connection *domain.UserConnection) error {
+	var session = *store.session
+	_, err := session.WriteTransaction(requestConnectionTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
 
-func (store *ConnectionsDBGraph) InsertUserConnectionRequest(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) CancelConnectionRequest(connection *domain.UserConnection) error {
 	var session = *store.session
-	_, err := session.WriteTransaction(requestConnectionTxFunc(connection.Connecting, connection.Connected))
+	_, err := session.WriteTransaction(cancelConnectionRequestTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
 

@@ -28,6 +28,16 @@ func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, requ
 	}
 	return &pb.InsertUserConnectionResponse{}, nil
 }
+
+func (handler *ConnectionHandler) DeleteUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.DeleteUserConnection(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
+}
 func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := request.User
 	err := handler.service.InsertNewUser(user)
@@ -99,7 +109,17 @@ func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, reque
 func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
 
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.InsertUserConnectionRequest(connection)
+	err := handler.service.InsertConnectionRequest(connection)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertUserConnectionResponse{}, nil
+}
+
+func (handler *ConnectionHandler) CancelConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+
+	connection := mapNewUserConnection(request.Connection)
+	err := handler.service.CancelConnectionRequest(connection)
 	if err != nil {
 		return nil, err
 	}

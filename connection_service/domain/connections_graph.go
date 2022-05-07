@@ -11,7 +11,8 @@ type ConnectionsGraph interface {
 	DeleteUserConnection(connection *UserConnection) error
 	InsertUserConnection(connection *UserConnection) error
 
-	InsertUserConnectionRequest(connection *UserConnection) error
+	InsertConnectionRequest(connection *UserConnection) error
+	CancelConnectionRequest(connection *UserConnection) error
 	AcceptUserConnectionRequest(connection *UserConnection) error
 	DeclineUserConnectionRequest(connection *UserConnection) error
 

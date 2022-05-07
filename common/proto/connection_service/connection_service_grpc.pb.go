@@ -24,7 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectionsServiceClient interface {
 	InsertNewUser(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
 	InsertUserConnection(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	DeleteUserConnection(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	InsertConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
+	CancelConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	BlockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	UnblockUser(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	AcceptConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
@@ -61,9 +63,27 @@ func (c *connectionsServiceClient) InsertUserConnection(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *connectionsServiceClient) DeleteUserConnection(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/DeleteUserConnection", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *connectionsServiceClient) InsertConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
 	out := new(InsertUserConnectionResponse)
 	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/InsertConnectionRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionsServiceClient) CancelConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error) {
+	out := new(InsertUserConnectionResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/CancelConnectionRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +168,9 @@ func (c *connectionsServiceClient) GetConnectionStatus(ctx context.Context, in *
 type ConnectionsServiceServer interface {
 	InsertNewUser(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
 	InsertUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	DeleteUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	InsertConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
+	CancelConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	BlockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	UnblockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	AcceptConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
@@ -170,8 +192,14 @@ func (UnimplementedConnectionsServiceServer) InsertNewUser(context.Context, *Ins
 func (UnimplementedConnectionsServiceServer) InsertUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertUserConnection not implemented")
 }
+func (UnimplementedConnectionsServiceServer) DeleteUserConnection(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserConnection not implemented")
+}
 func (UnimplementedConnectionsServiceServer) InsertConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertConnectionRequest not implemented")
+}
+func (UnimplementedConnectionsServiceServer) CancelConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelConnectionRequest not implemented")
 }
 func (UnimplementedConnectionsServiceServer) BlockUser(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
@@ -246,6 +274,24 @@ func _ConnectionsService_InsertUserConnection_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionsService_DeleteUserConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).DeleteUserConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/DeleteUserConnection",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).DeleteUserConnection(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConnectionsService_InsertConnectionRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertUserConnectionRequest)
 	if err := dec(in); err != nil {
@@ -260,6 +306,24 @@ func _ConnectionsService_InsertConnectionRequest_Handler(srv interface{}, ctx co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConnectionsServiceServer).InsertConnectionRequest(ctx, req.(*InsertUserConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionsService_CancelConnectionRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertUserConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).CancelConnectionRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/CancelConnectionRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).CancelConnectionRequest(ctx, req.(*InsertUserConnectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -424,8 +488,16 @@ var ConnectionsService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConnectionsService_InsertUserConnection_Handler,
 		},
 		{
+			MethodName: "DeleteUserConnection",
+			Handler:    _ConnectionsService_DeleteUserConnection_Handler,
+		},
+		{
 			MethodName: "InsertConnectionRequest",
 			Handler:    _ConnectionsService_InsertConnectionRequest_Handler,
+		},
+		{
+			MethodName: "CancelConnectionRequest",
+			Handler:    _ConnectionsService_CancelConnectionRequest_Handler,
 		},
 		{
 			MethodName: "BlockUser",

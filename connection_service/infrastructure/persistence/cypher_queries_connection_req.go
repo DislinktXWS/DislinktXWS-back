@@ -56,3 +56,17 @@ func getConnectionRequestsTxFunc(session neo4j.Session, user string) ([]string, 
 	}
 	return people.([]string), nil
 }
+
+func cancelConnectionRequestTxFunc(disconnecting string, disconnected string) neo4j.TransactionWork {
+	return func(tx neo4j.Transaction) (interface{}, error) {
+		var result, err = tx.Run(
+			"MATCH (user:User {userId: $disconnecting}) "+
+				"- [rel:REQUESTED_CONNECTION] -> (secondUser:User {userId: $disconnected}) "+
+				"DELETE rel", map[string]interface{}{"disconnecting": disconnecting, "disconnected": disconnected})
+
+		if err != nil {
+			return nil, err
+		}
+		return result.Consume()
+	}
+}

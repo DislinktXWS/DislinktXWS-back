@@ -24,10 +24,22 @@ service ConnectionsService{
                 body: "connection"
         };
     }
-
+    
+    rpc DeleteUserConnection(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/delete"
+                body: "connection"
+        };
+    }
     rpc InsertConnectionRequest(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
         option (google.api.http) = {
                 post: "/connections/connection/request"
+                body: "connection"
+        };
+    }
+    rpc CancelConnectionRequest(InsertUserConnectionRequest) returns (InsertUserConnectionResponse) {
+        option (google.api.http) = {
+                post: "/connections/connection/request/cancel"
                 body: "connection"
         };
     }

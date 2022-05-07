@@ -35,13 +35,17 @@ func (service *ConnectionsService) InsertUserConnection(connection *domain.UserC
 	return service.graph.InsertUserConnection(connection)
 }
 
-func (service *ConnectionsService) Delete(connection *domain.UserConnection) error {
+func (service *ConnectionsService) DeleteUserConnection(connection *domain.UserConnection) error {
 	return service.graph.DeleteUserConnection(connection)
 }
 
-func (service *ConnectionsService) InsertUserConnectionRequest(connection *domain.UserConnection) error {
-	return service.graph.InsertUserConnectionRequest(connection)
+func (service *ConnectionsService) InsertConnectionRequest(connection *domain.UserConnection) error {
+	return service.graph.InsertConnectionRequest(connection)
 }
+func (service *ConnectionsService) CancelConnectionRequest(connection *domain.UserConnection) error {
+	return service.graph.CancelConnectionRequest(connection)
+}
+
 func (service *ConnectionsService) AcceptUserConnection(connection *domain.UserConnection) error {
 	return service.graph.AcceptUserConnectionRequest(connection)
 }
