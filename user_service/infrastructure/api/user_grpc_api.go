@@ -68,15 +68,28 @@ func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetP
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := mapNewUser(request.User)
-	err, newUser := handler.service.Insert(user)
-	if err != nil {
-		return nil, err
+
+	users, _ := handler.service.GetAll()
+	exists := false
+	for _, currentUser := range users {
+		if user.Id != currentUser.Id && user.Username == currentUser.Username {
+			exists = true
+			break
+		}
 	}
-	UserPb := mapUser(newUser)
-	response := &pb.InsertUserResponse{
-		User: UserPb,
+	if !exists {
+		err, newUser := handler.service.Insert(user)
+		if err != nil {
+			return nil, err
+		}
+		UserPb := mapUser(newUser)
+		response := &pb.InsertUserResponse{
+			User: UserPb,
+		}
+		return response, nil
 	}
-	return response, nil
+
+	return nil, nil
 }
 
 func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.EditUserResponse, error) {
