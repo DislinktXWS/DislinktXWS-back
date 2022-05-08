@@ -13,7 +13,7 @@ type User struct {
 	Gender      string             `bson:"gender"`
 	Email       string             `bson:"email"`
 	Phone       string             `bson:"phone"`
-	Biograpy    string             `bson:"biograpy"`
+	Biography   string             `bson:"biography"`
 	IsPublic    bool               `bson:"isPublic"`
 	Education   []Education        `bson:"education"`
 	Experience  []Experience       `bson:"experience"`

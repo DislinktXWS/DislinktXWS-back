@@ -17,7 +17,7 @@ func mapUser(user *domain.User) *pb.User {
 		Gender:      user.Gender,
 		Email:       user.Email,
 		Phone:       user.Phone,
-		Biography:   user.Biograpy,
+		Biography:   user.Biography,
 		IsPublic:    user.IsPublic,
 	}
 	return userPb
@@ -32,6 +32,7 @@ func mapNewUser(userPb *pb.User) *domain.User {
 		Gender:      userPb.Gender,
 		Email:       userPb.Email,
 		Phone:       userPb.Phone,
+		Biography:   userPb.Biography,
 	}
 	return user
 }
@@ -47,7 +48,7 @@ func mapEditUser(userPb *pb.User) *domain.User {
 		Gender:      userPb.Gender,
 		Email:       userPb.Email,
 		Phone:       userPb.Phone,
-		Biograpy:    userPb.Biography,
+		Biography:   userPb.Biography,
 		IsPublic:    userPb.IsPublic,
 	}
 	return user

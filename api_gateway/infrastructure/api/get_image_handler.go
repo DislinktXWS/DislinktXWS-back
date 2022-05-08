@@ -36,13 +36,13 @@ func (handler *GetImageHandler) GetPostImage(w http.ResponseWriter, r *http.Requ
 	var base64Encoding string
 
 	//check if image exists
-	fileInfo, err := os.Stat("D:\\DislinktXWS-back\\temp-images\\" + imageName)
+	fileInfo, err := os.Stat("C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\temp-images\\" + imageName)
 	if os.IsNotExist(err) {
 		base64Encoding = ""
 	} else {
 		fmt.Println(fileInfo)
 		// Read the entire file into a byte slice
-		bytes, err := ioutil.ReadFile("D:\\DislinktXWS-back\\temp-images\\" + imageName)
+		bytes, err := ioutil.ReadFile("C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\temp-images\\" + imageName)
 		if err != nil {
 			log.Fatal(err)
 		}

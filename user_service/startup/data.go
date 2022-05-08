@@ -16,7 +16,7 @@ var users = []*domain.User{
 		Gender:      "f",
 		Email:       "mici@gmail.com",
 		Phone:       "063123456",
-		Biograpy:    "moja biografija",
+		Biography:   "moja biografija",
 		IsPublic:    true,
 	},
 }

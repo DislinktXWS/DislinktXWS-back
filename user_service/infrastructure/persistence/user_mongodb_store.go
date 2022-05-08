@@ -281,7 +281,8 @@ func (store *UserMongoDBStore) EditUser(user *domain.User) (*domain.User, error)
 				{"dateOfBirth", user.DateOfBirth},
 				{"gender", user.Gender},
 				{"email", user.Email},
-				{"phone", user.Phone}}},
+				{"phone", user.Phone},
+				{"biography", user.Biography}}},
 		},
 	)
 	return user, err
