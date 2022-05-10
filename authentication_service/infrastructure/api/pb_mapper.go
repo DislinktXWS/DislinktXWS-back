@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/dislinktxws-back/authentication_service/domain"
+	pb "github.com/dislinktxws-back/common/proto/authentication_service"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"module/authentication_service/domain"
-	pb "module/common/proto/authentication_service"
 )
 
 func mapAuth(authPb *pb.Auth) *domain.Auth {

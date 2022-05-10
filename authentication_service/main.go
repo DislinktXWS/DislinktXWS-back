@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/authentication_service/startup"
-	"module/authentication_service/startup/config"
+	"github.com/dislinktxws-back/authentication_service/startup"
+	"github.com/dislinktxws-back/authentication_service/startup/config"
 )
 
 func main() {

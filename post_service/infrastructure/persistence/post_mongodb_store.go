@@ -2,7 +2,7 @@ package persistence
 
 import (
 	"context"
-	"module/post_service/domain"
+	"github.com/dislinktxws-back/post_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

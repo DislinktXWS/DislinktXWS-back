@@ -2,20 +2,20 @@ package startup
 
 import (
 	"fmt"
+	//api_gw "github.com/dislinktxws-back/api_gateway/startup"
+	post_service "github.com/dislinktxws-back/common/proto/post_service"
+	"github.com/dislinktxws-back/post_service/application"
+	"github.com/dislinktxws-back/post_service/domain"
+	"github.com/dislinktxws-back/post_service/infrastructure/api"
+	"github.com/dislinktxws-back/post_service/infrastructure/persistence"
+	"github.com/dislinktxws-back/post_service/startup/config"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	//grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"log"
-	api_gw "module/api_gateway/startup"
-	post_service "module/common/proto/post_service"
-	"module/post_service/application"
-	"module/post_service/domain"
-	"module/post_service/infrastructure/api"
-	"module/post_service/infrastructure/persistence"
-	"module/post_service/startup/config"
 	"net"
 )
 
@@ -80,7 +80,7 @@ func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 	grpcServer := grpc.NewServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
-			grpc_auth.StreamServerInterceptor(api_gw.AuthRequired),
+			//grpc_auth.StreamServerInterceptor(api_gw.AuthRequired),
 			grpc_recovery.StreamServerInterceptor(),
 		)),
 	)

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/connection_service/startup"
-	"module/connection_service/startup/config"
+	"github.com/dislinktxws-back/connection_service/startup"
+	"github.com/dislinktxws-back/connection_service/startup/config"
 )
 
 func main() {

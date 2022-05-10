@@ -1,7 +1,7 @@
 package application
 
 import (
-	"module/user_service/domain"
+	"github.com/dislinktxws-back/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

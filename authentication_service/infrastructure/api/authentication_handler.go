@@ -1,7 +1,7 @@
 package api
 
 import (
-	"module/authentication_service/application"
+	"github.com/dislinktxws-back/authentication_service/application"
 )
 
 type CreateAuthCommandHandler struct {

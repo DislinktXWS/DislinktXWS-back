@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/api_gateway/startup"
-	"module/api_gateway/startup/config"
+	"github.com/dislinktxws-back/api_gateway/startup"
+	"github.com/dislinktxws-back/api_gateway/startup/config"
 )
 
 func main() {

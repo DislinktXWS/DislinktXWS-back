@@ -2,12 +2,12 @@ package persistence
 
 import (
 	"context"
+	"github.com/dislinktxws-back/authentication_service/domain"
+	"github.com/dislinktxws-back/authentication_service/startup/config"
+	utils "github.com/dislinktxws-back/authentication_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"module/authentication_service/domain"
-	"module/authentication_service/startup/config"
-	utils "module/authentication_service/utils"
 	"net/http"
 	"strings"
 )

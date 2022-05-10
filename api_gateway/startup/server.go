@@ -3,24 +3,19 @@ package startup
 import (
 	"context"
 	"fmt"
-	"module/api_gateway/infrastructure/api"
-	cfg "module/api_gateway/startup/config"
-	authService "module/authentication_service/infrastructure/api"
-	authGw "module/common/proto/authentication_service"
-	pb "module/common/proto/authentication_service"
-
-	"github.com/gin-gonic/gin"
+	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
+	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
+	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/gorilla/handlers"
 
-	connectionGw "module/common/proto/connection_service"
-	postGw "module/common/proto/post_service"
-	userGw "module/common/proto/user_service"
+	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
+	postGw "github.com/dislinktxws-back/common/proto/post_service"
+	userGw "github.com/dislinktxws-back/common/proto/user_service"
 	"net/http"
-	"strings"
 )
 
 type Server struct {
@@ -105,7 +100,7 @@ func (server *Server) Start() {
 	http.ListenAndServe(listeningOn, ch(server.mux))
 }
 
-func AuthRequired(context.Context) (context.Context, error) {
+/*func AuthRequired(context.Context) (context.Context, error) {
 	ctx := gin.Context{}
 	authorization := ctx.Request.Header.Get("authorization")
 
@@ -135,3 +130,4 @@ func AuthRequired(context.Context) (context.Context, error) {
 	ctx.Next()
 	return nil, nil
 }
+*/

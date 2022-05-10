@@ -1,10 +1,9 @@
 package api
 
 import (
-	"module/api_gateway/domain"
-	pbPost "module/common/proto/post_service"
-	pbUser "module/common/proto/user_service"
-	domainP "module/post_service/domain"
+	"github.com/dislinktxws-back/api_gateway/domain"
+	pbPost "github.com/dislinktxws-back/common/proto/post_service"
+	pbUser "github.com/dislinktxws-back/common/proto/user_service"
 )
 
 func mapToUserPb(user *domain.UserRegistration) *pbUser.User {
@@ -22,8 +21,8 @@ func mapToUserPb(user *domain.UserRegistration) *pbUser.User {
 	return userPb
 }
 
-func mapNewPost(postPb *pbPost.Post) *domainP.Post {
-	post := &domainP.Post{
+func mapNewPost(postPb *pbPost.Post) *domain.Post {
+	post := &domain.Post{
 		Content:  postPb.Content,
 		Image:    postPb.Image,
 		Date:     postPb.Date,

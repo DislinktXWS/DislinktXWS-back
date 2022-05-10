@@ -1,7 +1,7 @@
 package api
 
 import (
-	"module/post_service/application"
+	"github.com/dislinktxws-back/post_service/application"
 )
 
 type CreatePostCommandHandler struct {

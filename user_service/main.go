@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/user_service/startup"
-	"module/user_service/startup/config"
+	"github.com/dislinktxws-back/user_service/startup"
+	"github.com/dislinktxws-back/user_service/startup/config"
 )
 
 func main() {

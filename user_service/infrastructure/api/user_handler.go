@@ -1,7 +1,7 @@
 package api
 
 import (
-	"module/user_service/application"
+	"github.com/dislinktxws-back/user_service/application"
 )
 
 type CreateUserCommandHandler struct {

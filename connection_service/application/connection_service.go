@@ -1,7 +1,7 @@
 package application
 
 import (
-	"module/connection_service/domain"
+	"github.com/dislinktxws-back/connection_service/domain"
 )
 
 type ConnectionsService struct {

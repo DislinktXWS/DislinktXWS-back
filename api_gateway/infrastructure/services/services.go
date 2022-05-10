@@ -1,10 +1,10 @@
 package services
 
 import (
+	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
+	post_service "github.com/dislinktxws-back/common/proto/post_service"
+	user_service "github.com/dislinktxws-back/common/proto/user_service"
 	"log"
-	connection_service "module/common/proto/connection_service"
-	post_service "module/common/proto/post_service"
-	user_service "module/common/proto/user_service"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

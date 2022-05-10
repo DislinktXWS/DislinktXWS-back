@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"module/authentication_service/application"
-	"module/authentication_service/utils"
-	pb "module/common/proto/authentication_service"
+	"github.com/dislinktxws-back/authentication_service/application"
+	"github.com/dislinktxws-back/authentication_service/utils"
+	pb "github.com/dislinktxws-back/common/proto/authentication_service"
 )
 
 type AuthenticationHandler struct {

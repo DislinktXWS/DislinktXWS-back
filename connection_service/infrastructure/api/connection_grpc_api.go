@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 	"fmt"
-	connections "module/common/proto/connection_service"
-	pb "module/common/proto/connection_service"
-	"module/connection_service/application"
+	connections "github.com/dislinktxws-back/common/proto/connection_service"
+	pb "github.com/dislinktxws-back/common/proto/connection_service"
+	"github.com/dislinktxws-back/connection_service/application"
 )
 
 type ConnectionHandler struct {

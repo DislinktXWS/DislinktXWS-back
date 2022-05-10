@@ -1,6 +1,6 @@
 package application
 
-import "module/authentication_service/domain"
+import "github.com/dislinktxws-back/authentication_service/domain"
 
 type AuthenticationService struct {
 	store domain.AuthenticationStore

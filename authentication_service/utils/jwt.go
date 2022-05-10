@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"module/authentication_service/domain"
+	"github.com/dislinktxws-back/authentication_service/domain"
 	"time"
 
 	"github.com/golang-jwt/jwt"

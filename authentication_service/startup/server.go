@@ -2,13 +2,13 @@ package startup
 
 import (
 	"fmt"
+	"github.com/dislinktxws-back/authentication_service/application"
+	"github.com/dislinktxws-back/authentication_service/domain"
+	"github.com/dislinktxws-back/authentication_service/infrastructure/api"
+	"github.com/dislinktxws-back/authentication_service/infrastructure/persistence"
+	"github.com/dislinktxws-back/authentication_service/startup/config"
+	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	"log"
-	"module/authentication_service/application"
-	"module/authentication_service/domain"
-	"module/authentication_service/infrastructure/api"
-	"module/authentication_service/infrastructure/persistence"
-	"module/authentication_service/startup/config"
-	authentication_service "module/common/proto/authentication_service"
 	"net"
 
 	"go.mongodb.org/mongo-driver/mongo"

@@ -2,13 +2,13 @@ package startup
 
 import (
 	"fmt"
+	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
+	"github.com/dislinktxws-back/connection_service/application"
+	"github.com/dislinktxws-back/connection_service/domain"
+	"github.com/dislinktxws-back/connection_service/infrastructure/api"
+	"github.com/dislinktxws-back/connection_service/infrastructure/persistence"
+	"github.com/dislinktxws-back/connection_service/startup/config"
 	"log"
-	connection_service "module/common/proto/connection_service"
-	"module/connection_service/application"
-	"module/connection_service/domain"
-	"module/connection_service/infrastructure/api"
-	"module/connection_service/infrastructure/persistence"
-	"module/connection_service/startup/config"
 	"net"
 
 	"github.com/neo4j/neo4j-go-driver/neo4j"

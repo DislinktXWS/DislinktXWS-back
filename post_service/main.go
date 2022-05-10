@@ -1,8 +1,8 @@
 package main
 
 import (
-	"module/post_service/startup"
-	"module/post_service/startup/config"
+	"github.com/dislinktxws-back/post_service/startup"
+	"github.com/dislinktxws-back/post_service/startup/config"
 )
 
 func main() {

@@ -1,8 +1,8 @@
 package api
 
 import (
-	pb "module/common/proto/connection_service"
-	"module/connection_service/domain"
+	pb "github.com/dislinktxws-back/common/proto/connection_service"
+	"github.com/dislinktxws-back/connection_service/domain"
 )
 
 func mapNewUserConnection(userPb *pb.UserConnection) *domain.UserConnection {

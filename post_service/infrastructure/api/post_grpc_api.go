@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
-	pb "module/common/proto/post_service"
-	"module/post_service/application"
+	pb "github.com/dislinktxws-back/common/proto/post_service"
+	"github.com/dislinktxws-back/post_service/application"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

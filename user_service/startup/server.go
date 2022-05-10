@@ -2,13 +2,13 @@ package startup
 
 import (
 	"fmt"
+	user_service "github.com/dislinktxws-back/common/proto/user_service"
+	"github.com/dislinktxws-back/user_service/application"
+	"github.com/dislinktxws-back/user_service/domain"
+	"github.com/dislinktxws-back/user_service/infrastructure/api"
+	"github.com/dislinktxws-back/user_service/infrastructure/persistence"
+	"github.com/dislinktxws-back/user_service/startup/config"
 	"log"
-	user_service "module/common/proto/user_service"
-	"module/user_service/application"
-	"module/user_service/domain"
-	"module/user_service/infrastructure/api"
-	"module/user_service/infrastructure/persistence"
-	"module/user_service/startup/config"
 	"net"
 
 	"go.mongodb.org/mongo-driver/mongo"

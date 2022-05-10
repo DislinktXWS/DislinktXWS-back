@@ -1,7 +1,7 @@
 package api
 
 import (
-	"module/connection_service/application"
+	"github.com/dislinktxws-back/connection_service/application"
 )
 
 type CreateConnectionCommandHandler struct {

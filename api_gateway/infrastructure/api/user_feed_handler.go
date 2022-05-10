@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"module/api_gateway/infrastructure/services"
-	connection_proto "module/common/proto/connection_service"
-	post_proto "module/common/proto/post_service"
-	domainP "module/post_service/domain"
+	"github.com/dislinktxws-back/api_gateway/domain"
+	"github.com/dislinktxws-back/api_gateway/infrastructure/services"
+	connection_proto "github.com/dislinktxws-back/common/proto/connection_service"
+	post_proto "github.com/dislinktxws-back/common/proto/post_service"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -51,7 +51,7 @@ func (handler *UserFeedHandler) GetUserFeed(w http.ResponseWriter, r *http.Reque
 	}
 
 	//sad sve postove za te id-eve
-	posts := []domainP.Post{}
+	posts := []domain.Post{}
 
 	_ = handler.getPosts(&posts, userIds)
 
@@ -72,7 +72,7 @@ func (handler *UserFeedHandler) getConnectionIds(userId string) ([]string, error
 	return connections.Ids, err
 }
 
-func (handler *UserFeedHandler) getPosts(posts *[]domainP.Post, userIds []string) error {
+func (handler *UserFeedHandler) getPosts(posts *[]domain.Post, userIds []string) error {
 
 	postClient := services.NewPostClient(handler.postClientAddress)
 

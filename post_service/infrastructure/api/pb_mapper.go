@@ -1,8 +1,8 @@
 package api
 
 import (
-	pb "module/common/proto/post_service"
-	"module/post_service/domain"
+	pb "github.com/dislinktxws-back/common/proto/post_service"
+	"github.com/dislinktxws-back/post_service/domain"
 )
 
 func mapPost(post *domain.Post) *pb.Post {

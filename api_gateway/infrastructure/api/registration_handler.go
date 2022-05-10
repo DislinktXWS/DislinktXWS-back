@@ -3,10 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"module/api_gateway/domain"
-	"module/api_gateway/infrastructure/services"
-	connection_proto "module/common/proto/connection_service"
-	user_proto "module/common/proto/user_service"
+	"github.com/dislinktxws-back/api_gateway/domain"
+	"github.com/dislinktxws-back/api_gateway/infrastructure/services"
+	connection_proto "github.com/dislinktxws-back/common/proto/connection_service"
+	user_proto "github.com/dislinktxws-back/common/proto/user_service"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
