@@ -2,8 +2,9 @@ package config
 
 import (
 	"flag"
-	cnf "github.com/dislinktxws-back/common/config"
 	"os"
+
+	cnf "github.com/dislinktxws-back/common/config"
 )
 
 type Config struct {
@@ -26,10 +27,9 @@ func NewConfig() *Config {
 		Host: os.Getenv("CONNECTION_SERVICE_HOST"),
 		Port: os.Getenv("CONNECTION_SERVICE_PORT"),
 
-		//Uri:      "bullshit",
 		Uri:      "neo4j://neo4j:7687",
-		Username: os.Getenv("CONNECTION_DB_USER"),
-		Password: os.Getenv("CONNECTION_DB_PASS"), //password je onaj koji je postavi kad se pravi nova sema bp
+		Username: "neo4j",
+		Password: "ConnectionDB", //password je onaj koji je postavi kad se pravi nova sema bp
 	}
 }
 
