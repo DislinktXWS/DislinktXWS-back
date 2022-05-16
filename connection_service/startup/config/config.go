@@ -1,5 +1,11 @@
 package config
 
+import (
+	"flag"
+	cnf "github.com/dislinktxws-back/common/config"
+	"os"
+)
+
 type Config struct {
 	Host string
 	Port string
@@ -10,14 +16,20 @@ type Config struct {
 }
 
 func NewConfig() *Config {
+	devEnv := flag.Bool("dev", false, "use dev environment variables")
+	flag.Parse()
+
+	if *devEnv {
+		cnf.LoadEnv()
+	}
 	return &Config{
-		Host: "localhost",
-		Port: "8087",
+		Host: os.Getenv("CONNECTION_SERVICE_HOST"),
+		Port: os.Getenv("CONNECTION_SERVICE_PORT"),
 
 		//Uri:      "bullshit",
-		Uri:      "bolt://localhost:7687",
-		Username: "neo4j",
-		Password: "ConnectionDB", //password je onaj koji je postavi kad se pravi nova sema bp
+		Uri:      "neo4j://neo4j:7687",
+		Username: os.Getenv("CONNECTION_DB_USER"),
+		Password: os.Getenv("CONNECTION_DB_PASS"), //password je onaj koji je postavi kad se pravi nova sema bp
 	}
 }
 

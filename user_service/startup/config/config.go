@@ -1,5 +1,11 @@
 package config
 
+import (
+	"flag"
+	cnf "github.com/dislinktxws-back/common/config"
+	"os"
+)
+
 type Config struct {
 	Host       string
 	Port       string
@@ -8,10 +14,16 @@ type Config struct {
 }
 
 func NewConfig() *Config {
+	devEnv := flag.Bool("dev", false, "use dev environment variables")
+	flag.Parse()
+
+	if *devEnv {
+		cnf.LoadEnv()
+	}
 	return &Config{
-		Host:       "localhost",
-		Port:       "8081",
-		UserDBHost: "localhost",
-		UserDBPort: "27017",
+		Host:       os.Getenv("USER_SERVICE_HOST"),
+		Port:       os.Getenv("USER_SERVICE_PORT"),
+		UserDBHost: os.Getenv("USER_DB_HOST"),
+		UserDBPort: os.Getenv("USER_DB_PORT"),
 	}
 }
