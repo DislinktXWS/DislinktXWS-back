@@ -20,7 +20,6 @@ service UserService{
 		            };
         }
 
-
         rpc GetPublicUsers(GetPublicUsersRequest) returns (GetPublicUsersResponse){
                 option(google.api.http) = {
                         get: "/users/user/public"

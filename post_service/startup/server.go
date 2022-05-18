@@ -1,7 +1,15 @@
 package startup
 
 import (
+	"context"
 	"fmt"
+	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
+	"github.com/dislinktxws-back/post_service/infrastructure/service"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+	"strings"
+
 	//api_gw "github.com/dislinktxws-back/api_gateway/startup"
 	post_service "github.com/dislinktxws-back/common/proto/post_service"
 	"github.com/dislinktxws-back/post_service/application"
@@ -9,10 +17,7 @@ import (
 	"github.com/dislinktxws-back/post_service/infrastructure/api"
 	"github.com/dislinktxws-back/post_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/post_service/startup/config"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	//grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"log"
@@ -21,6 +26,12 @@ import (
 
 type Server struct {
 	config *config.Config
+}
+
+type Response struct {
+	status int64  `json:"status"`
+	error  string `json:"error"`
+	user   string `json:"user"`
 }
 
 func NewServer(config *config.Config) *Server {
@@ -78,14 +89,60 @@ func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_ctxtags.StreamServerInterceptor(),
-			//grpc_auth.StreamServerInterceptor(api_gw.AuthRequired),
-			grpc_recovery.StreamServerInterceptor(),
-		)),
+		withServerUnaryInterceptor(),
 	)
 	post_service.RegisterPostServiceServer(grpcServer, PostHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
+}
+
+func withServerUnaryInterceptor() grpc.ServerOption {
+	return grpc.UnaryInterceptor(serverInterceptor)
+}
+
+// Authorization unary interceptor function to handle authorize per RPC call
+func serverInterceptor(ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler) (interface{}, error) {
+	fmt.Println(info.FullMethod)
+	if info.FullMethod != "/posts.PostService/GetAll" {
+		if err := authorize(ctx); err != nil {
+			return nil, err
+		}
+	}
+
+	// Calls the handler
+	h, err := handler(ctx, req)
+	return h, err
+}
+
+// authorize function authorizes the token received from Metadata
+func authorize(ctx context.Context) error {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+	}
+
+	authHeader, ok := md["authorization"]
+	if !ok {
+		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
+	}
+
+	token := authHeader[0]
+	stringToken := strings.Split(token, "Bearer")
+
+	// validateToken function validates the token
+	authEndpoint := fmt.Sprintf("%s:%s", "authentication_service", "8000")
+	authClient := service.NewAuthenticationClient(authEndpoint)
+	validation, err := authClient.Validate(context.TODO(), &authentication_service.ValidateRequest{Token: strings.TrimSpace(stringToken[1])})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if validation.Status != 200 {
+		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
+	}
+	return nil
 }

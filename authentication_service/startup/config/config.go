@@ -1,8 +1,6 @@
 package config
 
 import (
-	"flag"
-	cnf "github.com/dislinktxws-back/common/config"
 	"os"
 )
 
@@ -15,12 +13,12 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	devEnv := flag.Bool("dev", false, "use dev environment variables")
+	/*devEnv := flag.Bool("dev", false, "use dev environment variables")
 	flag.Parse()
 
 	if *devEnv {
 		cnf.LoadEnv()
-	}
+	}*/
 	return &Config{
 		Host:         os.Getenv("AUTHENTICATION_SERVICE_HOST"),
 		Port:         os.Getenv("AUTHENTICATION_SERVICE_PORT"),
