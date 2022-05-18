@@ -34,7 +34,7 @@ func NewServer(config *cfg.Config) *Server {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithChainStreamInterceptor()}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
 	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
@@ -99,35 +99,3 @@ func (server *Server) Start() {
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
 	http.ListenAndServe(listeningOn, ch(server.mux))
 }
-
-/*func AuthRequired(context.Context) (context.Context, error) {
-	ctx := gin.Context{}
-	authorization := ctx.Request.Header.Get("authorization")
-
-	if authorization == "" {
-		ctx.AbortWithStatus(http.StatusUnauthorized)
-		return nil, nil
-	}
-
-	token := strings.Split(authorization, "Bearer ")
-
-	if len(token) < 2 {
-		ctx.AbortWithStatus(http.StatusUnauthorized)
-		return nil, nil
-	}
-	auth := authService.AuthenticationHandler{}
-	res, err := auth.Validate(context.Background(), &pb.ValidateRequest{
-		Token: token[1],
-	})
-
-	if err != nil || res.Status != http.StatusOK {
-		ctx.AbortWithStatus(http.StatusUnauthorized)
-		return nil, nil
-	}
-
-	ctx.Set("user", res.User)
-
-	ctx.Next()
-	return nil, nil
-}
-*/

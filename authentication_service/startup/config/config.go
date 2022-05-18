@@ -13,9 +13,8 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	/*devEnv := f.Bool("dev", false, "use dev environment variables")
-	//f.Parse()
-
+	/*devEnv := flag.Bool("dev", false, "use dev environment variables")
+	flag.Parse()
 	if *devEnv {
 		cnf.LoadEnv()
 	}*/

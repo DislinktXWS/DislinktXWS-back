@@ -1,15 +1,22 @@
 package startup
 
 import (
+	"context"
 	"fmt"
+	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	user_service "github.com/dislinktxws-back/common/proto/user_service"
 	"github.com/dislinktxws-back/user_service/application"
 	"github.com/dislinktxws-back/user_service/domain"
 	"github.com/dislinktxws-back/user_service/infrastructure/api"
 	"github.com/dislinktxws-back/user_service/infrastructure/persistence"
+	"github.com/dislinktxws-back/user_service/infrastructure/service"
 	"github.com/dislinktxws-back/user_service/startup/config"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	"log"
 	"net"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
@@ -73,9 +80,61 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		withServerUnaryInterceptor(),
+	)
 	user_service.RegisterUserServiceServer(grpcServer, userHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
+}
+
+func withServerUnaryInterceptor() grpc.ServerOption {
+	return grpc.UnaryInterceptor(serverInterceptor)
+}
+
+// Authorization unary interceptor function to handle authorize per RPC call
+func serverInterceptor(ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler) (interface{}, error) {
+	fmt.Println(info.FullMethod)
+	if info.FullMethod != "/users.UserService/GetPublicUsers" && info.FullMethod != "/users.UserService/SearchProfiles" &&
+		info.FullMethod != "/users.UserService/Insert" {
+		if err := authorize(ctx); err != nil {
+			return nil, err
+		}
+	}
+	// Calls the handler
+	h, err := handler(ctx, req)
+	return h, err
+}
+
+// authorize function authorizes the token received from Metadata
+func authorize(ctx context.Context) error {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+	}
+
+	authHeader, ok := md["authorization"]
+	if !ok {
+		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
+	}
+
+	token := authHeader[0]
+	stringToken := strings.Split(token, "Bearer")
+
+	// validateToken function validates the token
+	authEndpoint := fmt.Sprintf("%s:%s", "authentication_service", "8000")
+	authClient := service.NewAuthenticationClient(authEndpoint)
+	validation, err := authClient.Validate(context.TODO(), &authentication_service.ValidateRequest{Token: strings.TrimSpace(stringToken[1])})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if validation.Status != 200 {
+		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
+	}
+	return nil
 }
