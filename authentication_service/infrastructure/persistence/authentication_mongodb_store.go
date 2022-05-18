@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 	"github.com/dislinktxws-back/authentication_service/domain"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
 	utils "github.com/dislinktxws-back/authentication_service/utils"
@@ -56,6 +57,9 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 
 func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) {
 	filter := bson.M{"username": auth.Username}
+	fmt.Println(auth.Username)
+	fmt.Println(auth.Id)
+	fmt.Println(auth.Password)
 	authentication, err := store.filterOne(filter)
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
