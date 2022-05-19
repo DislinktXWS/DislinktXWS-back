@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthenticationServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	PasswordlessLogin(ctx context.Context, in *PasswordlessLoginRequest, opts ...grpc.CallOption) (*PasswordlessLoginResponse, error)
+	GenerateVerificationToken(ctx context.Context, in *GenerateVerificationTokenRequest, opts ...grpc.CallOption) (*GenerateVerificationTokenResponse, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	EditUsername(ctx context.Context, in *EditUsernameRequest, opts ...grpc.CallOption) (*EditUsernameResponse, error)
@@ -39,6 +42,33 @@ func NewAuthenticationServiceClient(cc grpc.ClientConnInterface) AuthenticationS
 func (c *authenticationServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
 	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) PasswordlessLogin(ctx context.Context, in *PasswordlessLoginRequest, opts ...grpc.CallOption) (*PasswordlessLoginResponse, error) {
+	out := new(PasswordlessLoginResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/PasswordlessLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) GenerateVerificationToken(ctx context.Context, in *GenerateVerificationTokenRequest, opts ...grpc.CallOption) (*GenerateVerificationTokenResponse, error) {
+	out := new(GenerateVerificationTokenResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/GenerateVerificationToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error) {
+	out := new(ChangePasswordResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +107,9 @@ func (c *authenticationServiceClient) EditUsername(ctx context.Context, in *Edit
 // for forward compatibility
 type AuthenticationServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	PasswordlessLogin(context.Context, *PasswordlessLoginRequest) (*PasswordlessLoginResponse, error)
+	GenerateVerificationToken(context.Context, *GenerateVerificationTokenRequest) (*GenerateVerificationTokenResponse, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error)
@@ -89,6 +122,15 @@ type UnimplementedAuthenticationServiceServer struct {
 
 func (UnimplementedAuthenticationServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) PasswordlessLogin(context.Context, *PasswordlessLoginRequest) (*PasswordlessLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PasswordlessLogin not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) GenerateVerificationToken(context.Context, *GenerateVerificationTokenRequest) (*GenerateVerificationTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateVerificationToken not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) Validate(context.Context, *ValidateRequest) (*ValidateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Validate not implemented")
@@ -126,6 +168,60 @@ func _AuthenticationService_Login_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_PasswordlessLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PasswordlessLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).PasswordlessLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/PasswordlessLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).PasswordlessLogin(ctx, req.(*PasswordlessLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_GenerateVerificationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateVerificationTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).GenerateVerificationToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/GenerateVerificationToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).GenerateVerificationToken(ctx, req.(*GenerateVerificationTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/ChangePassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -194,6 +290,18 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _AuthenticationService_Login_Handler,
+		},
+		{
+			MethodName: "PasswordlessLogin",
+			Handler:    _AuthenticationService_PasswordlessLogin_Handler,
+		},
+		{
+			MethodName: "GenerateVerificationToken",
+			Handler:    _AuthenticationService_GenerateVerificationToken_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _AuthenticationService_ChangePassword_Handler,
 		},
 		{
 			MethodName: "Validate",

@@ -2,11 +2,15 @@ package persistence
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"github.com/dislinktxws-back/user_service/domain"
+	"github.com/dislinktxws-back/user_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"io"
+	"net/smtp"
 )
 
 const (
@@ -241,14 +245,63 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 	User.Experience = make([]domain.Experience, 0)
 	User.Education = make([]domain.Education, 0)
 	User.IsPublic = true
+	var token = EncodeToString(6)
+	User.VerificationToken = utils.HashPassword(token)
 	result, err := store.users.InsertOne(context.TODO(), User)
 	if err != nil {
 		return err, &domain.User{}
 	}
 	User.Id = result.InsertedID.(primitive.ObjectID)
 	fmt.Println(User.Education)
+	sendEmail(User.Email, token)
 	//ne znam kako za ostala polja, ali skontace se kako se citav obj vraca
 	return nil, User
+}
+
+func sendEmail(email, token string) {
+	// Sender data.
+	from := "pswapoteka@gmail.com"
+	password := "psw12345"
+
+	// Receiver email address.
+	to := []string{
+		email,
+	}
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Message.
+	fromMessage := fmt.Sprintf("From: <%s>\r\n", from)
+	toMessage := fmt.Sprintf("To: <%s>\r\n", email)
+	subject := "Welcome to dislinkt!\r\n"
+	body := "In order to activate your account, you need to verify your it with this token:" + token + "\r\nGlad you chose us!\r\n"
+	msg := fromMessage + toMessage + subject + "\r\n" + body
+	fmt.Println(msg)
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, []byte(msg))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Email Sent Successfully!")
+}
+
+func EncodeToString(max int) string {
+	var table = [...]byte{'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
+	b := make([]byte, max)
+	n, err := io.ReadAtLeast(rand.Reader, b, max)
+	if n != max {
+		panic(err)
+	}
+	for i := 0; i < len(b); i++ {
+		b[i] = table[int(b[i])%len(table)]
+	}
+	return string(b)
 }
 
 func (store *UserMongoDBStore) filter(filter interface{}) ([]*domain.User, error) {

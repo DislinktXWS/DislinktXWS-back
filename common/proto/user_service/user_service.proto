@@ -280,6 +280,7 @@ message User {
         string phone = 9;
         string biography = 10;
         bool isPublic = 11;
+        string verificationToken = 12;
 }
 
 message Education {

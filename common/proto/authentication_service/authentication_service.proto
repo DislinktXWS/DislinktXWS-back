@@ -15,6 +15,25 @@ service AuthenticationService{
     };
   }
 
+  rpc PasswordlessLogin(PasswordlessLoginRequest) returns (PasswordlessLoginResponse){
+    option (google.api.http) = {
+      get: "/authentication/passwordlessLogin/{verificationToken}"
+    };
+  }
+
+  rpc GenerateVerificationToken(GenerateVerificationTokenRequest) returns (GenerateVerificationTokenResponse){
+    option (google.api.http) = {
+      get: "/authentication/generateVerificationToken/{email}"
+    };
+  }
+
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse){
+    option(google.api.http) = {
+      put:"/authentication/changePassword"
+      body:"auth"
+    };
+  }
+
   rpc Validate(ValidateRequest) returns (ValidateResponse){
     option (google.api.http) = {
       get: "/authentication/validate/{token}"
@@ -48,6 +67,16 @@ message LoginRequest {
   Auth auth = 1;
 }
 
+message PasswordlessLoginRequest{
+  string verificationToken = 1;
+}
+
+message PasswordlessLoginResponse{
+  int64 status = 1;
+  string error = 2;
+  string token = 3;
+}
+
 message LoginResponse {
   int64 status = 1;
   string error = 2;
@@ -69,6 +98,20 @@ message EditUsernameRequest{
 }
 
 message EditUsernameResponse{
+}
+
+message GenerateVerificationTokenRequest{
+  string email = 1;
+}
+
+message GenerateVerificationTokenResponse{
+}
+
+message ChangePasswordRequest{
+  Auth auth = 1;
+}
+
+message ChangePasswordResponse{
 
 }
 
@@ -76,6 +119,8 @@ message Auth{
   string id = 1;
   string username = 2;
   string password = 3;
+  string verificationToken = 4;
+  string email = 5;
 }
 
 
