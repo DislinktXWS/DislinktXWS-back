@@ -9,9 +9,11 @@ import (
 func mapAuth(authPb *pb.Auth) *domain.Auth {
 	id, _ := primitive.ObjectIDFromHex(authPb.Id)
 	auth := &domain.Auth{
-		Id:       id,
-		Username: authPb.Username,
-		Password: authPb.Password,
+		Id:                id,
+		Username:          authPb.Username,
+		Password:          authPb.Password,
+		VerificationToken: authPb.VerificationToken,
+		Email:             authPb.Email,
 	}
 	return auth
 }

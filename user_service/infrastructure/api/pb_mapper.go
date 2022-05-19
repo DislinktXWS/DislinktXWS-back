@@ -9,16 +9,17 @@ import (
 
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id:          user.Id.Hex(),
-		Name:        user.Name,
-		Surname:     user.Surname,
-		Username:    user.Username,
-		DateOfBirth: user.DateOfBirth,
-		Gender:      user.Gender,
-		Email:       user.Email,
-		Phone:       user.Phone,
-		Biography:   user.Biography,
-		IsPublic:    user.IsPublic,
+		Id:                user.Id.Hex(),
+		Name:              user.Name,
+		Surname:           user.Surname,
+		Username:          user.Username,
+		DateOfBirth:       user.DateOfBirth,
+		Gender:            user.Gender,
+		Email:             user.Email,
+		Phone:             user.Phone,
+		Biography:         user.Biography,
+		IsPublic:          user.IsPublic,
+		VerificationToken: user.VerificationToken,
 	}
 	return userPb
 }

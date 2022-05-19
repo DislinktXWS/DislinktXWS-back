@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/domain"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
@@ -9,7 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"io"
 	"net/http"
+	"net/smtp"
 	"strings"
 )
 
@@ -55,6 +58,100 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	return http.StatusOK, "", authentication.Id.Hex()
 }
 
+func (store *AuthMongoDBStore) GenerateVerificationToken(email string) error {
+	filter := bson.M{"email": email}
+	authentication, err := store.filterOne(filter)
+	if err != nil {
+		return err
+	}
+	token := EncodeToString(6)
+	store.authentications.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": authentication.Id},
+		bson.D{
+			{"$set", bson.D{
+				{"verificationToken", utils.HashPassword(token)},
+			}},
+		},
+	)
+	sendEmail(email, token)
+	return nil
+}
+
+func sendEmail(email, token string) {
+	// Sender data.
+	from := "pswapoteka@gmail.com"
+	password := "psw12345"
+
+	// Receiver email address.
+	to := []string{
+		email,
+	}
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Message.
+	fromMessage := fmt.Sprintf("From: <%s>\r\n", "sender@gmail.com")
+	toMessage := fmt.Sprintf("To: <%s>\r\n", "recipient@gmail.com")
+	subject := "Welcome to dislinkt!\r\n"
+	body := "In order to login, enter this token:" + token + "\r\nWelcome!\r\n"
+	msg := fromMessage + toMessage + subject + "\r\n" + body
+	fmt.Println(msg)
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, []byte(msg))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Email Sent Successfully!")
+}
+
+func EncodeToString(max int) string {
+	var table = [...]byte{'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
+	b := make([]byte, max)
+	n, err := io.ReadAtLeast(rand.Reader, b, max)
+	if n != max {
+		panic(err)
+	}
+	for i := 0; i < len(b); i++ {
+		b[i] = table[int(b[i])%len(table)]
+	}
+	return string(b)
+}
+
+func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int64, string, string) {
+	filter := bson.D{{}}
+	authentications, _ := store.filter(filter)
+	for _, auth := range authentications {
+		fmt.Println(auth.Username)
+		fmt.Println(utils.CheckPasswordHash(verificationToken, auth.VerificationToken))
+		fmt.Println(verificationToken)
+		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) {
+			store.authentications.UpdateOne(
+				context.TODO(),
+				bson.M{"_id": auth.Id},
+				bson.D{
+					{"$set", bson.D{
+						{"isVerified", true},
+					}},
+				},
+			)
+			secretKey := config.NewConfig().JWTSecretKey
+			wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
+			token, _ := wrapper.GenerateToken(auth)
+			return http.StatusOK, "", token
+		}
+
+	}
+	return http.StatusNotFound, "User not found", ""
+
+}
+
 func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) {
 	filter := bson.M{"username": auth.Username}
 	fmt.Println(auth.Username)
@@ -64,9 +161,9 @@ func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) 
 	if err != nil {
 		return http.StatusNotFound, "User not found", ""
 	}
-	/*if auth.Password != authentication.Password {
-		return http.StatusNotFound, "Wrong password", ""
-	}*/
+	if !authentication.IsVerified {
+		return http.StatusForbidden, "User not verified", ""
+	}
 	match := utils.CheckPasswordHash(auth.Password, authentication.Password)
 	if !match {
 		return http.StatusNotFound, "User not found", ""
@@ -100,6 +197,24 @@ func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth) (*domain.Auth, er
 		return auth, err
 	}
 	return auth, nil
+}
+
+func (store *AuthMongoDBStore) ChangePassword(auth *domain.Auth) error {
+	filter := bson.M{"username": auth.Username}
+	authentication, err := store.filterOne(filter)
+	if err != nil {
+		return err
+	}
+	store.authentications.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": authentication.Id},
+		bson.D{
+			{"$set", bson.D{
+				{"password", utils.HashPassword(auth.Password)},
+			}},
+		},
+	)
+	return nil
 }
 
 func (store *AuthMongoDBStore) filter(filter interface{}) ([]*domain.Auth, error) {

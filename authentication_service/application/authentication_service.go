@@ -27,3 +27,15 @@ func (service *AuthenticationService) Register(auth *domain.Auth) error {
 func (service *AuthenticationService) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
 	return service.store.EditUsername(auth)
 }
+
+func (service *AuthenticationService) PasswordlessLogin(verificationToken string) (int64, string, string) {
+	return service.store.PasswordlessLogin(verificationToken)
+}
+
+func (service *AuthenticationService) GenerateVerificationToken(email string) error {
+	return service.store.GenerateVerificationToken(email)
+}
+
+func (service *AuthenticationService) ChangePassword(auth *domain.Auth) error {
+	return service.store.ChangePassword(auth)
+}

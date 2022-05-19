@@ -5,20 +5,21 @@ import (
 )
 
 type User struct {
-	Id          primitive.ObjectID `bson:"_id,omitempty"`
-	Name        string             `bson:"name"`
-	Surname     string             `bson:"surname"`
-	Username    string             `bson:"username"`
-	DateOfBirth string             `bson:"dateOfBirth"`
-	Gender      string             `bson:"gender"`
-	Email       string             `bson:"email"`
-	Phone       string             `bson:"phone"`
-	Biography   string             `bson:"biography"`
-	IsPublic    bool               `bson:"isPublic"`
-	Education   []Education        `bson:"education"`
-	Experience  []Experience       `bson:"experience"`
-	Interests   []string           `bson:"interests"`
-	Skills      []Skill            `bson:"skills"`
+	Id                primitive.ObjectID `bson:"_id,omitempty"`
+	Name              string             `bson:"name"`
+	Surname           string             `bson:"surname"`
+	Username          string             `bson:"username"`
+	DateOfBirth       string             `bson:"dateOfBirth"`
+	Gender            string             `bson:"gender"`
+	Email             string             `bson:"email"`
+	Phone             string             `bson:"phone"`
+	Biography         string             `bson:"biography"`
+	IsPublic          bool               `bson:"isPublic"`
+	VerificationToken string             `bson:"verificationToken"`
+	Education         []Education        `bson:"education"`
+	Experience        []Experience       `bson:"experience"`
+	Interests         []string           `bson:"interests"`
+	Skills            []Skill            `bson:"skills"`
 }
 
 type Education struct {

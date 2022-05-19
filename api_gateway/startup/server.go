@@ -95,7 +95,10 @@ func (server *Server) Start() {
 		handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
 	)
 	listeningOn := server.config.Host + ":" + server.config.Port
-
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
 	http.ListenAndServe(listeningOn, ch(server.mux))
+	/*http.ListenAndServeTLS(listeningOn,
+	"C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\localhost.crt",
+	"C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\localhost.key",
+	ch(server.mux))*/
 }
