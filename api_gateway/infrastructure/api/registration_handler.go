@@ -42,19 +42,21 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 	}
 
 	/*newUserId*/
-	newUserId, error := handler.addUser(newUser)
+	newUserId, token, error := handler.addUser(newUser)
 	if error != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	e := handler.addUserNode(newUserId)
+	//samo dok se ne resi problem sa dockerom i neo4j je zakomentarisano, ogi <3
+	/*e := handler.addUserNode(newUserId)
 	if e != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
-	}
+	}*/
 
 	newUser.Id = newUserId
+	newUser.VerificationToken = token
 	response, err := json.Marshal(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,14 +66,13 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 	w.Write(response)
 }
 
-func (handler *RegistrationHandler) addUser(newUser domain.UserRegistration) (string, error) {
+func (handler *RegistrationHandler) addUser(newUser domain.UserRegistration) (string, string, error) {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 	UserPb := mapToUserPb(&newUser)
-
 	insertedUser, err := userClient.Insert(context.TODO(), &user_proto.InsertUserRequest{User: UserPb})
 
-	return insertedUser.User.Id, err
+	return insertedUser.User.Id, insertedUser.User.VerificationToken, err
 }
 func (handler *RegistrationHandler) addUserNode(userId string) error {
 

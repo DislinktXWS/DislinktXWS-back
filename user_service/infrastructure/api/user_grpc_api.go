@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/user_service"
 	"github.com/dislinktxws-back/user_service/application"
 
@@ -68,7 +69,6 @@ func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetP
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := mapNewUser(request.User)
-
 	users, _ := handler.service.GetAll()
 	exists := false
 	for _, currentUser := range users {
@@ -83,6 +83,7 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRe
 			return nil, err
 		}
 		UserPb := mapUser(newUser)
+		fmt.Println("Token:" + UserPb.VerificationToken)
 		response := &pb.InsertUserResponse{
 			User: UserPb,
 		}
