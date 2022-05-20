@@ -8,15 +8,16 @@ import (
 
 func mapToUserPb(user *domain.UserRegistration) *pbUser.User {
 	userPb := &pbUser.User{
-		Id:          user.Id,
-		Name:        user.Name,
-		Surname:     user.Surname,
-		Username:    user.Username,
-		DateOfBirth: user.DateOfBirth,
-		Gender:      user.Gender,
-		Email:       user.Email,
-		Phone:       user.Phone,
-		Biography:   user.Biography,
+		Id:                user.Id,
+		Name:              user.Name,
+		Surname:           user.Surname,
+		Username:          user.Username,
+		DateOfBirth:       user.DateOfBirth,
+		Gender:            user.Gender,
+		Email:             user.Email,
+		Phone:             user.Phone,
+		Biography:         user.Biography,
+		VerificationToken: user.VerificationToken,
 	}
 	return userPb
 }

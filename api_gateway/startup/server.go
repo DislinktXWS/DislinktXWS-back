@@ -91,8 +91,8 @@ func (server *Server) initCustomHandlers() {
 
 func (server *Server) Start() {
 	ch := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}),
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
-		handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Authorization", "Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
 	)
 	listeningOn := server.config.Host + ":" + server.config.Port
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
