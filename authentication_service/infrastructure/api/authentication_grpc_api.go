@@ -76,7 +76,17 @@ func (handler *AuthenticationHandler) ChangePassword(ctx context.Context, reques
 	return &pb.ChangePasswordResponse{}, nil
 }
 
-func (handler *AuthenticationHandler) GenerateVerificationToken(ctx context.Context, request *pb.GenerateVerificationTokenRequest) (*pb.GenerateVerificationTokenResponse, error) {
+func (handler *AuthenticationHandler) GenerateVerificationToken(ctx context.Context,
+	request *pb.GenerateVerificationTokenRequest) (*pb.GenerateVerificationTokenResponse, error) {
 	err := handler.service.GenerateVerificationToken(request.Email)
 	return &pb.GenerateVerificationTokenResponse{}, err
+}
+
+func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, request *pb.AccountRecoveryRequest) (*pb.AccountRecoveryResponse, error) {
+	status, err, token := handler.service.AccountRecovery(request.Email)
+	return &pb.AccountRecoveryResponse{
+		Status: status,
+		Error:  err,
+		Token:  token,
+	}, nil
 }

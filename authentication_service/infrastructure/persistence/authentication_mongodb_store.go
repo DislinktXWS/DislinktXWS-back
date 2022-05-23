@@ -124,13 +124,55 @@ func EncodeToString(max int) string {
 	return string(b)
 }
 
+func (store *AuthMongoDBStore) AccountRecovery(email string) (int64, string, string) {
+	filter := bson.M{"email": email}
+	authentication, err := store.filterOne(filter)
+	if err != nil {
+		return http.StatusNotFound, "User not found", ""
+	}
+	sendRecoveryEmail(email)
+	secretKey := config.NewConfig().JWTSecretKey
+	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
+	token, _ := wrapper.GenerateToken(authentication)
+	return http.StatusOK, "", token
+}
+
+func sendRecoveryEmail(email string) {
+	// Sender data.
+	from := "pswapoteka@gmail.com"
+	password := "psw12345"
+
+	// Receiver email address.
+	to := []string{
+		email,
+	}
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	link := "http://localhost:4200/changePassword"
+	subject := "Subject: Account recovery\n"
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body := "<html><body>Please, follow the link where you can change your password <a href=\" " + link + "\">here </a></body></html>"
+	msg := []byte(subject + mime + body)
+	fmt.Println(msg)
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, msg)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Email Sent Successfully!")
+}
+
 func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int64, string, string) {
 	filter := bson.D{{}}
 	authentications, _ := store.filter(filter)
 	for _, auth := range authentications {
-		fmt.Println(auth.Username)
-		fmt.Println(utils.CheckPasswordHash(verificationToken, auth.VerificationToken))
-		fmt.Println(verificationToken)
 		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) {
 			store.authentications.UpdateOne(
 				context.TODO(),

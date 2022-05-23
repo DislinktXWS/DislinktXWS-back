@@ -39,3 +39,7 @@ func (service *AuthenticationService) GenerateVerificationToken(email string) er
 func (service *AuthenticationService) ChangePassword(auth *domain.Auth) error {
 	return service.store.ChangePassword(auth)
 }
+
+func (service *AuthenticationService) AccountRecovery(email string) (int64, string, string) {
+	return service.store.AccountRecovery(email)
+}

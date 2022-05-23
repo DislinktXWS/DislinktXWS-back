@@ -8,4 +8,5 @@ type AuthenticationStore interface {
 	Register(auth *Auth) error
 	EditUsername(auth *Auth) (*Auth, error)
 	ChangePassword(auth *Auth) error
+	AccountRecovery(email string) (status int64, error string, token string)
 }

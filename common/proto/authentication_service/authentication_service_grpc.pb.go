@@ -25,6 +25,7 @@ type AuthenticationServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	PasswordlessLogin(ctx context.Context, in *PasswordlessLoginRequest, opts ...grpc.CallOption) (*PasswordlessLoginResponse, error)
 	GenerateVerificationToken(ctx context.Context, in *GenerateVerificationTokenRequest, opts ...grpc.CallOption) (*GenerateVerificationTokenResponse, error)
+	AccountRecovery(ctx context.Context, in *AccountRecoveryRequest, opts ...grpc.CallOption) (*AccountRecoveryResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
@@ -60,6 +61,15 @@ func (c *authenticationServiceClient) PasswordlessLogin(ctx context.Context, in 
 func (c *authenticationServiceClient) GenerateVerificationToken(ctx context.Context, in *GenerateVerificationTokenRequest, opts ...grpc.CallOption) (*GenerateVerificationTokenResponse, error) {
 	out := new(GenerateVerificationTokenResponse)
 	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/GenerateVerificationToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) AccountRecovery(ctx context.Context, in *AccountRecoveryRequest, opts ...grpc.CallOption) (*AccountRecoveryResponse, error) {
+	out := new(AccountRecoveryResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/AccountRecovery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,6 +119,7 @@ type AuthenticationServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	PasswordlessLogin(context.Context, *PasswordlessLoginRequest) (*PasswordlessLoginResponse, error)
 	GenerateVerificationToken(context.Context, *GenerateVerificationTokenRequest) (*GenerateVerificationTokenResponse, error)
+	AccountRecovery(context.Context, *AccountRecoveryRequest) (*AccountRecoveryResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
@@ -128,6 +139,9 @@ func (UnimplementedAuthenticationServiceServer) PasswordlessLogin(context.Contex
 }
 func (UnimplementedAuthenticationServiceServer) GenerateVerificationToken(context.Context, *GenerateVerificationTokenRequest) (*GenerateVerificationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateVerificationToken not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) AccountRecovery(context.Context, *AccountRecoveryRequest) (*AccountRecoveryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountRecovery not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
@@ -204,6 +218,24 @@ func _AuthenticationService_GenerateVerificationToken_Handler(srv interface{}, c
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).GenerateVerificationToken(ctx, req.(*GenerateVerificationTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_AccountRecovery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRecoveryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).AccountRecovery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/AccountRecovery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).AccountRecovery(ctx, req.(*AccountRecoveryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -298,6 +330,10 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateVerificationToken",
 			Handler:    _AuthenticationService_GenerateVerificationToken_Handler,
+		},
+		{
+			MethodName: "AccountRecovery",
+			Handler:    _AuthenticationService_AccountRecovery_Handler,
 		},
 		{
 			MethodName: "ChangePassword",
