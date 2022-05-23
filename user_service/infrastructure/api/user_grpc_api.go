@@ -72,7 +72,7 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRe
 	users, _ := handler.service.GetAll()
 	exists := false
 	for _, currentUser := range users {
-		if user.Id != currentUser.Id && user.Username == currentUser.Username {
+		if user.Id != currentUser.Id && (user.Username == currentUser.Username || user.Email == currentUser.Email) {
 			exists = true
 			break
 		}

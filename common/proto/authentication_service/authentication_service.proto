@@ -27,6 +27,12 @@ service AuthenticationService{
     };
   }
 
+  rpc AccountRecovery(AccountRecoveryRequest) returns (AccountRecoveryResponse){
+    option (google.api.http) = {
+      get: "/authentication/accountRecovery/{email}"
+    };
+  }
+
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse){
     option(google.api.http) = {
       put:"/authentication/changePassword"
@@ -112,7 +118,16 @@ message ChangePasswordRequest{
 }
 
 message ChangePasswordResponse{
+}
 
+message AccountRecoveryRequest{
+  string email = 1;
+}
+
+message AccountRecoveryResponse{
+  int64 status = 1;
+  string error = 2;
+  string token = 3;
 }
 
 message Auth{
