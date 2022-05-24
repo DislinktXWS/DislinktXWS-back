@@ -5,6 +5,7 @@ import (
 	"github.com/dislinktxws-back/authentication_service/application"
 	"github.com/dislinktxws-back/authentication_service/utils"
 	pb "github.com/dislinktxws-back/common/proto/authentication_service"
+	"time"
 )
 
 type AuthenticationHandler struct {
@@ -51,6 +52,7 @@ func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.
 	Auth := mapAuth(request.Auth)
 	Auth.Password = utils.HashPassword(Auth.Password)
 	Auth.IsVerified = false
+	Auth.VerificationCreationTime = time.Now()
 	err := handler.service.Register(Auth)
 	if err != nil {
 		return nil, err
@@ -83,10 +85,9 @@ func (handler *AuthenticationHandler) GenerateVerificationToken(ctx context.Cont
 }
 
 func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, request *pb.AccountRecoveryRequest) (*pb.AccountRecoveryResponse, error) {
-	status, err, token := handler.service.AccountRecovery(request.Email)
+	status, err := handler.service.AccountRecovery(request.Email)
 	return &pb.AccountRecoveryResponse{
 		Status: status,
 		Error:  err,
-		Token:  token,
 	}, nil
 }

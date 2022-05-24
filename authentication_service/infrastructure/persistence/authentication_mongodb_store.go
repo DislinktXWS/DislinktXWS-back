@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/smtp"
 	"strings"
+	"time"
 )
 
 const (
@@ -71,6 +72,7 @@ func (store *AuthMongoDBStore) GenerateVerificationToken(email string) error {
 		bson.D{
 			{"$set", bson.D{
 				{"verificationToken", utils.HashPassword(token)},
+				{"verificationCreationTime", time.Now()},
 			}},
 		},
 	)
@@ -124,20 +126,28 @@ func EncodeToString(max int) string {
 	return string(b)
 }
 
-func (store *AuthMongoDBStore) AccountRecovery(email string) (int64, string, string) {
+func (store *AuthMongoDBStore) AccountRecovery(email string) (int64, string) {
 	filter := bson.M{"email": email}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
-		return http.StatusNotFound, "User not found", ""
+		return http.StatusNotFound, "User not found"
 	}
-	sendRecoveryEmail(email)
-	secretKey := config.NewConfig().JWTSecretKey
-	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
-	token, _ := wrapper.GenerateToken(authentication)
-	return http.StatusOK, "", token
+	token := EncodeToString(6)
+	store.authentications.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": authentication.Id},
+		bson.D{
+			{"$set", bson.D{
+				{"verificationToken", utils.HashPassword(token)},
+				{"verificationCreationTime", time.Now()},
+			}},
+		},
+	)
+	sendRecoveryEmail(email, token)
+	return http.StatusOK, ""
 }
 
-func sendRecoveryEmail(email string) {
+func sendRecoveryEmail(email, token string) {
 	// Sender data.
 	from := "pswapoteka@gmail.com"
 	password := "psw12345"
@@ -151,7 +161,7 @@ func sendRecoveryEmail(email string) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
-	link := "http://localhost:4200/changePassword"
+	link := "http://localhost:4200/changePassword/" + token
 	subject := "Subject: Account recovery\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body := "<html><body>Please, follow the link where you can change your password <a href=\" " + link + "\">here </a></body></html>"
@@ -173,7 +183,8 @@ func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int6
 	filter := bson.D{{}}
 	authentications, _ := store.filter(filter)
 	for _, auth := range authentications {
-		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) {
+		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) &&
+			time.Now().Sub(auth.VerificationCreationTime).Minutes() <= 10 {
 			store.authentications.UpdateOne(
 				context.TODO(),
 				bson.M{"_id": auth.Id},

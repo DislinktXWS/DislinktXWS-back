@@ -40,6 +40,6 @@ func (service *AuthenticationService) ChangePassword(auth *domain.Auth) error {
 	return service.store.ChangePassword(auth)
 }
 
-func (service *AuthenticationService) AccountRecovery(email string) (int64, string, string) {
+func (service *AuthenticationService) AccountRecovery(email string) (int64, string) {
 	return service.store.AccountRecovery(email)
 }
