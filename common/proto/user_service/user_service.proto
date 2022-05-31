@@ -120,6 +120,13 @@ service UserService{
                         get: "/users/user/search/{search}"
                 };
         }
+
+        rpc SetPrivacy(SetPrivacyRequest) returns (SetPrivacyResponse){
+                option(google.api.http)  = {
+                        put: "/users/user/privacy/{id}"
+                        body: "private"
+                };
+        }
 }
 
 message GetRequest {
@@ -219,6 +226,14 @@ message GetInterestsResponse{
 message AddInterestRequest{
         string id = 1;
         string interest = 2;
+}
+
+message SetPrivacyRequest{
+        bool private =1;
+        string id = 2;
+}
+
+message SetPrivacyResponse{
 }
 
 message AddInterestResponse{

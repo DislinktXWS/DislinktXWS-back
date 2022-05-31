@@ -4,13 +4,14 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"io"
+	"net/smtp"
+
 	"github.com/dislinktxws-back/user_service/domain"
 	"github.com/dislinktxws-back/user_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"io"
-	"net/smtp"
 )
 
 const (
@@ -352,6 +353,19 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 		},
 	)
 	return user, err
+}
+
+func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": userId},
+		bson.D{
+			{"$set", bson.D{
+				{"isPublic", private},
+			}},
+		},
+	)
+	return err
 }
 
 func decode(cursor *mongo.Cursor) (orders []*domain.User, err error) {
