@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/dislinktxws-back/api_gateway/domain"
 	"github.com/dislinktxws-back/api_gateway/infrastructure/services"
 	connection_proto "github.com/dislinktxws-back/common/proto/connection_service"
@@ -49,11 +50,14 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 	}
 
 	//samo dok se ne resi problem sa dockerom i neo4j je zakomentarisano, ogi <3
-	/*e := handler.addUserNode(newUserId)
+
+	e := handler.addUserNode(newUserId)
 	if e != nil {
 		w.WriteHeader(http.StatusNotFound)
+		fmt.Println("*********************************************")
+		fmt.Println(e)
 		return
-	}*/
+	}
 
 	newUser.Id = newUserId
 	newUser.VerificationToken = token

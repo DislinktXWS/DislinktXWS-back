@@ -1,6 +1,6 @@
 package persistence
 
-import "github.com/neo4j/neo4j-go-driver/neo4j"
+import "github.com/neo4j/neo4j-go-driver/v4/neo4j"
 
 func requestConnectionTxFunc(connecting string, connected string) neo4j.TransactionWork {
 	return func(tx neo4j.Transaction) (interface{}, error) {
