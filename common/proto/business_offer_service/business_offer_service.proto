@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "module/common/business_offer";
+
+package business_offer;
+
+import "google/api/annotations.proto";
+
+service BusinessOffersService{
+  rpc AddBusinessOffer(InsertOfferRequest) returns (InsertOfferResponse) {
+    option (google.api.http) = {
+      post: "/offers/offer"
+      body: "offer"
+    };
+  }
+}
+
+message InsertOfferRequest {
+  string offer = 1;
+}
+
+message InsertOfferResponse{
+
+}
