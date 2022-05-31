@@ -6,7 +6,7 @@ replace github.com/dislinktxws-back/common => ../common
 
 require (
 	github.com/dislinktxws-back/common v0.0.0-00010101000000-000000000000
-	github.com/neo4j/neo4j-go-driver v1.8.3
+	github.com/neo4j/neo4j-go-driver/v4 v4.4.2
 	google.golang.org/grpc v1.46.0
 )
 

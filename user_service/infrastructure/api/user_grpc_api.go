@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+
 	pb "github.com/dislinktxws-back/common/proto/user_service"
 	"github.com/dislinktxws-back/user_service/application"
 
@@ -255,6 +256,15 @@ func (handler *UserHandler) AddSkill(ctx context.Context, request *pb.AddSkillRe
 		return nil, err
 	}
 	return &pb.AddSkillResponse{}, nil
+}
+
+func (handler *UserHandler) SetPrivacy(ctx context.Context, request *pb.SetPrivacyRequest) (*pb.SetPrivacyResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	err := handler.service.SetPrivacy(request.Private, id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SetPrivacyResponse{}, nil
 }
 
 func (handler *UserHandler) DeleteSkill(ctx context.Context, request *pb.DeleteSkillRequest) (*pb.DeleteSkillResponse, error) {

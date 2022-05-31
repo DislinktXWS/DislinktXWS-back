@@ -40,6 +40,7 @@ type UserServiceClient interface {
 	AddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*AddSkillResponse, error)
 	DeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*DeleteSkillResponse, error)
 	SearchProfiles(ctx context.Context, in *SearchProfilesRequest, opts ...grpc.CallOption) (*SearchProfilesResponse, error)
+	SetPrivacy(ctx context.Context, in *SetPrivacyRequest, opts ...grpc.CallOption) (*SetPrivacyResponse, error)
 }
 
 type userServiceClient struct {
@@ -212,6 +213,15 @@ func (c *userServiceClient) SearchProfiles(ctx context.Context, in *SearchProfil
 	return out, nil
 }
 
+func (c *userServiceClient) SetPrivacy(ctx context.Context, in *SetPrivacyRequest, opts ...grpc.CallOption) (*SetPrivacyResponse, error) {
+	out := new(SetPrivacyResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/SetPrivacy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -234,6 +244,7 @@ type UserServiceServer interface {
 	AddSkill(context.Context, *AddSkillRequest) (*AddSkillResponse, error)
 	DeleteSkill(context.Context, *DeleteSkillRequest) (*DeleteSkillResponse, error)
 	SearchProfiles(context.Context, *SearchProfilesRequest) (*SearchProfilesResponse, error)
+	SetPrivacy(context.Context, *SetPrivacyRequest) (*SetPrivacyResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -294,6 +305,9 @@ func (UnimplementedUserServiceServer) DeleteSkill(context.Context, *DeleteSkillR
 }
 func (UnimplementedUserServiceServer) SearchProfiles(context.Context, *SearchProfilesRequest) (*SearchProfilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchProfiles not implemented")
+}
+func (UnimplementedUserServiceServer) SetPrivacy(context.Context, *SetPrivacyRequest) (*SetPrivacyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPrivacy not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -632,6 +646,24 @@ func _UserService_SearchProfiles_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SetPrivacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetPrivacyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SetPrivacy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/SetPrivacy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SetPrivacy(ctx, req.(*SetPrivacyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -710,6 +742,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchProfiles",
 			Handler:    _UserService_SearchProfiles_Handler,
+		},
+		{
+			MethodName: "SetPrivacy",
+			Handler:    _UserService_SetPrivacy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

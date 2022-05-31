@@ -23,4 +23,5 @@ type UserStore interface {
 	AddSkill(skill *Skill, id primitive.ObjectID) (*Skill, error)
 	DeleteSkill(id primitive.ObjectID, index uint) error
 	SearchProfiles(search string) (*[]User, error)
+	SetPrivacy(public bool, id primitive.ObjectID) error
 }

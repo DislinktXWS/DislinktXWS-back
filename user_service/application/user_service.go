@@ -91,3 +91,7 @@ func (service *UserService) DeleteSkill(id primitive.ObjectID, index uint) error
 func (service *UserService) SearchProfiles(search string) (*[]domain.User, error) {
 	return service.store.SearchProfiles(search)
 }
+
+func (service *UserService) SetPrivacy(private bool, id primitive.ObjectID) error {
+	return service.store.SetPrivacy(private, id)
+}

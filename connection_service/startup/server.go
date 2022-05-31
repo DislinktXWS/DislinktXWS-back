@@ -11,15 +11,14 @@ import (
 	"github.com/dislinktxws-back/connection_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/connection_service/infrastructure/service"
 	"github.com/dislinktxws-back/connection_service/startup/config"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"log"
 	"net"
 	"strings"
-
-	"github.com/neo4j/neo4j-go-driver/neo4j"
-	"google.golang.org/grpc"
 )
 
 type Server struct {
