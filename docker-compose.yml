@@ -123,7 +123,7 @@ services:
     networks:
       - network
     environment:
-      - NEO4J_AUTH=neo4j/password
+      - NEO4J_AUTH=none
       - NEO4J_dbms_memory_pagecache_size=512M
 
 networks:
