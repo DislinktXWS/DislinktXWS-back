@@ -12,6 +12,18 @@ func NewBusinessOfferService(graph domain.BusinessOffersGraph) *BusinessOfferSer
 	}
 }
 
-func (service *BusinessOfferService) InsertBusinessOffer(offer *domain.BusinessOffer) error {
+func (service *BusinessOfferService) InsertBusinessOffer(offer *domain.BusinessOffer) (error, int64) {
 	return service.graph.InsertBusinessOffer(offer)
+}
+
+func (service *BusinessOfferService) InsertSkill(skill *domain.SkillDTO) error {
+	return service.graph.InsertSkill(skill)
+}
+
+func (service *BusinessOfferService) GetBusinessOffers() ([]*domain.BusinessOffer, error) {
+	return service.graph.GetBusinessOffers()
+}
+
+func (service *BusinessOfferService) GetOfferSkills(offerId int64) ([]*domain.Skill, error) {
+	return service.graph.GetOfferSkills(offerId)
 }

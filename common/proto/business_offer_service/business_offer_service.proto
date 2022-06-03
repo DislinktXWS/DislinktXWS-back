@@ -14,10 +14,16 @@ service BusinessOffersService{
     };
   }
 
-  rpc AddBusinessOfferSkill(InsertSkillsRequest) returns (InsertSkillsResponse) {
+  rpc InsertSkill(InsertSkillsRequest) returns (InsertSkillsResponse) {
     option (google.api.http) = {
       post: "/offers/skill"
       body: "skill"
+    };
+  }
+
+  rpc GetBusinessOffers(GetAllOffersRequest) returns (GetAllOffersResponse){
+    option (google.api.http) = {
+      get: "/offers/offers"
     };
   }
 }
@@ -27,7 +33,7 @@ message InsertOfferRequest {
 }
 
 message InsertOfferResponse{
-
+  int64 id = 1;
 }
 
 message InsertSkillsRequest{
@@ -38,16 +44,47 @@ message InsertSkillsResponse{
 
 }
 
+message GetAllOffersRequest {
+
+}
+
+message GetAllOffersResponse{
+  repeated GetBusinessOffer offers = 1;
+}
+
 message BusinessOffer{
   string authorId = 1;
   string name = 2;
   string position = 3;
   string description = 4;
+  string industry = 5;
+}
+
+message GetBusinessOffer{
+  int64 id = 1;
+  string authorId = 2;
+  string name = 3;
+  string position = 4;
+  string description = 5;
   string industry = 6;
+  repeated GetSkill skills = 7;
 }
 
 message Skill {
-  string authorId = 1;
+  int64 offerId = 1;
+  string name = 2;
+  enum SkillProficiency {
+    novice = 0;
+    advancedBeginner = 1;
+    proficient = 2;
+    expert = 3;
+    master = 4;
+  }
+  SkillProficiency proficiency = 3;
+}
+
+message GetSkill {
+  int64 id = 1;
   string name = 2;
   enum SkillProficiency {
     novice = 0;

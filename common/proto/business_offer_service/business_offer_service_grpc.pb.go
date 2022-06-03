@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BusinessOffersServiceClient interface {
 	InsertBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error)
-	AddBusinessOfferSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error)
+	InsertSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error)
+	GetBusinessOffers(ctx context.Context, in *GetAllOffersRequest, opts ...grpc.CallOption) (*GetAllOffersResponse, error)
 }
 
 type businessOffersServiceClient struct {
@@ -43,9 +44,18 @@ func (c *businessOffersServiceClient) InsertBusinessOffer(ctx context.Context, i
 	return out, nil
 }
 
-func (c *businessOffersServiceClient) AddBusinessOfferSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error) {
+func (c *businessOffersServiceClient) InsertSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error) {
 	out := new(InsertSkillsResponse)
-	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/AddBusinessOfferSkill", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/InsertSkill", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *businessOffersServiceClient) GetBusinessOffers(ctx context.Context, in *GetAllOffersRequest, opts ...grpc.CallOption) (*GetAllOffersResponse, error) {
+	out := new(GetAllOffersResponse)
+	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/GetBusinessOffers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +67,8 @@ func (c *businessOffersServiceClient) AddBusinessOfferSkill(ctx context.Context,
 // for forward compatibility
 type BusinessOffersServiceServer interface {
 	InsertBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error)
-	AddBusinessOfferSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error)
+	InsertSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error)
+	GetBusinessOffers(context.Context, *GetAllOffersRequest) (*GetAllOffersResponse, error)
 	mustEmbedUnimplementedBusinessOffersServiceServer()
 }
 
@@ -68,8 +79,11 @@ type UnimplementedBusinessOffersServiceServer struct {
 func (UnimplementedBusinessOffersServiceServer) InsertBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertBusinessOffer not implemented")
 }
-func (UnimplementedBusinessOffersServiceServer) AddBusinessOfferSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddBusinessOfferSkill not implemented")
+func (UnimplementedBusinessOffersServiceServer) InsertSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertSkill not implemented")
+}
+func (UnimplementedBusinessOffersServiceServer) GetBusinessOffers(context.Context, *GetAllOffersRequest) (*GetAllOffersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBusinessOffers not implemented")
 }
 func (UnimplementedBusinessOffersServiceServer) mustEmbedUnimplementedBusinessOffersServiceServer() {}
 
@@ -102,20 +116,38 @@ func _BusinessOffersService_InsertBusinessOffer_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BusinessOffersService_AddBusinessOfferSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BusinessOffersService_InsertSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertSkillsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BusinessOffersServiceServer).AddBusinessOfferSkill(ctx, in)
+		return srv.(BusinessOffersServiceServer).InsertSkill(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/business_offer.BusinessOffersService/AddBusinessOfferSkill",
+		FullMethod: "/business_offer.BusinessOffersService/InsertSkill",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BusinessOffersServiceServer).AddBusinessOfferSkill(ctx, req.(*InsertSkillsRequest))
+		return srv.(BusinessOffersServiceServer).InsertSkill(ctx, req.(*InsertSkillsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BusinessOffersService_GetBusinessOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllOffersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BusinessOffersServiceServer).GetBusinessOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/business_offer.BusinessOffersService/GetBusinessOffers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BusinessOffersServiceServer).GetBusinessOffers(ctx, req.(*GetAllOffersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,8 +164,12 @@ var BusinessOffersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BusinessOffersService_InsertBusinessOffer_Handler,
 		},
 		{
-			MethodName: "AddBusinessOfferSkill",
-			Handler:    _BusinessOffersService_AddBusinessOfferSkill_Handler,
+			MethodName: "InsertSkill",
+			Handler:    _BusinessOffersService_InsertSkill_Handler,
+		},
+		{
+			MethodName: "GetBusinessOffers",
+			Handler:    _BusinessOffersService_GetBusinessOffers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

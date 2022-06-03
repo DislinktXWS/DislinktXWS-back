@@ -1,7 +1,7 @@
 package domain
 
 type BusinessOffer struct {
-	Id          int
+	Id          int64
 	AuthorId    string
 	Name        string
 	Position    string
@@ -10,8 +10,13 @@ type BusinessOffer struct {
 }
 
 type Skill struct {
-	Id          int
-	OfferId     int
+	Id          int64
+	Name        string
+	Proficiency SkillProficiency
+}
+
+type SkillDTO struct {
+	OfferId     int64
 	Name        string
 	Proficiency SkillProficiency
 }
