@@ -11,3 +11,7 @@ func NewBusinessOfferService(graph domain.BusinessOffersGraph) *BusinessOfferSer
 		graph: graph,
 	}
 }
+
+func (service *BusinessOfferService) InsertBusinessOffer(offer *domain.BusinessOffer) error {
+	return service.graph.InsertBusinessOffer(offer)
+}

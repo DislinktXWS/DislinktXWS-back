@@ -7,18 +7,54 @@ package business_offer;
 import "google/api/annotations.proto";
 
 service BusinessOffersService{
-  rpc AddBusinessOffer(InsertOfferRequest) returns (InsertOfferResponse) {
+  rpc InsertBusinessOffer(InsertOfferRequest) returns (InsertOfferResponse) {
     option (google.api.http) = {
       post: "/offers/offer"
       body: "offer"
     };
   }
+
+  rpc AddBusinessOfferSkill(InsertSkillsRequest) returns (InsertSkillsResponse) {
+    option (google.api.http) = {
+      post: "/offers/skill"
+      body: "skill"
+    };
+  }
 }
 
 message InsertOfferRequest {
-  string offer = 1;
+  BusinessOffer offer = 1;
 }
 
 message InsertOfferResponse{
 
+}
+
+message InsertSkillsRequest{
+  Skill skill = 1;
+}
+
+message InsertSkillsResponse{
+
+}
+
+message BusinessOffer{
+  string authorId = 1;
+  string name = 2;
+  string position = 3;
+  string description = 4;
+  string industry = 6;
+}
+
+message Skill {
+  string authorId = 1;
+  string name = 2;
+  enum SkillProficiency {
+    novice = 0;
+    advancedBeginner = 1;
+    proficient = 2;
+    expert = 3;
+    master = 4;
+  }
+  SkillProficiency proficiency = 3;
 }

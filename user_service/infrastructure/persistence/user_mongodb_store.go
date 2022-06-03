@@ -261,8 +261,8 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 func sendEmail(email, token string) {
 	// Sender data.
-	from := "pswapoteka@gmail.com"
-	password := "psw12345"
+	from := "fishingbookernsm@hotmail.com"
+	password := "ninasaramarija123"
 
 	// Receiver email address.
 	to := []string{
@@ -270,7 +270,7 @@ func sendEmail(email, token string) {
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
+	smtpHost := "smtp.office365.com"
 	smtpPort := "587"
 
 	// Message.

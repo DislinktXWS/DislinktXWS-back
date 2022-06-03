@@ -22,7 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BusinessOffersServiceClient interface {
-	AddBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error)
+	InsertBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error)
+	AddBusinessOfferSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error)
 }
 
 type businessOffersServiceClient struct {
@@ -33,9 +34,18 @@ func NewBusinessOffersServiceClient(cc grpc.ClientConnInterface) BusinessOffersS
 	return &businessOffersServiceClient{cc}
 }
 
-func (c *businessOffersServiceClient) AddBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error) {
+func (c *businessOffersServiceClient) InsertBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error) {
 	out := new(InsertOfferResponse)
-	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/AddBusinessOffer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/InsertBusinessOffer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *businessOffersServiceClient) AddBusinessOfferSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error) {
+	out := new(InsertSkillsResponse)
+	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/AddBusinessOfferSkill", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +56,8 @@ func (c *businessOffersServiceClient) AddBusinessOffer(ctx context.Context, in *
 // All implementations must embed UnimplementedBusinessOffersServiceServer
 // for forward compatibility
 type BusinessOffersServiceServer interface {
-	AddBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error)
+	InsertBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error)
+	AddBusinessOfferSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error)
 	mustEmbedUnimplementedBusinessOffersServiceServer()
 }
 
@@ -54,8 +65,11 @@ type BusinessOffersServiceServer interface {
 type UnimplementedBusinessOffersServiceServer struct {
 }
 
-func (UnimplementedBusinessOffersServiceServer) AddBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddBusinessOffer not implemented")
+func (UnimplementedBusinessOffersServiceServer) InsertBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertBusinessOffer not implemented")
+}
+func (UnimplementedBusinessOffersServiceServer) AddBusinessOfferSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBusinessOfferSkill not implemented")
 }
 func (UnimplementedBusinessOffersServiceServer) mustEmbedUnimplementedBusinessOffersServiceServer() {}
 
@@ -70,20 +84,38 @@ func RegisterBusinessOffersServiceServer(s grpc.ServiceRegistrar, srv BusinessOf
 	s.RegisterService(&BusinessOffersService_ServiceDesc, srv)
 }
 
-func _BusinessOffersService_AddBusinessOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BusinessOffersService_InsertBusinessOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertOfferRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BusinessOffersServiceServer).AddBusinessOffer(ctx, in)
+		return srv.(BusinessOffersServiceServer).InsertBusinessOffer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/business_offer.BusinessOffersService/AddBusinessOffer",
+		FullMethod: "/business_offer.BusinessOffersService/InsertBusinessOffer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BusinessOffersServiceServer).AddBusinessOffer(ctx, req.(*InsertOfferRequest))
+		return srv.(BusinessOffersServiceServer).InsertBusinessOffer(ctx, req.(*InsertOfferRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BusinessOffersService_AddBusinessOfferSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertSkillsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BusinessOffersServiceServer).AddBusinessOfferSkill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/business_offer.BusinessOffersService/AddBusinessOfferSkill",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BusinessOffersServiceServer).AddBusinessOfferSkill(ctx, req.(*InsertSkillsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +128,12 @@ var BusinessOffersService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BusinessOffersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddBusinessOffer",
-			Handler:    _BusinessOffersService_AddBusinessOffer_Handler,
+			MethodName: "InsertBusinessOffer",
+			Handler:    _BusinessOffersService_InsertBusinessOffer_Handler,
+		},
+		{
+			MethodName: "AddBusinessOfferSkill",
+			Handler:    _BusinessOffersService_AddBusinessOfferSkill_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

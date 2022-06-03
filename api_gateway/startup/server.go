@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/handlers"
 
+	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
 	postGw "github.com/dislinktxws-back/common/proto/post_service"
 	userGw "github.com/dislinktxws-back/common/proto/user_service"
@@ -54,6 +55,12 @@ func (server *Server) initHandlers() {
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
+	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
