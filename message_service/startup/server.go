@@ -74,7 +74,7 @@ func (server *Server) initMessageHandler(service *application.MessageService) *a
 	return api.NewMessageHandler(service)
 }
 
-func (server *Server) startGrpcServer(userHandler *api.MessageHandler) {
+func (server *Server) startGrpcServer(massageHandler *api.MessageHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -82,7 +82,7 @@ func (server *Server) startGrpcServer(userHandler *api.MessageHandler) {
 	grpcServer := grpc.NewServer(
 		withServerUnaryInterceptor(),
 	)
-	//message_service.RegisterMessageServiceServer(grpcServer, userHandler)
+	/*message_service.RegisterMessageServiceServer(grpcServer, massageHandler)*/
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
