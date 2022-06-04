@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"github.com/dislinktxws-back/user_service/domain"
+	"github.com/dislinktxws-back/message_service/domain"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
