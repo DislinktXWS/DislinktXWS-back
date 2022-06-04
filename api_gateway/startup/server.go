@@ -74,6 +74,9 @@ func (server *Server) initCustomHandlers() {
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
 
+	connectUserAgentHandler := api.NewConnectUserAgentsHandler(userEndpoint)
+	connectUserAgentHandler.Init(server.mux)
+
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
 

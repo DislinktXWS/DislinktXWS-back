@@ -38,6 +38,19 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	return response, nil
 }
 
+func (handler *UserHandler) GetByUsername(ctx context.Context, request *pb.GetByUsernameRequest) (*pb.GetByUsernameResponse, error) {
+	username := request.Username
+	User, err := handler.service.GetByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	UserPb := mapUser(User)
+	response := &pb.GetByUsernameResponse{
+		User: UserPb,
+	}
+	return response, nil
+}
+
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	Users, err := handler.service.GetAll()
 	if err != nil {
@@ -115,6 +128,12 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 		}
 	}
 	return &pb.EditUserResponse{}, nil
+}
+
+func (handler *UserHandler) SetApiKey(ctx context.Context, request *pb.SetApiKeyRequest) (*pb.SetApiKeyResponse, error) {
+	apiKey := mapApiKey(request)
+	error := handler.service.SetApiKey(apiKey)
+	return &pb.SetApiKeyResponse{}, error
 }
 
 func (handler *UserHandler) GetEducation(ctx context.Context, request *pb.GetEducationRequest) (*pb.GetEducationResponse, error) {

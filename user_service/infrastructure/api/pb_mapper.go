@@ -20,6 +20,7 @@ func mapUser(user *domain.User) *pb.User {
 		Biography:         user.Biography,
 		IsPublic:          user.IsPublic,
 		VerificationToken: user.VerificationToken,
+		ApiKey:            user.ApiKey,
 	}
 	return userPb
 }
@@ -78,6 +79,14 @@ func mapAddExperience(experiencePb *pb.Experience) *domain.Experience {
 		Description: experiencePb.Description,
 	}
 	return experience
+}
+
+func mapApiKey(apiKeyPb *pb.SetApiKeyRequest) *domain.ApiKeyDto {
+	apiKey := &domain.ApiKeyDto{
+		ApiKey:   apiKeyPb.ApiKey,
+		Username: apiKeyPb.Username,
+	}
+	return apiKey
 }
 
 func mapAddSkill(skillPb *pb.Skill) *domain.Skill {

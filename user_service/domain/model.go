@@ -20,6 +20,7 @@ type User struct {
 	Experience        []Experience       `bson:"experience"`
 	Interests         []string           `bson:"interests"`
 	Skills            []Skill            `bson:"skills"`
+	ApiKey            string             `bson:"apiKey"`
 }
 
 type Education struct {
@@ -71,4 +72,9 @@ func (proficiency SkillProficiency) String() string {
 	}
 
 	return "unknown"
+}
+
+type ApiKeyDto struct {
+	Username string `bson:"username"`
+	ApiKey   string `bson:"apiKey"`
 }

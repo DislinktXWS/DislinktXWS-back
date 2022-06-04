@@ -37,3 +37,8 @@ type Comment struct {
 	User    string
 	Content string
 }
+
+type ApiKey struct {
+	Username string
+	ApiKey   string
+}

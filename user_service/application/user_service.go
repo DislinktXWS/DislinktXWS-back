@@ -20,6 +20,10 @@ func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
 	return service.store.Get(id)
 }
 
+func (service *UserService) GetByUsername(username string) (*domain.User, error) {
+	return service.store.GetByUsername(username)
+}
+
 func (service *UserService) GetAll() ([]*domain.User, error) {
 	return service.store.GetAll()
 }
@@ -38,6 +42,10 @@ func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 
 func (service *UserService) EditUsername(user *domain.User) (*domain.User, error) {
 	return service.store.EditUsername(user)
+}
+
+func (service *UserService) SetApiKey(apiKeyDto *domain.ApiKeyDto) error {
+	return service.store.SetApiKey(apiKeyDto)
 }
 
 func (service *UserService) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {

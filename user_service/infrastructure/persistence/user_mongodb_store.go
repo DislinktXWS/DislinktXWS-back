@@ -228,6 +228,11 @@ func (store *UserMongoDBStore) Get(id primitive.ObjectID) (*domain.User, error) 
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, error) {
+	filter := bson.M{"username": username}
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)
@@ -353,6 +358,21 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 		},
 	)
 	return user, err
+}
+
+func (store *UserMongoDBStore) SetApiKey(apiKey *domain.ApiKeyDto) error {
+	fmt.Println("Api key" + apiKey.ApiKey)
+	fmt.Println(apiKey.Username)
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"username": apiKey.Username},
+		bson.D{
+			{"$set", bson.D{
+				{"apiKey", apiKey.ApiKey},
+			}},
+		},
+	)
+	return err
 }
 
 func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {
