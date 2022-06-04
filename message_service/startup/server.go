@@ -82,7 +82,7 @@ func (server *Server) startGrpcServer(userHandler *api.MessageHandler) {
 	grpcServer := grpc.NewServer(
 		withServerUnaryInterceptor(),
 	)
-	message_service.RegisterMessageServiceServer(grpcServer, userHandler)
+	//message_service.RegisterMessageServiceServer(grpcServer, userHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
