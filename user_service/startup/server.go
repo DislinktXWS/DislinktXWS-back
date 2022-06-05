@@ -101,7 +101,8 @@ func serverInterceptor(ctx context.Context,
 	fmt.Println(info.FullMethod)
 	if info.FullMethod != "/users.UserService/GetPublicUsers" && info.FullMethod != "/users.UserService/SearchProfiles" &&
 		info.FullMethod != "/users.UserService/Insert" && info.FullMethod != "/users.UserService/Get" &&
-		info.FullMethod != "/users.UserService/GetByUsername" {
+		info.FullMethod != "/users.UserService/GetByUsername" &&
+		info.FullMethod != "/users.UserService/SetApiKey" {
 		if err := authorize(ctx); err != nil {
 			return nil, err
 		}

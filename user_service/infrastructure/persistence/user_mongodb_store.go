@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
+	r "math/rand"
 	"net/smtp"
 
 	"github.com/dislinktxws-back/user_service/domain"
@@ -360,8 +361,19 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 	return user, err
 }
 
+func RandStringRunes(n int) string {
+
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[r.Int63()%int64(len(letters))]
+	}
+	return string(b)
+}
+
 func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
-	apiKey := "abcd"
+	apiKey := RandStringRunes(10)
 	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"username": username},
