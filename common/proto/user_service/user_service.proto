@@ -136,7 +136,7 @@ service UserService{
 
         rpc SetApiKey(SetApiKeyRequest) returns (SetApiKeyResponse){
                 option(google.api.http)  = {
-                        put: "/users/user/apiKey/{username}/{apiKey}"
+                        put: "/users/user/apiKey/{username}"
                 };
         }
 }
@@ -258,10 +258,10 @@ message SetPrivacyResponse{
 
 message SetApiKeyRequest{
         string username = 1;
-        string apiKey = 2;
 }
 
 message SetApiKeyResponse{
+        string apiKey = 1;
 }
 
 message AddInterestResponse{

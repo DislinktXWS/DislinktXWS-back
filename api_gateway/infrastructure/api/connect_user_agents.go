@@ -47,12 +47,6 @@ func (handler *ConnectUserAgentsHandler) ConnectUser(w http.ResponseWriter, r *h
 	id := user.User.Id
 	fmt.Println("ID:" + id)
 
-	userClient2 := services.NewUserClient(handler.userClientAddress)
-	_, error := userClient2.SetApiKey(context.TODO(), &user_proto.SetApiKeyRequest{ApiKey: apiKey.ApiKey, Username: apiKey.Username})
-	if error != nil {
-		return
-	}
-
 	response, err := json.Marshal("Success")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

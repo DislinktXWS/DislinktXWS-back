@@ -131,9 +131,8 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 }
 
 func (handler *UserHandler) SetApiKey(ctx context.Context, request *pb.SetApiKeyRequest) (*pb.SetApiKeyResponse, error) {
-	apiKey := mapApiKey(request)
-	error := handler.service.SetApiKey(apiKey)
-	return &pb.SetApiKeyResponse{}, error
+	apiKey, error := handler.service.SetApiKey(request.Username)
+	return &pb.SetApiKeyResponse{ApiKey: apiKey}, error
 }
 
 func (handler *UserHandler) GetEducation(ctx context.Context, request *pb.GetEducationRequest) (*pb.GetEducationResponse, error) {

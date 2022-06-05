@@ -11,7 +11,7 @@ type UserStore interface {
 	DeleteAll()
 	EditUser(user *User) (*User, error)
 	EditUsername(user *User) (*User, error)
-	SetApiKey(apiKeyDto *ApiKeyDto) error
+	SetApiKey(username string) (string, error)
 	GetEducation(id primitive.ObjectID) (*[]Education, error)
 	AddEducation(education *Education, id primitive.ObjectID) (*Education, error)
 	DeleteEducation(id primitive.ObjectID, index uint) error

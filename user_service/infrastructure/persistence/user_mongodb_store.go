@@ -360,19 +360,18 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 	return user, err
 }
 
-func (store *UserMongoDBStore) SetApiKey(apiKey *domain.ApiKeyDto) error {
-	fmt.Println("Api key" + apiKey.ApiKey)
-	fmt.Println(apiKey.Username)
+func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
+	apiKey := "abcd"
 	_, err := store.users.UpdateOne(
 		context.TODO(),
-		bson.M{"username": apiKey.Username},
+		bson.M{"username": username},
 		bson.D{
 			{"$set", bson.D{
-				{"apiKey", apiKey.ApiKey},
+				{"apiKey", apiKey},
 			}},
 		},
 	)
-	return err
+	return apiKey, err
 }
 
 func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {

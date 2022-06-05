@@ -44,8 +44,9 @@ func (service *UserService) EditUsername(user *domain.User) (*domain.User, error
 	return service.store.EditUsername(user)
 }
 
-func (service *UserService) SetApiKey(apiKeyDto *domain.ApiKeyDto) error {
-	return service.store.SetApiKey(apiKeyDto)
+func (service *UserService) SetApiKey(username string) (string, error) {
+	apiKey, _ := service.store.SetApiKey(username)
+	return apiKey, nil
 }
 
 func (service *UserService) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
