@@ -20,6 +20,12 @@ service UserService{
                 };
         }
 
+        rpc GetByApiKey(GetByApiKeyRequest) returns(GetByApiKeyResponse) {
+                option (google.api.http) = {
+                        get: "/users/userByApiKey/{apiKey}"
+                };
+        }
+
         rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         	      option (google.api.http) = {
 			                  get: "/users/user"
@@ -154,6 +160,14 @@ message GetByUsernameRequest {
 }
 
 message GetByUsernameResponse {
+        User user = 1;
+}
+
+message GetByApiKeyRequest {
+        string apiKey = 1;
+}
+
+message GetByApiKeyResponse {
         User user = 1;
 }
 

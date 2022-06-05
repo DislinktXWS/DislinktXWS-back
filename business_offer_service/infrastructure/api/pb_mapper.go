@@ -8,7 +8,6 @@ import (
 
 func mapNewBusinessOffer(offerPb *pb.BusinessOffer) *domain.BusinessOffer {
 	businessOffer := &domain.BusinessOffer{
-		Id:          0,
 		AuthorId:    offerPb.AuthorId,
 		Name:        offerPb.Name,
 		Position:    offerPb.Position,

@@ -42,6 +42,23 @@ services:
     networks:
       - network
 
+  post_service:
+    image: post_service
+    container_name: post_service
+    build:
+      context: .
+      dockerfile: ./post_service/Dockerfile
+    restart: on-failure
+    environment:
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+      POST_DB_HOST: ${POST_DB_HOST}
+      POST_DB_PORT: ${POST_DB_PORT}
+    depends_on:
+      - post_db
+    networks:
+      - network
+
   authentication_service:
     image: authentication_service
     container_name: authentication_service
@@ -59,9 +76,54 @@ services:
     networks:
       - network
 
+  connection_service:
+    image: connection_service
+    container_name: connection_service
+    build:
+      context: .
+      dockerfile: ./connection_service/Dockerfile
+    restart: on-failure
+    environment:
+      - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
+      - CONNECTION_DB_PORT=${CONNECTION_DB_PORT}
+      - CONNECTION_SERVICE_PORT=${CONNECTION_SERVICE_PORT}
+      - CONNECTION_SERVICE_HOST=${CONNECTION_SERVICE_HOST}
+      - CONNECTION_DB_USER=${CONNECTION_DB_USER}
+      - CONNECTION_DB_PASS=${CONNECTION_DB_PASS}
+    depends_on:
+      - neo4j
+    networks:
+      - network
+
+  business_offer_service:
+    image: business_offer_service
+    container_name: business_offer_service
+    build:
+      context: .
+      dockerfile: ./business_offer_service/Dockerfile
+    restart: on-failure
+    environment:
+      - BUSINESS_OFFER_DB_HOST=${BUSINESS_OFFER_DB_HOST}
+      - BUSINESS_OFFER_DB_PORT=${BUSINESS_OFFER_DB_PORT}
+      - BUSINESS_OFFER_SERVICE_HOST=${BUSINESS_OFFER_SERVICE_HOST}
+      - BUSINESS_OFFER_SERVICE_PORT=${BUSINESS_OFFER_SERVICE_PORT}
+      - BUSINESS_OFFER_DB_USER=${BUSINESS_OFFER_DB_USER}
+      - BUSINESS_OFFER_DB_PASS=${BUSINESS_OFFER_DB_PASS}
+    depends_on:
+      - neo4jA
+    networks:
+      - network
+
   user_db:
     image: mongo
     container_name: user_db
+    restart: on-failure
+    networks:
+      - network
+
+  post_db:
+    image: mongo
+    container_name: post_db
     restart: on-failure
     networks:
       - network
@@ -73,6 +135,29 @@ services:
     networks:
       - network
 
+  neo4j:
+    image: neo4j:4.3.3-community
+    container_name: neo4j
+    ports:
+      - "27474:7474"
+      - "27687:7687"
+    networks:
+      - network
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_memory_pagecache_size=512M
+
+  neo4jA:
+    image: neo4j:4.3.3-community
+    container_name: neo4jA
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - network
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_memory_pagecache_size=512M
 
 networks:
   network:

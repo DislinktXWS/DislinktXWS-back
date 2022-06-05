@@ -234,6 +234,11 @@ func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, err
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByApiKey(apiKey string) (*domain.User, error) {
+	filter := bson.M{"apiKey": apiKey}
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)

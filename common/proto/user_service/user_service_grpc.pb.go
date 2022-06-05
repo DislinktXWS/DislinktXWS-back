@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetByUsername(ctx context.Context, in *GetByUsernameRequest, opts ...grpc.CallOption) (*GetByUsernameResponse, error)
+	GetByApiKey(ctx context.Context, in *GetByApiKeyRequest, opts ...grpc.CallOption) (*GetByApiKeyResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetPublicUsers(ctx context.Context, in *GetPublicUsersRequest, opts ...grpc.CallOption) (*GetPublicUsersResponse, error)
 	Insert(ctx context.Context, in *InsertUserRequest, opts ...grpc.CallOption) (*InsertUserResponse, error)
@@ -65,6 +66,15 @@ func (c *userServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grp
 func (c *userServiceClient) GetByUsername(ctx context.Context, in *GetByUsernameRequest, opts ...grpc.CallOption) (*GetByUsernameResponse, error) {
 	out := new(GetByUsernameResponse)
 	err := c.cc.Invoke(ctx, "/users.UserService/GetByUsername", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetByApiKey(ctx context.Context, in *GetByApiKeyRequest, opts ...grpc.CallOption) (*GetByApiKeyResponse, error) {
+	out := new(GetByApiKeyResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetByApiKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -248,6 +258,7 @@ func (c *userServiceClient) SetApiKey(ctx context.Context, in *SetApiKeyRequest,
 type UserServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetByUsername(context.Context, *GetByUsernameRequest) (*GetByUsernameResponse, error)
+	GetByApiKey(context.Context, *GetByApiKeyRequest) (*GetByApiKeyResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetPublicUsers(context.Context, *GetPublicUsersRequest) (*GetPublicUsersResponse, error)
 	Insert(context.Context, *InsertUserRequest) (*InsertUserResponse, error)
@@ -279,6 +290,9 @@ func (UnimplementedUserServiceServer) Get(context.Context, *GetRequest) (*GetRes
 }
 func (UnimplementedUserServiceServer) GetByUsername(context.Context, *GetByUsernameRequest) (*GetByUsernameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByUsername not implemented")
+}
+func (UnimplementedUserServiceServer) GetByApiKey(context.Context, *GetByApiKeyRequest) (*GetByApiKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByApiKey not implemented")
 }
 func (UnimplementedUserServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
@@ -382,6 +396,24 @@ func _UserService_GetByUsername_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetByUsername(ctx, req.(*GetByUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetByApiKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByApiKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetByApiKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetByApiKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetByApiKey(ctx, req.(*GetByApiKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -742,6 +774,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByUsername",
 			Handler:    _UserService_GetByUsername_Handler,
+		},
+		{
+			MethodName: "GetByApiKey",
+			Handler:    _UserService_GetByApiKey_Handler,
 		},
 		{
 			MethodName: "GetAll",

@@ -20,6 +20,10 @@ func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
 	return service.store.Get(id)
 }
 
+func (service *UserService) GetByApiKey(apiKey string) (*domain.User, error) {
+	return service.store.GetByApiKey(apiKey)
+}
+
 func (service *UserService) GetByUsername(username string) (*domain.User, error) {
 	return service.store.GetByUsername(username)
 }

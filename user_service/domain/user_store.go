@@ -5,6 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type UserStore interface {
 	Get(id primitive.ObjectID) (*User, error)
 	GetByUsername(username string) (*User, error)
+	GetByApiKey(apiKey string) (*User, error)
 	GetAll() ([]*User, error)
 	GetPublicUsers() ([]*User, error)
 	Insert(user *User) (error, *User)

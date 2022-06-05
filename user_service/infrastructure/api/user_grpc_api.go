@@ -51,6 +51,19 @@ func (handler *UserHandler) GetByUsername(ctx context.Context, request *pb.GetBy
 	return response, nil
 }
 
+func (handler *UserHandler) GetByApiKey(ctx context.Context, request *pb.GetByApiKeyRequest) (*pb.GetByApiKeyResponse, error) {
+	apiKey := request.ApiKey
+	User, err := handler.service.GetByApiKey(apiKey)
+	if err != nil {
+		return nil, err
+	}
+	UserPb := mapUser(User)
+	response := &pb.GetByApiKeyResponse{
+		User: UserPb,
+	}
+	return response, nil
+}
+
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	Users, err := handler.service.GetAll()
 	if err != nil {

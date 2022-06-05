@@ -70,12 +70,16 @@ func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
 
 	connectUserAgentHandler := api.NewConnectUserAgentsHandler(userEndpoint)
 	connectUserAgentHandler.Init(server.mux)
+
+	shareBusinessOffer := api.NewShareBusinessOfferHandler(userEndpoint, businessOfferEndpoint)
+	shareBusinessOffer.Init(server.mux)
 
 	userConnectionsHandler := api.NewUserConnectionsHandler(userEndpoint, connectionEndpoint)
 	userConnectionsHandler.Init(server.mux)
