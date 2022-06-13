@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+option go_package = "module/common/business_offer";
+
+package business_offer;
+
+import "google/api/annotations.proto";
+
+service BusinessOffersService{
+  rpc InsertBusinessOffer(InsertOfferRequest) returns (InsertOfferResponse) {
+    option (google.api.http) = {
+      post: "/offers/offer"
+      body: "offer"
+    };
+  }
+
+  rpc InsertSkill(InsertSkillsRequest) returns (InsertSkillsResponse) {
+    option (google.api.http) = {
+      post: "/offers/skill"
+      body: "skill"
+    };
+  }
+
+  rpc GetBusinessOffers(GetAllOffersRequest) returns (GetAllOffersResponse){
+    option (google.api.http) = {
+      get: "/offers/offers"
+    };
+  }
+}
+
+message InsertOfferRequest {
+  BusinessOffer offer = 1;
+}
+
+message InsertOfferResponse{
+  int64 id = 1;
+}
+
+message InsertSkillsRequest{
+  Skill skill = 1;
+}
+
+message InsertSkillsResponse{
+
+}
+
+message GetAllOffersRequest {
+
+}
+
+message GetAllOffersResponse{
+  repeated GetBusinessOffer offers = 1;
+}
+
+message BusinessOffer{
+  string authorId = 1;
+  string name = 2;
+  string position = 3;
+  string description = 4;
+  string industry = 5;
+}
+
+message GetBusinessOffer{
+  int64 id = 1;
+  string authorId = 2;
+  string name = 3;
+  string position = 4;
+  string description = 5;
+  string industry = 6;
+  repeated GetSkill skills = 7;
+}
+
+message Skill {
+  int64 offerId = 1;
+  string name = 2;
+  enum SkillProficiency {
+    novice = 0;
+    advancedBeginner = 1;
+    proficient = 2;
+    expert = 3;
+    master = 4;
+  }
+  SkillProficiency proficiency = 3;
+}
+
+message GetSkill {
+  int64 id = 1;
+  string name = 2;
+  enum SkillProficiency {
+    novice = 0;
+    advancedBeginner = 1;
+    proficient = 2;
+    expert = 3;
+    master = 4;
+  }
+  SkillProficiency proficiency = 3;
+}

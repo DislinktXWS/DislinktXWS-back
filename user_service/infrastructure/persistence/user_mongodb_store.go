@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
+	r "math/rand"
 	"net/smtp"
 
 	"github.com/dislinktxws-back/user_service/domain"
@@ -228,6 +229,16 @@ func (store *UserMongoDBStore) Get(id primitive.ObjectID) (*domain.User, error) 
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, error) {
+	filter := bson.M{"username": username}
+	return store.filterOne(filter)
+}
+
+func (store *UserMongoDBStore) GetByApiKey(apiKey string) (*domain.User, error) {
+	filter := bson.M{"apiKey": apiKey}
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)
@@ -261,8 +272,8 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 func sendEmail(email, token string) {
 	// Sender data.
-	from := "pswapoteka@gmail.com"
-	password := "psw12345"
+	from := "fishingbookernsm@hotmail.com"
+	password := "ninasaramarija123"
 
 	// Receiver email address.
 	to := []string{
@@ -270,7 +281,7 @@ func sendEmail(email, token string) {
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
+	smtpHost := "smtp.office365.com"
 	smtpPort := "587"
 
 	// Message.
@@ -353,6 +364,31 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 		},
 	)
 	return user, err
+}
+
+func RandStringRunes(n int) string {
+
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[r.Int63()%int64(len(letters))]
+	}
+	return string(b)
+}
+
+func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
+	apiKey := RandStringRunes(10)
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"username": username},
+		bson.D{
+			{"$set", bson.D{
+				{"apiKey", apiKey},
+			}},
+		},
+	)
+	return apiKey, err
 }
 
 func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {
