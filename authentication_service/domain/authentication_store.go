@@ -9,4 +9,5 @@ type AuthenticationStore interface {
 	EditUsername(auth *Auth) (*Auth, error)
 	ChangePassword(auth *Auth) error
 	AccountRecovery(email string) (status int64, error string)
+	ChangeTwoFactorAuth(username string) (qrCode string, error string)
 }

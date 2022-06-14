@@ -91,3 +91,8 @@ func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, reque
 		Error:  err,
 	}, nil
 }
+
+func (handler *AuthenticationHandler) ChangeTwoFactorAuth(ctx context.Context, request *pb.ChangeTwoFactorAuthRequest) (*pb.ChangeTwoFactorAuthResponse, error) {
+	handler.service.ChangeTwoFactorAuth(request.String())
+	return &pb.ChangeTwoFactorAuthResponse{}, nil
+}

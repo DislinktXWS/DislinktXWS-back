@@ -43,3 +43,7 @@ func (service *AuthenticationService) ChangePassword(auth *domain.Auth) error {
 func (service *AuthenticationService) AccountRecovery(email string) (int64, string) {
 	return service.store.AccountRecovery(email)
 }
+
+func (service *AuthenticationService) ChangeTwoFactorAuth(username string) error {
+	return service.store.ChangeTwoFactorAuth(username)
+}

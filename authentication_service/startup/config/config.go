@@ -5,11 +5,13 @@ import (
 )
 
 type Config struct {
-	Host         string
-	Port         string
-	PostDBHost   string
-	PostDBPort   string
-	JWTSecretKey string
+	Host            string
+	Port            string
+	PostDBHost      string
+	PostDBPort      string
+	JWTSecretKey    string
+	TwoFactorDBHost string
+	TwoFactorDBPort string
 }
 
 func NewConfig() *Config {
@@ -19,10 +21,12 @@ func NewConfig() *Config {
 		cnf.LoadEnv()
 	}*/
 	return &Config{
-		Host:         os.Getenv("AUTHENTICATION_SERVICE_HOST"),
-		Port:         os.Getenv("AUTHENTICATION_SERVICE_PORT"),
-		PostDBHost:   os.Getenv("AUTH_DB_HOST"),
-		PostDBPort:   os.Getenv("AUTH_DB_PORT"),
-		JWTSecretKey: "r43t18sc",
+		Host:            os.Getenv("AUTHENTICATION_SERVICE_HOST"),
+		Port:            os.Getenv("AUTHENTICATION_SERVICE_PORT"),
+		PostDBHost:      os.Getenv("AUTH_DB_HOST"),
+		PostDBPort:      os.Getenv("AUTH_DB_PORT"),
+		JWTSecretKey:    "r43t18sc",
+		TwoFactorDBHost: os.Getenv("TWOFACTOR_DB_HOST"),
+		TwoFactorDBPort: os.Getenv("TWOFACTOR_DB_PORT"),
 	}
 }

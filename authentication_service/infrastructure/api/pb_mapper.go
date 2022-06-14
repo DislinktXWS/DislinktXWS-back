@@ -14,6 +14,7 @@ func mapAuth(authPb *pb.Auth) *domain.Auth {
 		Password:          authPb.Password,
 		VerificationToken: authPb.VerificationToken,
 		Email:             authPb.Email,
+		TwoFactorAuth:     true,
 	}
 	return auth
 }

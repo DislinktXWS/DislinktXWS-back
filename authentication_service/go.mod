@@ -7,6 +7,7 @@ replace github.com/dislinktxws-back/common => ../common
 require (
 	github.com/dislinktxws-back/common v0.0.0-00010101000000-000000000000
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/sec51/twofactor v1.0.0
 	go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/crypto v0.0.0-20220507011949-2cf3adece122
 	google.golang.org/grpc v1.46.0
@@ -17,9 +18,12 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sec51/convert v1.0.2 // indirect
+	github.com/sec51/cryptoengine v0.0.0-20180911112225-2306d105a49e // indirect
+	github.com/sec51/gf256 v0.0.0-20160126143050-2454accbeb9e // indirect
+	github.com/sec51/qrcode v0.0.0-20160126144534-b7779abbcaf1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.0.2 // indirect
 	github.com/xdg-go/stringprep v1.0.2 // indirect

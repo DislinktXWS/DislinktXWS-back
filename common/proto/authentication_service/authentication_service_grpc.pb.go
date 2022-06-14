@@ -30,6 +30,8 @@ type AuthenticationServiceClient interface {
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	EditUsername(ctx context.Context, in *EditUsernameRequest, opts ...grpc.CallOption) (*EditUsernameResponse, error)
+	GetTwoFactorAuth(ctx context.Context, in *GetTwoFactorAuthRequest, opts ...grpc.CallOption) (*GetTwoFactorAuthResponse, error)
+	ChangeTwoFactorAuth(ctx context.Context, in *ChangeTwoFactorAuthRequest, opts ...grpc.CallOption) (*ChangeTwoFactorAuthResponse, error)
 }
 
 type authenticationServiceClient struct {
@@ -112,6 +114,24 @@ func (c *authenticationServiceClient) EditUsername(ctx context.Context, in *Edit
 	return out, nil
 }
 
+func (c *authenticationServiceClient) GetTwoFactorAuth(ctx context.Context, in *GetTwoFactorAuthRequest, opts ...grpc.CallOption) (*GetTwoFactorAuthResponse, error) {
+	out := new(GetTwoFactorAuthResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/GetTwoFactorAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) ChangeTwoFactorAuth(ctx context.Context, in *ChangeTwoFactorAuthRequest, opts ...grpc.CallOption) (*ChangeTwoFactorAuthResponse, error) {
+	out := new(ChangeTwoFactorAuthResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/ChangeTwoFactorAuth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 // All implementations must embed UnimplementedAuthenticationServiceServer
 // for forward compatibility
@@ -124,6 +144,8 @@ type AuthenticationServiceServer interface {
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error)
+	GetTwoFactorAuth(context.Context, *GetTwoFactorAuthRequest) (*GetTwoFactorAuthResponse, error)
+	ChangeTwoFactorAuth(context.Context, *ChangeTwoFactorAuthRequest) (*ChangeTwoFactorAuthResponse, error)
 	mustEmbedUnimplementedAuthenticationServiceServer()
 }
 
@@ -154,6 +176,12 @@ func (UnimplementedAuthenticationServiceServer) Register(context.Context, *Regis
 }
 func (UnimplementedAuthenticationServiceServer) EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUsername not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) GetTwoFactorAuth(context.Context, *GetTwoFactorAuthRequest) (*GetTwoFactorAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTwoFactorAuth not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) ChangeTwoFactorAuth(context.Context, *ChangeTwoFactorAuthRequest) (*ChangeTwoFactorAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeTwoFactorAuth not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) mustEmbedUnimplementedAuthenticationServiceServer() {}
 
@@ -312,6 +340,42 @@ func _AuthenticationService_EditUsername_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_GetTwoFactorAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTwoFactorAuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).GetTwoFactorAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/GetTwoFactorAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).GetTwoFactorAuth(ctx, req.(*GetTwoFactorAuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_ChangeTwoFactorAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeTwoFactorAuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).ChangeTwoFactorAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/ChangeTwoFactorAuth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).ChangeTwoFactorAuth(ctx, req.(*ChangeTwoFactorAuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthenticationService_ServiceDesc is the grpc.ServiceDesc for AuthenticationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +414,14 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EditUsername",
 			Handler:    _AuthenticationService_EditUsername_Handler,
+		},
+		{
+			MethodName: "GetTwoFactorAuth",
+			Handler:    _AuthenticationService_GetTwoFactorAuth_Handler,
+		},
+		{
+			MethodName: "ChangeTwoFactorAuth",
+			Handler:    _AuthenticationService_ChangeTwoFactorAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

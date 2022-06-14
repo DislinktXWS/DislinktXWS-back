@@ -2,11 +2,14 @@ package persistence
 
 import (
 	"context"
+	"crypto"
 	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/domain"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
 	utils "github.com/dislinktxws-back/authentication_service/utils"
+	"github.com/sec51/twofactor"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,6 +34,31 @@ func NewAuthMongoDBStore(client *mongo.Client) domain.AuthenticationStore {
 	return &AuthMongoDBStore{
 		authentications: authentications,
 	}
+}
+
+func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string) (qrCode string, error string) {
+	filter := bson.M{"username": username}
+	authentication, _ := store.filterOne(filter)
+	if authentication.TwoFactorAuth == true {
+		store.authentications.UpdateOne(
+			context.TODO(),
+			filter,
+			bson.M{"$set": bson.M{"twoFactorAuth": false}},
+		)
+	} else {
+		store.authentications.UpdateOne(
+			context.TODO(),
+			filter,
+			bson.M{"$set": bson.M{"twoFactorAuth": true}},
+		)
+		auth, _ := store.filterOne(filter)
+		otp, _ := twofactor.NewTOTP(auth.Email, auth.Username, crypto.SHA1, 6)
+		qrBytes, _ := otp.QR()
+		base64QR := base64.StdEncoding.EncodeToString(qrBytes)
+		fmt.Print(base64QR)
+		return base64QR, ""
+	}
+	return "", ""
 }
 
 func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {

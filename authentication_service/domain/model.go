@@ -13,4 +13,5 @@ type Auth struct {
 	VerificationToken        string             `bson:"verificationToken"`
 	IsVerified               bool               `bson:"isVerified"`
 	VerificationCreationTime time.Time          `bson:"verificationCreationTime"`
+	TwoFactorAuth            bool               `bson:"twoFactorAuth"`
 }
