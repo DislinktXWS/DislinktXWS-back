@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"os"
 	"strings"
 
 	//api_gw "github.com/dislinktxws-back/api_gateway/startup"
@@ -40,9 +41,28 @@ func NewServer(config *config.Config) *Server {
 	}
 }
 
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
+
 const (
 	QueueGroup = "post_service"
 )
+
+func init() {
+	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
+
+	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
@@ -122,11 +142,13 @@ func serverInterceptor(ctx context.Context,
 func authorize(ctx context.Context) error {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+		ErrorLogger.Println("Retrieving metadata failed!")
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata failed")
 	}
 
 	authHeader, ok := md["authorization"]
 	if !ok {
+		ErrorLogger.Println("Authorization token is not supplied!")
 		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
 	}
 
@@ -142,6 +164,7 @@ func authorize(ctx context.Context) error {
 	}
 
 	if validation.Status != 200 {
+		ErrorLogger.Println("Cannot validate token!")
 		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
 	}
 	return nil

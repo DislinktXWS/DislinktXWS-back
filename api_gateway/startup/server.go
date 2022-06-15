@@ -110,9 +110,9 @@ func (server *Server) Start() {
 	)
 	listeningOn := server.config.Host + ":" + server.config.Port
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
-	http.ListenAndServe(listeningOn, ch(server.mux))
-	/*http.ListenAndServeTLS(listeningOn,
-	"C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\localhost.crt",
-	"C:\\Users\\bogda\\OneDrive\\Desktop\\IV godina\\XML\\DislinktXWS-back\\localhost.key",
-	ch(server.mux))*/
+	//http.ListenAndServe(listeningOn, ch(server.mux))
+	http.ListenAndServeTLS(listeningOn,
+		"localhost.crt",
+		"localhost.key",
+		ch(server.mux))
 }

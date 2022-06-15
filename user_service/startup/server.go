@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 	"log"
 	"net"
+	"os"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,6 +26,11 @@ import (
 type Server struct {
 	config *config.Config
 }
+
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
 
 func NewServer(config *config.Config) *Server {
 	return &Server{
@@ -36,13 +42,26 @@ const (
 	QueueGroup = "user_service"
 )
 
+func init() {
+	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
+
+	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
+
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
 
 	userService := server.initUserService(userStore)
 	userHandler := server.initUserHandler(userService)
-
 	server.startGrpcServer(userHandler)
 }
 
@@ -55,16 +74,7 @@ func (server *Server) initMongoClient() *mongo.Client {
 }
 
 func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
-	store := persistence.NewUserMongoDBStore(client)
-	/*users, _ := store.GetAll()
-	store.DeleteAll()
-	for _, User := range users {
-		_, err := store.Insert(User)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}*/
-	return store
+	return persistence.NewUserMongoDBStore(client)
 }
 
 func (server *Server) initUserService(store domain.UserStore) *application.UserService {
@@ -117,11 +127,13 @@ func serverInterceptor(ctx context.Context,
 func authorize(ctx context.Context) error {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+		ErrorLogger.Println("Retrieving metadata failed!")
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata failed!")
 	}
 
 	authHeader, ok := md["authorization"]
 	if !ok {
+		ErrorLogger.Println("Authorization token is not supplied!")
 		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
 	}
 
@@ -137,7 +149,9 @@ func authorize(ctx context.Context) error {
 	}
 
 	if validation.Status != 200 {
+		ErrorLogger.Println("Cannot validate token!")
 		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
 	}
+
 	return nil
 }
