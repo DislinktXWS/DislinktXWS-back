@@ -14,6 +14,11 @@ services:
       - type: bind
         source: ./localhost.key
         target: /root/localhost.key
+      - type: bind
+        source: ./api_gateway/api-gateway.crt
+        target: /root/apigateway.crt
+
+
     restart: on-failure
     ports:
       - ${GATEWAY_PORT}:${GATEWAY_PORT}
@@ -45,6 +50,16 @@ services:
       - type: bind
         source: ./user_service/logs/error.log
         target: /root/error.log
+      - type: bind
+        source: ./user_service/user-service.crt
+        target: /root/userservice.crt
+      - type: bind
+        source: ./user_service/user-service.key
+        target: /root/userservice.key
+      - type: bind
+        source: ./user_service/user-service.csr
+        target: /root/userservice.csr
+
     restart: on-failure
     environment:
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
@@ -69,6 +84,15 @@ services:
       - type: bind
         source: ./post_service/logs/error.log
         target: /root/error.log
+      - type: bind
+        source: ./post_service/post-service.crt
+        target: /root/postservice.crt
+      - type: bind
+        source: ./post_service/post-service.key
+        target: /root/postservice.key
+      - type: bind
+        source: ./post_service/post-service.csr
+        target: /root/postservice.csr
     restart: on-failure
     environment:
       POST_SERVICE_HOST: ${POST_SERVICE_HOST}
@@ -110,6 +134,15 @@ services:
       - type: bind
         source: ./connection_service/logs/error.log
         target: /root/error.log
+      - type: bind
+        source: ./connection_service/connection-service.crt
+        target: /root/connectionservice.crt
+      - type: bind
+        source: ./connection_service/connection-service.key
+        target: /root/connectionservice.key
+      - type: bind
+        source: ./connection_service/connection-service.csr
+        target: /root/connectionservice.csr
     restart: on-failure
     environment:
       - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
@@ -137,6 +170,15 @@ services:
       - type: bind
         source: ./business_offer_service/logs/error.log
         target: /root/error.log
+      - type: bind
+        source: ./business_offer_service/business-offer-service.crt
+        target: /root/businessofferservice.crt
+      - type: bind
+        source: ./business_offer_service/business-offer-service.key
+        target: /root/businessofferservice.key
+      - type: bind
+        source: ./business_offer_service/business-offer-service.csr
+        target: /root/businessofferservice.csr
     environment:
       - BUSINESS_OFFER_DB_HOST=${BUSINESS_OFFER_DB_HOST}
       - BUSINESS_OFFER_DB_PORT=${BUSINESS_OFFER_DB_PORT}

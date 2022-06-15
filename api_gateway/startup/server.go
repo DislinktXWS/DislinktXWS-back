@@ -2,15 +2,19 @@ package startup
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
+	"github.com/gorilla/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
-
-	"github.com/gorilla/handlers"
+	"io/ioutil"
+	"log"
 
 	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
@@ -34,20 +38,45 @@ func NewServer(config *cfg.Config) *Server {
 	return server
 }
 
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	pemServerCA, err := ioutil.ReadFile("apigateway.crt")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(pemServerCA) {
+		return nil, fmt.Errorf("failed to add server")
+	}
+
+	config := &tls.Config{
+		RootCAs:            certPool,
+		InsecureSkipVerify: true,
+	}
+
+	return credentials.NewTLS(config), nil
+}
+
 func (server *Server) initHandlers() {
+	tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		log.Fatal("cannot load TLS credentials")
+	}
+	userOpts := []grpc.DialOption{grpc.WithTransportCredentials(tlsCredentials)}
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
-	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
+	err = authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
+	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, userOpts)
 	if err != nil {
 		panic(err)
 	}
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, userOpts)
 
 	if err != nil {
 		panic(err)
@@ -60,7 +89,7 @@ func (server *Server) initHandlers() {
 	}
 
 	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
-	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
+	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, userOpts)
 	if err != nil {
 		panic(err)
 	}

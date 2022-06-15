@@ -2,6 +2,7 @@ package startup
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
@@ -14,6 +15,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"log"
@@ -24,6 +26,11 @@ import (
 type Server struct {
 	config *config.Config
 }
+
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
 
 func NewServer(config *config.Config) *Server {
 	return &Server{
@@ -66,14 +73,34 @@ func (server *Server) initConnectionsHandler(service *application.ConnectionsSer
 	return api.NewConnectionHandler(service)
 }
 
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("connectionservice.crt", "connectionservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
+}
+
 func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+	tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
+	}
+
 	grpcServer := grpc.NewServer(
-	//	withServerUnaryInterceptor(),
+		grpc.Creds(tlsCredentials),
+		//	withServerUnaryInterceptor(),
 	)
+
 	connection_service.RegisterConnectionsServiceServer(grpcServer, connectionHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
