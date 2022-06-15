@@ -1,22 +1,29 @@
 package startup
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/dislinktxws-back/business_offer_service/application"
 	"github.com/dislinktxws-back/business_offer_service/domain"
 	"github.com/dislinktxws-back/business_offer_service/infrastructure/api"
 	"github.com/dislinktxws-back/business_offer_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/business_offer_service/startup/config"
+	business_offer_service "github.com/dislinktxws-back/common/proto/business_offer_service"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
-	business_offer_service "github.com/dislinktxws-back/common/proto/business_offer_service"
 )
 
 type Server struct {
 	config *config.Config
 }
+
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
 
 func NewServer(config *config.Config) *Server {
 	return &Server{
@@ -54,8 +61,21 @@ func (server *Server) initBusinessOfferService(store domain.BusinessOffersGraph)
 	return application.NewBusinessOfferService(store)
 }
 
-func (server *Server) initBusinessOfferHandler (service *application.BusinessOfferService) *api.BusinessOfferHandler {
+func (server *Server) initBusinessOfferHandler(service *application.BusinessOfferService) *api.BusinessOfferHandler {
 	return api.NewBusinessOfferHandler(service)
+}
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("businessofferservice.crt", "businessofferservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
 }
 
 func (server *Server) startGrpcServer(businessOfferHandler *api.BusinessOfferHandler) {
@@ -64,7 +84,14 @@ func (server *Server) startGrpcServer(businessOfferHandler *api.BusinessOfferHan
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
+	}
+
+	grpcServer := grpc.NewServer(
+		grpc.Creds(tlsCredentials),
+	)
 
 	business_offer_service.RegisterBusinessOffersServiceServer(grpcServer, businessOfferHandler)
 

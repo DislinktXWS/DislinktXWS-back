@@ -2,10 +2,12 @@ package startup
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/dislinktxws-back/post_service/infrastructure/service"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"os"
@@ -103,14 +105,35 @@ func (server *Server) initPostHandler(service *application.PostService) *api.Pos
 	return api.NewPostHandler(service)
 }
 
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("postservice.crt", "postservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
+}
+
 func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+
+	tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
+	}
+
 	grpcServer := grpc.NewServer(
+		grpc.Creds(tlsCredentials),
 		withServerUnaryInterceptor(),
 	)
+
 	post_service.RegisterPostServiceServer(grpcServer, PostHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
