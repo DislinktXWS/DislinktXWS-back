@@ -12,7 +12,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
 	"io/ioutil"
 	"log"
 
@@ -64,9 +63,9 @@ func (server *Server) initHandlers() {
 		log.Fatal("cannot load TLS credentials")
 	}
 	userOpts := []grpc.DialOption{grpc.WithTransportCredentials(tlsCredentials)}
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	//opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
-	err = authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
+	err = authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, userOpts)
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +82,7 @@ func (server *Server) initHandlers() {
 	}
 
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
-	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, opts)
+	err = connectionGw.RegisterConnectionsServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndpoint, userOpts)
 	if err != nil {
 		panic(err)
 	}

@@ -44,12 +44,12 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	id := request.Id
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		ErrorLogger.Println("ID is not correct!")
+		ErrorLogger.Println("Action: 1, Message: ID is not correct!")
 		return nil, err
 	}
 	User, err := handler.service.Get(objectId)
 	if err != nil {
-		ErrorLogger.Println("User not found!")
+		ErrorLogger.Println("Action: 2, Message: User not found!")
 		return nil, err
 	}
 	UserPb := mapUser(User)
@@ -63,7 +63,7 @@ func (handler *UserHandler) GetByUsername(ctx context.Context, request *pb.GetBy
 	username := request.Username
 	User, err := handler.service.GetByUsername(username)
 	if err != nil {
-		ErrorLogger.Println("User not found!")
+		ErrorLogger.Println("Action: 2, Message: User not found!")
 		return nil, err
 	}
 	UserPb := mapUser(User)
@@ -77,7 +77,7 @@ func (handler *UserHandler) GetByApiKey(ctx context.Context, request *pb.GetByAp
 	apiKey := request.ApiKey
 	User, err := handler.service.GetByApiKey(apiKey)
 	if err != nil {
-		ErrorLogger.Println("User not found!")
+		ErrorLogger.Println("Action: 2, Message: User not found!")
 		return nil, err
 	}
 	UserPb := mapUser(User)
@@ -91,7 +91,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	Users, err := handler.service.GetAll()
 
 	if err != nil {
-		ErrorLogger.Println("Users not found!")
+		ErrorLogger.Println("Action: 2, Message: Users not found!")
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
@@ -107,7 +107,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetPublicUsersRequest) (*pb.GetPublicUsersResponse, error) {
 	Users, err := handler.service.GetPublicUsers()
 	if err != nil {
-		ErrorLogger.Println("Users not found!")
+		ErrorLogger.Println("Action: 2, Message: Users not found!")
 		return nil, err
 	}
 	response := &pb.GetPublicUsersResponse{
@@ -137,13 +137,13 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertUserRe
 		}
 		UserPb := mapUser(newUser)
 		fmt.Println("Token:" + UserPb.VerificationToken)
-		InfoLogger.Println("User " + user.Username + " registered successfully.")
+		InfoLogger.Println("Action: 3, Message: User " + user.Username + " registered successfully.")
 		response := &pb.InsertUserResponse{
 			User: UserPb,
 		}
 		return response, nil
 	}
-	ErrorLogger.Println("Username or email not unique!")
+	ErrorLogger.Println("Action: 4, Message: Username or email not unique!")
 	return nil, nil
 }
 
@@ -151,7 +151,7 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 	user := mapEditUser(request.User)
 	_, err := handler.service.EditUser(user)
 	if err != nil {
-		ErrorLogger.Println("Cannot edit user " + user.Username + "!")
+		ErrorLogger.Println("Action: 5, Message: Cannot edit user " + user.Username + "!")
 		return nil, err
 	}
 	users, _ := handler.service.GetAll()
@@ -165,16 +165,17 @@ func (handler *UserHandler) EditUser(ctx context.Context, request *pb.InsertUser
 	if !exists {
 		_, err = handler.service.EditUsername(user)
 		if err != nil {
-			ErrorLogger.Println("Username not unique!")
+			ErrorLogger.Println("Action: 5, Message: Username not unique!")
 			return nil, err
 		}
 	}
-	InfoLogger.Println("User " + user.Username + " edited.")
+	InfoLogger.Println("Action: 6, Message: User " + user.Username + " edited.")
 	return &pb.EditUserResponse{}, nil
 }
 
 func (handler *UserHandler) SetApiKey(ctx context.Context, request *pb.SetApiKeyRequest) (*pb.SetApiKeyResponse, error) {
 	apiKey, error := handler.service.SetApiKey(request.Username)
+	InfoLogger.Println("Action: 7, Message: Successfully connected with agents app.")
 	return &pb.SetApiKeyResponse{ApiKey: apiKey}, error
 }
 
@@ -182,6 +183,7 @@ func (handler *UserHandler) GetEducation(ctx context.Context, request *pb.GetEdu
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	education, err := handler.service.GetEducation(id)
 	if err != nil {
+		ErrorLogger.Println("Action: 2, Message: Education not found!")
 		return nil, err
 	}
 
@@ -203,10 +205,10 @@ func (handler *UserHandler) AddEducation(ctx context.Context, request *pb.AddEdu
 	education := mapAddEducation(request.Education)
 	_, err := handler.service.AddEducation(education, id)
 	if err != nil {
-		ErrorLogger.Println("Cannot add education!")
+		ErrorLogger.Println("Action: 4, Message: Cannot add education!")
 		return nil, err
 	}
-	InfoLogger.Println("User with id " + request.Id + " added education.")
+	InfoLogger.Println("Action: 6, Message: User with id " + request.Id + " added education.")
 	return &pb.AddEducationResponse{}, nil
 }
 
@@ -215,7 +217,7 @@ func (handler *UserHandler) DeleteEducation(ctx context.Context, request *pb.Del
 	index := uint(request.Index)
 	err := handler.service.DeleteEducation(id, index)
 	if err != nil {
-		ErrorLogger.Println("Cannot delete education!")
+		ErrorLogger.Println("Action: 8, Message: Cannot delete education!")
 		return nil, err
 	}
 	return &pb.DeleteEducationResponse{}, nil
@@ -224,6 +226,7 @@ func (handler *UserHandler) GetExperience(ctx context.Context, request *pb.GetEx
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	experience, err := handler.service.GetExperience(id)
 	if err != nil {
+		ErrorLogger.Println("Action: 2, Message: User experience not found!")
 		return nil, err
 	}
 	response := &pb.GetExperienceResponse{
@@ -243,9 +246,10 @@ func (handler *UserHandler) AddExperience(ctx context.Context, request *pb.AddEx
 	experience := mapAddExperience(request.Experience)
 	_, err := handler.service.AddExperience(experience, id)
 	if err != nil {
+		ErrorLogger.Println("Action: 4, Message: Cannot add experience!")
 		return nil, err
 	}
-	InfoLogger.Println("User with id " + request.Id + " added experience.")
+	InfoLogger.Println("Action: 6, Message: User with id " + request.Id + " added experience.")
 	return &pb.AddExperienceResponse{}, nil
 }
 
@@ -254,6 +258,7 @@ func (handler *UserHandler) DeleteExperience(ctx context.Context, request *pb.De
 	index := uint(request.Index)
 	err := handler.service.DeleteExperience(id, index)
 	if err != nil {
+		ErrorLogger.Println("Action: 8, Message: Cannot delete experience!")
 		return nil, err
 	}
 	return &pb.DeleteExperienceResponse{}, nil
@@ -263,6 +268,7 @@ func (handler *UserHandler) GetInterests(ctx context.Context, request *pb.GetInt
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	interests, err := handler.service.GetInterests(id)
 	if err != nil {
+		ErrorLogger.Println("Action: 2, Message: User interests not found!")
 		return nil, err
 	}
 	response := &pb.GetInterestsResponse{
@@ -278,10 +284,10 @@ func (handler *UserHandler) AddInterest(ctx context.Context, request *pb.AddInte
 	interest := request.Interest
 	err := handler.service.AddInterest(id, interest)
 	if err != nil {
-
+		ErrorLogger.Println("Action: 4, Message: Can not add interest!")
 		return nil, err
 	}
-	InfoLogger.Println("User with id " + request.Id + " added interest.")
+	InfoLogger.Println("Action: 6, Message: User with id " + request.Id + " added interest.")
 	return &pb.AddInterestResponse{}, nil
 }
 
@@ -290,7 +296,7 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 	index := uint(request.Index)
 	err := handler.service.DeleteInterest(id, index)
 	if err != nil {
-		ErrorLogger.Println("Cannot delete interest!")
+		ErrorLogger.Println("Action: 8, Message: Cannot delete interest!")
 		return nil, err
 	}
 	return &pb.DeleteInterestResponse{}, nil
@@ -300,6 +306,7 @@ func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkills
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	skills, err := handler.service.GetSkills(id)
 	if err != nil {
+		ErrorLogger.Println("Action: 2, Message: Skills not found!")
 		return nil, err
 	}
 
@@ -321,9 +328,10 @@ func (handler *UserHandler) AddSkill(ctx context.Context, request *pb.AddSkillRe
 	skill := mapAddSkill(request.Skill)
 	_, err := handler.service.AddSkill(skill, id)
 	if err != nil {
+		ErrorLogger.Println("Action: 4, Message: Can not add skill!")
 		return nil, err
 	}
-	InfoLogger.Println("User with id " + request.Id + " added skill.")
+	InfoLogger.Println("Action: 6, Message: User with id " + request.Id + " added skill.")
 	return &pb.AddSkillResponse{}, nil
 }
 
@@ -331,9 +339,10 @@ func (handler *UserHandler) SetPrivacy(ctx context.Context, request *pb.SetPriva
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	err := handler.service.SetPrivacy(request.Private, id)
 	if err != nil {
+		ErrorLogger.Println("Action: 2, Message: User not found!")
 		return nil, err
 	}
-	InfoLogger.Println("User with id " + request.Id + " set privacy.")
+	InfoLogger.Println("Action: 6, Message: User with id " + request.Id + " set privacy.")
 	return &pb.SetPrivacyResponse{}, nil
 }
 
@@ -342,7 +351,7 @@ func (handler *UserHandler) DeleteSkill(ctx context.Context, request *pb.DeleteS
 	index := uint(request.Index)
 	err := handler.service.DeleteSkill(id, index)
 	if err != nil {
-		ErrorLogger.Println("Cannot delete skill!")
+		ErrorLogger.Println("Action: 8, Message: Cannot delete skill!")
 		return nil, err
 	}
 	return &pb.DeleteSkillResponse{}, nil
