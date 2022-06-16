@@ -12,7 +12,7 @@ func NewAuthenticationService(store domain.AuthenticationStore) *AuthenticationS
 	}
 }
 
-func (service *AuthenticationService) Login(auth *domain.Auth) (int64, string, string) {
+func (service *AuthenticationService) Login(auth *domain.Auth) (int64, string, string, bool) {
 	return service.store.Login(auth)
 }
 
@@ -42,4 +42,16 @@ func (service *AuthenticationService) ChangePassword(auth *domain.Auth) error {
 
 func (service *AuthenticationService) AccountRecovery(email string) (int64, string) {
 	return service.store.AccountRecovery(email)
+}
+
+func (service *AuthenticationService) ChangeTwoFactorAuth(username string) (string, string) {
+	return service.store.ChangeTwoFactorAuth(username)
+}
+
+func (service *AuthenticationService) GetTwoFactorAuth(username string) bool {
+	return service.store.GetTwoFactorAuth(username)
+}
+
+func (service *AuthenticationService) VerifyTwoFactorAuthToken(username string, token string) (int64, string, string) {
+	return service.store.VerifyTwoFactorAuthToken(username, token)
 }

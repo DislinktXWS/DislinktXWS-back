@@ -59,6 +59,24 @@ service AuthenticationService{
       body:"auth"
     };
   }
+
+  rpc GetTwoFactorAuth(GetTwoFactorAuthRequest) returns (GetTwoFactorAuthResponse){
+    option (google.api.http) = {
+      get: "/authentication/getTwoFactor/{username}"
+    };
+  }
+
+  rpc ChangeTwoFactorAuth(ChangeTwoFactorAuthRequest) returns (ChangeTwoFactorAuthResponse){
+    option (google.api.http) = {
+      put: "/authentication/editTwoFactor/{username}"
+    };
+  }
+
+  rpc VerifyTwoFactorAuthToken(VerifyTwoFactorAuthTokenRequest) returns (VerifyTwoFactorAuthTokenResponse){
+    option (google.api.http) = {
+      get: "/authentication/twoFactorAuth/{username}/{token}"
+    };
+  }
 }
 
 message RegisterRequest{
@@ -87,6 +105,7 @@ message LoginResponse {
   int64 status = 1;
   string error = 2;
   string token = 3;
+  bool isTwoFactorEnabled = 4;
 }
 
 message ValidateRequest{
@@ -135,6 +154,34 @@ message Auth{
   string password = 3;
   string verificationToken = 4;
   string email = 5;
+}
+
+message GetTwoFactorAuthRequest{
+  string username = 1;
+}
+
+message GetTwoFactorAuthResponse{
+  bool isEnabled = 1;
+}
+
+message ChangeTwoFactorAuthRequest{
+  string username = 1;
+}
+
+message ChangeTwoFactorAuthResponse {
+  string qrCode = 1;
+  string error = 2;
+}
+
+message VerifyTwoFactorAuthTokenRequest{
+  string username = 1;
+  string token = 2;
+}
+
+message VerifyTwoFactorAuthTokenResponse {
+  int64 status = 1;
+  string error = 2;
+  string token = 3;
 }
 
 

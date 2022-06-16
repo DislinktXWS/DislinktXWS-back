@@ -2,11 +2,14 @@ package persistence
 
 import (
 	"context"
+	"crypto"
 	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/domain"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
 	utils "github.com/dislinktxws-back/authentication_service/utils"
+	"github.com/sec51/twofactor"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,13 +27,84 @@ const (
 
 type AuthMongoDBStore struct {
 	authentications *mongo.Collection
+	twoFactorAuths  *mongo.Collection
 }
 
 func NewAuthMongoDBStore(client *mongo.Client) domain.AuthenticationStore {
 	authentications := client.Database(DATABASE).Collection(COLLECTION)
+	twoFactorAuths := client.Database(DATABASE).Collection("twoFactorAuths")
 	return &AuthMongoDBStore{
 		authentications: authentications,
+		twoFactorAuths:  twoFactorAuths,
 	}
+}
+
+func (store *AuthMongoDBStore) VerifyTwoFactorAuthToken(username string, twoAuthToken string) (status int64, error string, JWTtoken string) {
+	filter := bson.M{"username": username}
+	twoFAuth, _ := store.filterOneTwoFactor(filter)
+	authentication, _ := store.filterOne(filter)
+	fmt.Println(twoFAuth.Username)
+	fmt.Println(twoFAuth.Totp)
+	otp, _ := twofactor.TOTPFromBytes(twoFAuth.Totp, username)
+	err := otp.Validate(twoAuthToken)
+	if err != nil {
+		return http.StatusNotFound, err.Error(), ""
+	}
+	secretKey := config.NewConfig().JWTSecretKey
+	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
+	token, _ := wrapper.GenerateToken(authentication)
+	return http.StatusOK, "", token
+}
+
+func (store *AuthMongoDBStore) GetTwoFactorAuth(username string) bool {
+	filter := bson.M{"username": username}
+	authentication, _ := store.filterOne(filter)
+	return authentication.TwoFactorAuth
+}
+
+func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string) (qrCode string, error string) {
+	fmt.Println(username)
+	filter := bson.M{"username": username}
+	authentication, _ := store.filterOne(filter)
+	if authentication.TwoFactorAuth == true {
+		store.authentications.UpdateOne(
+			context.TODO(),
+			filter,
+			bson.M{"$set": bson.M{"twoFactorAuth": false}},
+		)
+
+		store.twoFactorAuths.DeleteOne(context.TODO(), filter)
+	} else {
+		store.authentications.UpdateOne(
+			context.TODO(),
+			filter,
+			bson.M{"$set": bson.M{"twoFactorAuth": true}},
+		)
+		auth, _ := store.filterOne(filter)
+		otp, _ := twofactor.NewTOTP(auth.Email, auth.Username, crypto.SHA1, 6)
+		qrBytes, _ := otp.QR()
+		base64QR := base64.StdEncoding.EncodeToString(qrBytes)
+		fmt.Println(otp)
+		fmt.Println(*otp)
+
+		store.InsertTwoFactAuth(mapTwoAuth(username, otp))
+		res, _ := store.filterOneTwoFactor(filter)
+		fmt.Println("OK")
+		fmt.Println(res.Username)
+		fmt.Println(res.Totp)
+
+		fmt.Println(" inserted 2FAuth")
+		return base64QR, ""
+	}
+	return "", ""
+}
+
+func (store *AuthMongoDBStore) InsertTwoFactAuth(twofactorAuth *domain.TwoFactorAuth) error {
+	fmt.Println("INSERT METODA")
+	fmt.Println(twofactorAuth)
+	result, _ := store.twoFactorAuths.InsertOne(context.TODO(), twofactorAuth)
+	twofactorAuth.Id = result.InsertedID.(primitive.ObjectID)
+	return nil
 }
 
 func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {
@@ -205,26 +279,26 @@ func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int6
 
 }
 
-func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string) {
+func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string, bool) {
 	filter := bson.M{"username": auth.Username}
 	fmt.Println(auth.Username)
 	fmt.Println(auth.Id)
 	fmt.Println(auth.Password)
 	authentication, err := store.filterOne(filter)
 	if err != nil {
-		return http.StatusNotFound, "User not found", ""
+		return http.StatusNotFound, "User not found", "", false
 	}
 	if !authentication.IsVerified {
-		return http.StatusForbidden, "User not verified", ""
+		return http.StatusForbidden, "User not verified", "", false
 	}
 	match := utils.CheckPasswordHash(auth.Password, authentication.Password)
 	if !match {
-		return http.StatusNotFound, "User not found", ""
+		return http.StatusNotFound, "User not found", "", false
 	}
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
 	token, _ := wrapper.GenerateToken(authentication)
-	return http.StatusOK, "", token
+	return http.StatusOK, "", token, authentication.TwoFactorAuth
 }
 
 func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
@@ -286,9 +360,27 @@ func (store *AuthMongoDBStore) filterOne(filter interface{}) (Auth *domain.Auth,
 	return
 }
 
+func (store *AuthMongoDBStore) filterOneTwoFactor(filter interface{}) (Auth *domain.TwoFactorAuth, err error) {
+	result := store.twoFactorAuths.FindOne(context.TODO(), filter)
+	err = result.Decode(&Auth)
+	return
+}
+
 func decode(cursor *mongo.Cursor) (authentications []*domain.Auth, err error) {
 	for cursor.Next(context.TODO()) {
 		var Auth domain.Auth
+		err = cursor.Decode(&Auth)
+		if err != nil {
+			return
+		}
+		authentications = append(authentications, &Auth)
+	}
+	err = cursor.Err()
+	return
+}
+func decodeTwo(cursor *mongo.Cursor) (authentications []*domain.TwoFactorAuth, err error) {
+	for cursor.Next(context.TODO()) {
+		var Auth domain.TwoFactorAuth
 		err = cursor.Decode(&Auth)
 		if err != nil {
 			return
