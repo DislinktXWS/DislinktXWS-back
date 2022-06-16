@@ -133,7 +133,7 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	ch := handlers.CORS(handlers.AllowedOrigins([]string{"http://localhost:4200"}),
+	ch := handlers.CORS(handlers.AllowedOrigins([]string{"https://localhost:4200"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
 		handlers.AllowedHeaders([]string{"Authorization", "Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
 	)
