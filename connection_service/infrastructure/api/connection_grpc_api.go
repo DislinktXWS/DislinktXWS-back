@@ -46,10 +46,10 @@ func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, requ
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.InsertUserConnection(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot create connection!")
+		ErrorLogger.Println("Action: 15, Message: Cannot create connection!")
 		return nil, err
 	}
-	InfoLogger.Println("New connection between " + connection.Connected + " and " + connection.Connecting)
+	InfoLogger.Println("Action: 16, Message: New connection between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -58,20 +58,20 @@ func (handler *ConnectionHandler) DeleteUserConnection(ctx context.Context, requ
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.DeleteUserConnection(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot delete connection!")
+		ErrorLogger.Println("Action: 17, Cannot delete connection!")
 		return nil, err
 	}
-	InfoLogger.Println("Deleted connection between " + connection.Connected + " and " + connection.Connecting)
+	InfoLogger.Println("Message: 18, Deleted connection between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
 	user := request.User
 	err := handler.service.InsertNewUser(user)
 	if err != nil {
-		ErrorLogger.Println("Cannot delete user!")
+		ErrorLogger.Println("Action: 4, Message: Cannot create user!")
 		return nil, err
 	}
-	InfoLogger.Println("User " + user + " deleted.")
+	InfoLogger.Println("Action: 3, Message: User " + user + " created.")
 	return &pb.InsertUserResponse{}, nil
 }
 
@@ -139,10 +139,10 @@ func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, r
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.InsertConnectionRequest(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot create connection request!")
+		ErrorLogger.Println("Action: 15, Message: Cannot create connection request!")
 		return nil, err
 	}
-	InfoLogger.Println("New connection request created between " + connection.Connected + " and " + connection.Connecting)
+	InfoLogger.Println("Action: 19, Message: New connection request created between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -151,10 +151,10 @@ func (handler *ConnectionHandler) CancelConnectionRequest(ctx context.Context, r
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.CancelConnectionRequest(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot cancel connection request!")
+		ErrorLogger.Println("Action: 16, Message: Cannot cancel connection request!")
 		return nil, err
 	}
-	InfoLogger.Println("Canceled connection request between " + connection.Connected + " and " + connection.Connecting)
+	InfoLogger.Println("Action: 20, Message: Canceled connection request between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -162,10 +162,10 @@ func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.Ins
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.BlockUser(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot block user!")
+		ErrorLogger.Println("Action: 4, Message: Cannot block user!")
 		return nil, err
 	}
-	InfoLogger.Println("User " + connection.Connecting + " blocked " + connection.Connected)
+	InfoLogger.Println("Action: 21, Message: User " + connection.Connecting + " blocked " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -174,10 +174,10 @@ func (handler *ConnectionHandler) UnblockUser(ctx context.Context, request *pb.I
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.UnblockUser(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot unblock user!")
+		ErrorLogger.Println("Action: 4, Message: Cannot unblock user!")
 		return nil, err
 	}
-	InfoLogger.Println("User " + connection.Connecting + " unblocked " + connection.Connected)
+	InfoLogger.Println("Action: 22, Message: User " + connection.Connecting + " unblocked " + connection.Connected)
 
 	return &pb.InsertUserConnectionResponse{}, nil
 }
@@ -187,9 +187,9 @@ func (handler *ConnectionHandler) AcceptConnectionRequest(ctx context.Context, r
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.AcceptUserConnection(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot accept connection request!")
+		ErrorLogger.Println("Action: 15, Message: Cannot accept connection request!")
 	}
-	InfoLogger.Println("User " + connection.Connecting + " accepted connection request for " + connection.Connected)
+	InfoLogger.Println("Action: 23, Message: User " + connection.Connecting + " accepted connection request for " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -198,9 +198,9 @@ func (handler *ConnectionHandler) DeclineConnectionRequest(ctx context.Context, 
 	connection := mapNewUserConnection(request.Connection)
 	err := handler.service.DeclineUserConnection(connection)
 	if err != nil {
-		ErrorLogger.Println("Cannot decline connection request!")
+		ErrorLogger.Println("Action: 15, Message: Cannot decline connection request!")
 		return nil, err
 	}
-	InfoLogger.Println("User " + connection.Connecting + " declined connection request for " + connection.Connected)
+	InfoLogger.Println("Action: 24, Message: User " + connection.Connecting + " declined connection request for " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }

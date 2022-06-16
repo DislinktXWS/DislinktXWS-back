@@ -171,7 +171,7 @@ func authorize(ctx context.Context) error {
 
 	authHeader, ok := md["authorization"]
 	if !ok {
-		ErrorLogger.Println("Authorization token is not supplied!")
+		ErrorLogger.Println("Action: 34, Message: Authorization token is not supplied!")
 		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
 	}
 
@@ -187,7 +187,7 @@ func authorize(ctx context.Context) error {
 	}
 
 	if validation.Status != 200 {
-		ErrorLogger.Println("Cannot validate token!")
+		ErrorLogger.Println("Action: 35, Message: Cannot validate token!")
 		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
 	}
 	return nil

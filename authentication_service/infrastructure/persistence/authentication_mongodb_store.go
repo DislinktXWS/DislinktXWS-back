@@ -156,8 +156,8 @@ func (store *AuthMongoDBStore) GenerateVerificationToken(email string) error {
 
 func sendEmail(email, token string) {
 	// Sender data.
-	from := "pswapoteka@gmail.com"
-	password := "psw12345"
+	from := "bezbednostsomn@yahoo.com"
+	password := "fcmhbptswmwtphum"
 
 	// Receiver email address.
 	to := []string{
@@ -223,8 +223,8 @@ func (store *AuthMongoDBStore) AccountRecovery(email string) (int64, string) {
 
 func sendRecoveryEmail(email, token string) {
 	// Sender data.
-	from := "pswapoteka@gmail.com"
-	password := "psw12345"
+	from := "bezbednostsomn@yahoo.com"
+	password := "fcmhbptswmwtphum"
 
 	// Receiver email address.
 	to := []string{

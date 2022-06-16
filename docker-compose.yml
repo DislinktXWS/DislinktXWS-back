@@ -111,6 +111,22 @@ services:
       context: .
       dockerfile: ./authentication_service/Dockerfile
     restart: on-failure
+    volumes:
+      - type: bind
+        source: ./authentication_service/logs/info.log
+        target: /root/info.log
+      - type: bind
+        source: ./authentication_service/logs/error.log
+        target: /root/error.log
+      - type: bind
+        source: ./authentication_service/authentication-service.crt
+        target: /root/authenticationservice.crt
+      - type: bind
+        source: ./authentication_service/authentication-service.key
+        target: /root/authenticationservice.key
+      - type: bind
+        source: ./authentication_service/authentication-service.csr
+        target: /root/authenticationservice.csr
     environment:
       AUTHENTICATION_SERVICE_HOST: ${AUTHENTICATION_SERVICE_HOST}
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}

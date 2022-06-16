@@ -1,6 +1,7 @@
 package startup
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/application"
 	"github.com/dislinktxws-back/authentication_service/domain"
@@ -8,6 +9,7 @@ import (
 	"github.com/dislinktxws-back/authentication_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
 
@@ -60,12 +62,30 @@ func (server *Server) initAuthHandler(service *application.AuthenticationService
 	return api.NewAuthenticationHandler(service)
 }
 
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("authenticationservice.crt", "authenticationservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
+}
+
 func (server *Server) startGrpcServer(AuthenticationHandler *api.AuthenticationHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	tlsCredentials, _ := loadTLSCredentials()
+
+	grpcServer := grpc.NewServer(
+		grpc.Creds(tlsCredentials),
+	)
+
 	authentication_service.RegisterAuthenticationServiceServer(grpcServer, AuthenticationHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
