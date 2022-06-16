@@ -15,3 +15,9 @@ type Auth struct {
 	VerificationCreationTime time.Time          `bson:"verificationCreationTime"`
 	TwoFactorAuth            bool               `bson:"twoFactorAuth"`
 }
+
+type TwoFactorAuth struct {
+	Id       primitive.ObjectID `bson:"_id, omitempty"`
+	Username string             `bson:"username"`
+	Totp     []byte             `bson:"totp"`
+}

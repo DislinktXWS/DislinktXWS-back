@@ -32,6 +32,7 @@ type AuthenticationServiceClient interface {
 	EditUsername(ctx context.Context, in *EditUsernameRequest, opts ...grpc.CallOption) (*EditUsernameResponse, error)
 	GetTwoFactorAuth(ctx context.Context, in *GetTwoFactorAuthRequest, opts ...grpc.CallOption) (*GetTwoFactorAuthResponse, error)
 	ChangeTwoFactorAuth(ctx context.Context, in *ChangeTwoFactorAuthRequest, opts ...grpc.CallOption) (*ChangeTwoFactorAuthResponse, error)
+	VerifyTwoFactorAuthToken(ctx context.Context, in *VerifyTwoFactorAuthTokenRequest, opts ...grpc.CallOption) (*VerifyTwoFactorAuthTokenResponse, error)
 }
 
 type authenticationServiceClient struct {
@@ -132,6 +133,15 @@ func (c *authenticationServiceClient) ChangeTwoFactorAuth(ctx context.Context, i
 	return out, nil
 }
 
+func (c *authenticationServiceClient) VerifyTwoFactorAuthToken(ctx context.Context, in *VerifyTwoFactorAuthTokenRequest, opts ...grpc.CallOption) (*VerifyTwoFactorAuthTokenResponse, error) {
+	out := new(VerifyTwoFactorAuthTokenResponse)
+	err := c.cc.Invoke(ctx, "/authentications.AuthenticationService/VerifyTwoFactorAuthToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 // All implementations must embed UnimplementedAuthenticationServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type AuthenticationServiceServer interface {
 	EditUsername(context.Context, *EditUsernameRequest) (*EditUsernameResponse, error)
 	GetTwoFactorAuth(context.Context, *GetTwoFactorAuthRequest) (*GetTwoFactorAuthResponse, error)
 	ChangeTwoFactorAuth(context.Context, *ChangeTwoFactorAuthRequest) (*ChangeTwoFactorAuthResponse, error)
+	VerifyTwoFactorAuthToken(context.Context, *VerifyTwoFactorAuthTokenRequest) (*VerifyTwoFactorAuthTokenResponse, error)
 	mustEmbedUnimplementedAuthenticationServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedAuthenticationServiceServer) GetTwoFactorAuth(context.Context
 }
 func (UnimplementedAuthenticationServiceServer) ChangeTwoFactorAuth(context.Context, *ChangeTwoFactorAuthRequest) (*ChangeTwoFactorAuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeTwoFactorAuth not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) VerifyTwoFactorAuthToken(context.Context, *VerifyTwoFactorAuthTokenRequest) (*VerifyTwoFactorAuthTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyTwoFactorAuthToken not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) mustEmbedUnimplementedAuthenticationServiceServer() {}
 
@@ -376,6 +390,24 @@ func _AuthenticationService_ChangeTwoFactorAuth_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_VerifyTwoFactorAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTwoFactorAuthTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).VerifyTwoFactorAuthToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentications.AuthenticationService/VerifyTwoFactorAuthToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).VerifyTwoFactorAuthToken(ctx, req.(*VerifyTwoFactorAuthTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthenticationService_ServiceDesc is the grpc.ServiceDesc for AuthenticationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeTwoFactorAuth",
 			Handler:    _AuthenticationService_ChangeTwoFactorAuth_Handler,
+		},
+		{
+			MethodName: "VerifyTwoFactorAuthToken",
+			Handler:    _AuthenticationService_VerifyTwoFactorAuthToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

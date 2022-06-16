@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"github.com/dislinktxws-back/authentication_service/application"
 	"github.com/dislinktxws-back/authentication_service/utils"
 	pb "github.com/dislinktxws-back/common/proto/authentication_service"
@@ -21,11 +22,12 @@ func NewAuthenticationHandler(service *application.AuthenticationService) *Authe
 
 func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	newAuth := mapAuth(request.Auth)
-	status, err, token := handler.service.Login(newAuth)
+	status, err, token, isTwoFactorEnabled := handler.service.Login(newAuth)
 	return &pb.LoginResponse{
-		Status: status,
-		Error:  err,
-		Token:  token,
+		Status:             status,
+		Error:              err,
+		Token:              token,
+		IsTwoFactorEnabled: isTwoFactorEnabled,
 	}, nil
 }
 
@@ -50,6 +52,7 @@ func (handler *AuthenticationHandler) Validate(ctx context.Context, request *pb.
 
 func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	Auth := mapAuth(request.Auth)
+	fmt.Println(request.Auth)
 	Auth.Password = utils.HashPassword(Auth.Password)
 	Auth.IsVerified = false
 	Auth.VerificationCreationTime = time.Now()
@@ -93,6 +96,24 @@ func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, reque
 }
 
 func (handler *AuthenticationHandler) ChangeTwoFactorAuth(ctx context.Context, request *pb.ChangeTwoFactorAuthRequest) (*pb.ChangeTwoFactorAuthResponse, error) {
-	handler.service.ChangeTwoFactorAuth(request.String())
-	return &pb.ChangeTwoFactorAuthResponse{}, nil
+	qrCode, err := handler.service.ChangeTwoFactorAuth(request.Username)
+	return &pb.ChangeTwoFactorAuthResponse{
+		QrCode: qrCode,
+		Error:  err,
+	}, nil
+}
+
+func (handler *AuthenticationHandler) GetTwoFactorAuth(ctx context.Context, request *pb.GetTwoFactorAuthRequest) (*pb.GetTwoFactorAuthResponse, error) {
+	flag := handler.service.GetTwoFactorAuth(request.Username)
+	return &pb.GetTwoFactorAuthResponse{IsEnabled: flag}, nil
+}
+
+func (handler *AuthenticationHandler) VerifyTwoFactorAuthToken(ctx context.Context, request *pb.VerifyTwoFactorAuthTokenRequest) (*pb.VerifyTwoFactorAuthTokenResponse, error) {
+	status, err, token := handler.service.VerifyTwoFactorAuthToken(request.Username, request.Token)
+	fmt.Println("POGODJEN")
+	return &pb.VerifyTwoFactorAuthTokenResponse{
+		Status: status,
+		Error:  err,
+		Token:  token,
+	}, nil
 }
