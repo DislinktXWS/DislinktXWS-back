@@ -56,7 +56,6 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	response := &pb.GetResponse{
 		User: UserPb,
 	}
-	InfoLogger.Println("User " + User.Name + " " + User.Surname + " found.")
 	return response, nil
 }
 
@@ -71,7 +70,6 @@ func (handler *UserHandler) GetByUsername(ctx context.Context, request *pb.GetBy
 	response := &pb.GetByUsernameResponse{
 		User: UserPb,
 	}
-	InfoLogger.Println("User " + User.Name + " " + User.Surname + " found.")
 	return response, nil
 }
 
@@ -115,7 +113,6 @@ func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetP
 	response := &pb.GetPublicUsersResponse{
 		Users: []*pb.User{},
 	}
-
 	for _, User := range Users {
 		current := mapUser(User)
 		response.Users = append(response.Users, current)
