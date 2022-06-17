@@ -107,13 +107,13 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	tlsCredentials, err := loadTLSCredentials()
+	//tlsCredentials, err := loadTLSCredentials()
 	if err != nil {
 		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(tlsCredentials),
+		//grpc.Creds(tlsCredentials),
 		withServerUnaryInterceptor(),
 	)
 
@@ -135,6 +135,7 @@ func serverInterceptor(ctx context.Context,
 	fmt.Println(info.FullMethod)
 	if info.FullMethod != "/users.UserService/GetPublicUsers" && info.FullMethod != "/users.UserService/SearchProfiles" &&
 		info.FullMethod != "/users.UserService/Insert" && info.FullMethod != "/users.UserService/Get" &&
+		info.FullMethod != "/users.UserService/GetAll" &&
 		info.FullMethod != "/users.UserService/GetByUsername" &&
 		info.FullMethod != "/users.UserService/SetApiKey" &&
 		info.FullMethod != "/users.UserService/GetByApiKey" {

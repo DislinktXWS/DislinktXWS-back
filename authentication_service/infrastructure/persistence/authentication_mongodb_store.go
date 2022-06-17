@@ -113,6 +113,7 @@ func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {
 		return err
 	}
 	auth.Id = result.InsertedID.(primitive.ObjectID)
+	//store.GenerateVerificationToken(auth.Email)
 	return nil
 }
 
@@ -165,7 +166,7 @@ func sendEmail(email, token string) {
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
+	smtpHost := "smtp.mail.yahoo.com"
 	smtpPort := "587"
 
 	// Message.
@@ -232,7 +233,7 @@ func sendRecoveryEmail(email, token string) {
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
+	smtpHost := "smtp.mail.yahoo.com"
 	smtpPort := "587"
 
 	link := "http://localhost:4200/changePassword/" + token

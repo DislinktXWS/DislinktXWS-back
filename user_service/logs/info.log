@@ -1,0 +1,11 @@
+INFO: 2022/06/17 09:57:21 user_grpc_api.go:252: Action: 6, Message: User with id 629bd6dd1a49309cd4cf8a23 added experience.
+INFO: 2022/06/17 09:57:21 user_grpc_api.go:172: Action: 6, Message: User ogijah edited.
+INFO: 2022/06/17 10:14:05 user_grpc_api.go:140: Action: 3, Message: User niko registered successfully.
+INFO: 2022/06/17 10:34:32 user_grpc_api.go:140: Action: 3, Message: User pswapoteka registered successfully.
+INFO: 2022/06/17 10:46:59 user_grpc_api.go:140: Action: 3, Message: User ogijah registered successfully.
+INFO: 2022/06/17 10:49:43 user_grpc_api.go:172: Action: 6, Message: User ogijah edited.
+INFO: 2022/06/17 10:50:06 user_grpc_api.go:172: Action: 6, Message: User ogijah edited.
+INFO: 2022/06/17 11:03:15 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/17 11:16:13 user_grpc_api.go:140: Action: 3, Message: User sarapoparic registered successfully.
+INFO: 2022/06/17 11:27:45 user_grpc_api.go:140: Action: 3, Message: User ogijah registered successfully.
+INFO: 2022/06/17 11:31:06 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.

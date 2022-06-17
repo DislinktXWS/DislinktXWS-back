@@ -4,15 +4,14 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	"io"
-	r "math/rand"
-	"net/smtp"
-
 	"github.com/dislinktxws-back/user_service/domain"
 	"github.com/dislinktxws-back/user_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"io"
+	r "math/rand"
+	"net/smtp"
 )
 
 const (
@@ -272,16 +271,16 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 
 func sendEmail(email, token string) {
 	// Sender data.
-	from := "fishingbookernsm@hotmail.com"
-	password := "ninasaramarija123"
-
+	from := "bezbednostsomn@yahoo.com"
+	password := "fcmhbptswmwtphum"
+	fmt.Println("Sifra" + password)
 	// Receiver email address.
 	to := []string{
 		email,
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.office365.com"
+	smtpHost := "smtp.mail.yahoo.com"
 	smtpPort := "587"
 
 	// Message.

@@ -80,10 +80,10 @@ func (server *Server) startGrpcServer(AuthenticationHandler *api.AuthenticationH
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	tlsCredentials, _ := loadTLSCredentials()
+	//tlsCredentials, _ := loadTLSCredentials()
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(tlsCredentials),
+	//grpc.Creds(tlsCredentials),
 	)
 
 	authentication_service.RegisterAuthenticationServiceServer(grpcServer, AuthenticationHandler)

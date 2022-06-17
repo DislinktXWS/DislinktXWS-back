@@ -91,14 +91,14 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	tlsCredentials, err := loadTLSCredentials()
+	//tlsCredentials, err := loadTLSCredentials()
 	if err != nil {
 		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(tlsCredentials),
-		//	withServerUnaryInterceptor(),
+	//grpc.Creds(tlsCredentials),
+	//	withServerUnaryInterceptor(),
 	)
 
 	connection_service.RegisterConnectionsServiceServer(grpcServer, connectionHandler)
