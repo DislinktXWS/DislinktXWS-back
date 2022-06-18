@@ -173,7 +173,7 @@ func sendEmail(email, token string) {
 	fromMessage := fmt.Sprintf("From: <%s>\r\n", "sender@gmail.com")
 	toMessage := fmt.Sprintf("To: <%s>\r\n", "recipient@gmail.com")
 	subject := "Welcome to dislinkt!\r\n"
-	body := "In order to login, enter this token:" + token + "\r\nWelcome!\r\n"
+	body := "In order to login, enter this token:" + token + "\r\nWelcome!\r\nDislinkt\r\n"
 	msg := fromMessage + toMessage + subject + "\r\n" + body
 	fmt.Println(msg)
 	// Authentication.
