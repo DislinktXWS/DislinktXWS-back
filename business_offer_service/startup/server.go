@@ -84,14 +84,13 @@ func (server *Server) startGrpcServer(businessOfferHandler *api.BusinessOfferHan
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	tlsCredentials, err := loadTLSCredentials()
+	//tlsCredentials, err := loadTLSCredentials()
 	if err != nil {
 		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(tlsCredentials),
-
+	//grpc.Creds(tlsCredentials),
 	)
 
 	business_offer_service.RegisterBusinessOffersServiceServer(grpcServer, businessOfferHandler)
