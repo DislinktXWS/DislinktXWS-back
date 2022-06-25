@@ -67,9 +67,16 @@ func (store *ConnectionsDBGraph) GetConnectionRequests(user string) []string {
 func (store *ConnectionsDBGraph) GetUserRecommendations(user string) []string {
 	var session = *store.session
 	friendsOfFriends, _ := getFriendsOfFriendsTxFunc(session, user)
-	if len(friendsOfFriends) != 10 {
-		randomUsers, _ := getRandomUsersTxFunc(session, user, 10-len(friendsOfFriends))
-		friendsOfFriends = append(friendsOfFriends, randomUsers...)
+	randomUsers, _ := getRandomUsersTxFunc(session, user)
+
+	if len(friendsOfFriends) < 10 {
+
+		for _, v := range randomUsers {
+			if !contains(friendsOfFriends, v) {
+				friendsOfFriends = append(friendsOfFriends, v)
+				continue
+			}
+		}
 	}
 
 	return friendsOfFriends

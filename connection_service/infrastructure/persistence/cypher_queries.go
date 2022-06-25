@@ -70,17 +70,16 @@ func getFriendsOfFriendsTxFunc(session neo4j.Session, user string) ([]string, er
 	return people.([]string), nil
 }
 
-func getRandomUsersTxFunc(session neo4j.Session, user string, limit int) ([]string, error) {
+func getRandomUsersTxFunc(session neo4j.Session, user string) ([]string, error) {
 
 	people, err := session.ReadTransaction(func(tx neo4j.Transaction) (interface{}, error) {
 		var list []string
 
 		result, err := tx.Run(
-			"MATCH (u1: User)-[:CONNECTED]->(u2:User)<-[:CONNECTED]-(u3:User) "+
-				"WHERE u1.userId=$user AND u3.userId<>$user "+
-				"AND NOT exists((u1)-[:CONNECTED]-(u3)) "+
-				"AND NOT exists((u1)-[:BLOCKED]-(u3)) "+
-				"RETURN distinct u3.userId LIMIT 10 ",
+			"MATCH (user: User { userId: $user}),(N:User) "+
+				"WHERE NOT exists((N)-[:CONNECTED]-(user)) "+
+				"AND NOT exists((N)-[:BLOCKED]-(user)) "+
+				"RETURN N LIMIT 20 ",
 
 			map[string]interface{}{"user": user})
 		if err != nil {
@@ -101,4 +100,13 @@ func getRandomUsersTxFunc(session neo4j.Session, user string, limit int) ([]stri
 		return nil, err
 	}
 	return people.([]string), nil
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
