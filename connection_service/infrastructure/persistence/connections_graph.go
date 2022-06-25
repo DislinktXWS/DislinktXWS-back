@@ -74,11 +74,12 @@ func (store *ConnectionsDBGraph) GetUserRecommendations(user string) []string {
 		for _, v := range randomUsers {
 			if !contains(friendsOfFriends, v) {
 				friendsOfFriends = append(friendsOfFriends, v)
-				continue
+			}
+			if len(friendsOfFriends) == 10 {
+				break
 			}
 		}
 	}
-
 	return friendsOfFriends
 }
 
