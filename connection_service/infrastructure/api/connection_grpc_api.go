@@ -109,6 +109,17 @@ func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, req
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetUserRecommendations(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+
+	Connections := handler.service.GetUserRecommendations(request.Id)
+
+	response := &pb.GetAllConnectionsResponse{}
+
+	for _, connection := range Connections {
+		response.Ids = append(response.Ids, connection)
+	}
+	return response, nil
+}
 func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, request *pb.ConnectionStatusRequest) (*pb.ConnectionStatusResponse, error) {
 
 	var enums int32

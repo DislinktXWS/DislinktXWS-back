@@ -125,6 +125,9 @@ func (server *Server) initCustomHandlers() {
 	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
 	blockedUsersHandler.Init(server.mux)
 
+	userRecommendationsHandler := api.NewUserRecommendationsHandler(userEndpoint, connectionEndpoint)
+	userRecommendationsHandler.Init(server.mux)
+
 	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
 	connectionReqHandler.Init(server.mux)
 

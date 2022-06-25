@@ -20,6 +20,9 @@ func (service *ConnectionsService) GetAll(userId string) []string {
 func (service *ConnectionsService) GetAllConnectionRequests(userId string) []string {
 	return service.graph.GetConnectionRequests(userId)
 }
+func (service *ConnectionsService) GetUserRecommendations(userId string) []string {
+	return service.graph.GetUserRecommendations(userId)
+}
 func (service *ConnectionsService) GetConnectionStatus(user1 string, user2 string) string {
 	return service.graph.GetConnectionStatus(user1, user2)
 }
