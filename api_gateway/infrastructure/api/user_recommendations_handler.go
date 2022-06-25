@@ -67,7 +67,7 @@ func (handler *UserRecommendationsHandler) GetUserRecommendations(w http.Respons
 func (handler *UserRecommendationsHandler) getUserIds(userId string) ([]string, error) {
 
 	connectionsClient := services.NewConnectionClient(handler.connectionClientAddress)
-	connections, err := connectionsClient.GetBlockedUsers(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
+	connections, err := connectionsClient.GetUserRecommendations(context.TODO(), &connection_proto.GetAllConnectionsRequest{Id: userId})
 	return connections.Ids, err
 }
 
