@@ -2,6 +2,7 @@ package services
 
 import (
 	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
+	message_service "github.com/dislinktxws-back/common/proto/message_service"
 	post_service "github.com/dislinktxws-back/common/proto/post_service"
 	user_service "github.com/dislinktxws-back/common/proto/user_service"
 	"log"
@@ -24,6 +25,14 @@ func NewPostClient(address string) post_service.PostServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
 	}
 	return post_service.NewPostServiceClient(connection)
+}
+
+func NewMessageClient(address string) message_service.MessageServiceClient {
+	connection, err := getClientConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
+	}
+	return message_service.NewMessageServiceClient(connection)
 }
 
 func NewConnectionClient(address string) connection_service.ConnectionsServiceClient {

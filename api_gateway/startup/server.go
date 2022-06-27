@@ -6,6 +6,7 @@ import (
 	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
+	messageGw "github.com/dislinktxws-back/common/proto/message_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -57,6 +58,13 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func (server *Server) initCustomHandlers() {

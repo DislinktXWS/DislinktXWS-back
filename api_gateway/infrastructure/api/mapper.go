@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/dislinktxws-back/api_gateway/domain"
+	pbMessage "github.com/dislinktxws-back/common/proto/message_service"
 	pbPost "github.com/dislinktxws-back/common/proto/post_service"
 	pbUser "github.com/dislinktxws-back/common/proto/user_service"
 )
@@ -32,4 +33,14 @@ func mapNewPost(postPb *pbPost.Post) *domain.Post {
 		Dislikes: postPb.Dislikes,
 	}
 	return post
+}
+
+func mapNewConversationInfo(postPb *pbMessage.GetConversationResponse, userInfo *domain.UserBasicInfo) *domain.ConversationInfo {
+	info := &domain.ConversationInfo{
+		UserId:    userInfo.Id,
+		Username:  userInfo.Username,
+		FirstName: userInfo.Name,
+		LastName:  userInfo.Surname,
+	}
+	return info
 }

@@ -17,6 +17,8 @@ type Config struct { //prijava svih servisa gateway-u
 	ConnectionPort     string
 	AuthenticationHost string
 	AuthenticationPort string
+	MessageHost        string
+	MessagePort        string
 }
 
 func NewConfig() *Config {
@@ -37,5 +39,7 @@ func NewConfig() *Config {
 		ConnectionPort:     os.Getenv("CONNECTION_SERVICE_PORT"),
 		AuthenticationHost: os.Getenv("AUTHENTICATION_SERVICE_HOST"),
 		AuthenticationPort: os.Getenv("AUTHENTICATION_SERVICE_PORT"),
+		MessageHost:        os.Getenv("MESSAGE_SERVICE_HOST"),
+		MessagePort:        os.Getenv("MESSAGE_SERVICE_PORT"),
 	}
 }

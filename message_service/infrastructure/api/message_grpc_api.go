@@ -9,6 +9,7 @@ import (
 )
 
 type MessageHandler struct {
+	pb.UnimplementedMessageServiceServer
 	service *application.MessageService
 }
 
