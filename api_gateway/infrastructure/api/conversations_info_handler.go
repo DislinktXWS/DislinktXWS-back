@@ -13,26 +13,26 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-type ConversationsSortedHandler struct {
+type ConversationInfoHandler struct {
 	userClientAddress    string
 	messageClientAddress string
 }
 
-func NewConversationsSortedHandler(userClientAddress, messageClientAddress string) Handler {
-	return &ConversationsSortedHandler{
+func NewConversationInfoHandler(userClientAddress, messageClientAddress string) Handler {
+	return &ConversationInfoHandler{
 		userClientAddress:    userClientAddress,
 		messageClientAddress: messageClientAddress,
 	}
 }
 
-func (handler *ConversationsSortedHandler) Init(mux *runtime.ServeMux) {
+func (handler *ConversationInfoHandler) Init(mux *runtime.ServeMux) {
 	err := mux.HandlePath("GET", "/conversations/{id}", handler.GetSortedConversations)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (handler *ConversationsSortedHandler) GetSortedConversations(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+func (handler *ConversationInfoHandler) GetSortedConversations(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
 	id := pathParams["id"]
 	if id == "" {
@@ -43,10 +43,12 @@ func (handler *ConversationsSortedHandler) GetSortedConversations(w http.Respons
 	fmt.Print("ID je -> ")
 	fmt.Print(id)
 
-	result := []domain.ConversationInfo{}
-	_ = handler.getConversationsInfo(&result, id)
+	//result := []domain.ConversationInfo{}
+	//_ = handler.getConversationsInfo(&result, id)
 
-	response, err := json.Marshal(result)
+	result, _ := handler.getConversations(id)
+
+	response, err := json.Marshal(result.Conversations)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -56,7 +58,7 @@ func (handler *ConversationsSortedHandler) GetSortedConversations(w http.Respons
 
 }
 
-func (handler *ConversationsSortedHandler) getConversationsInfo(users *[]domain.ConversationInfo, userId string) error {
+func (handler *ConversationInfoHandler) getConversationsInfo(users *[]domain.ConversationInfo, userId string) error {
 
 	conversations, _ := handler.getConversations(userId)
 
@@ -79,14 +81,18 @@ func (handler *ConversationsSortedHandler) getConversationsInfo(users *[]domain.
 	return nil
 }
 
-func (handler *ConversationsSortedHandler) getConversations(userId string) (*message_proto.GetAllConversationsResponse, error) {
+func (handler *ConversationInfoHandler) getConversations(userId string) (*message_proto.GetAllConversationsResponse, error) {
 
 	messagesClient := services.NewMessageClient(handler.messageClientAddress)
 	conversations, err := messagesClient.GetAllConversations(context.TODO(), &message_proto.GetAllConversationsRequest{Id: userId})
+
+	if err != nil {
+		fmt.Println("DESILO SE TO DA SE DESIO ERROR U GETOVANJU SVIH RAZGOVORA")
+	}
 	return conversations, err
 }
 
-func (handler *ConversationsSortedHandler) getUser(user *domain.UserBasicInfo, userId string) error {
+func (handler *ConversationInfoHandler) getUser(user *domain.UserBasicInfo, userId string) error {
 
 	userClient := services.NewUserClient(handler.userClientAddress)
 
