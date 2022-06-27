@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
+	message_service "github.com/dislinktxws-back/common/proto/message_service"
 	"github.com/dislinktxws-back/message_service/application"
 	"github.com/dislinktxws-back/message_service/domain"
 	"github.com/dislinktxws-back/message_service/infrastructure/api"
@@ -74,7 +75,7 @@ func (server *Server) initMessageHandler(service *application.MessageService) *a
 	return api.NewMessageHandler(service)
 }
 
-func (server *Server) startGrpcServer(massageHandler *api.MessageHandler) {
+func (server *Server) startGrpcServer(messageHandler *api.MessageHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -82,7 +83,7 @@ func (server *Server) startGrpcServer(massageHandler *api.MessageHandler) {
 	grpcServer := grpc.NewServer(
 		withServerUnaryInterceptor(),
 	)
-	/*message_service.RegisterMessageServiceServer(grpcServer, massageHandler)*/
+	message_service.RegisterMessageServiceServer(grpcServer, messageHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
