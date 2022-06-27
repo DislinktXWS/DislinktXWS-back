@@ -41,9 +41,10 @@ func (store *MessageMongoDBStore) CreateConversation(participants domain.Partici
 	return nil, Conversation
 }
 
-func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]string, error) {
+func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]*domain.Conversation, error) {
 
 	var conversations []string
+	var conversationsObject []*domain.Conversation
 
 	filterFirst := bson.M{"first_participator": userId}
 	resultFirst, errFirst := store.filter(filterFirst)
@@ -54,6 +55,7 @@ func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]string, 
 
 			if !contains(conversations, element.SecondParticipator) {
 				conversations = append(conversations, element.SecondParticipator)
+				conversationsObject = append(conversationsObject, element)
 			}
 		}
 	}
@@ -67,10 +69,11 @@ func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]string, 
 
 			if !contains(conversations, element.SecondParticipator) {
 				conversations = append(conversations, element.SecondParticipator)
+				conversationsObject = append(conversationsObject, element)
 			}
 		}
 	}
-	return conversations, nil
+	return conversationsObject, nil
 }
 
 func (store *MessageMongoDBStore) AddMessage(message *domain.Message, participants domain.Participants) error {
