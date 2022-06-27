@@ -25,7 +25,7 @@ func NewMessageMongoDBStore(client *mongo.Client) domain.MessageStore {
 	}
 }
 
-func (store *MessageMongoDBStore) CreateConversation(participants domain.Participants) (error, *domain.Conversation) {
+func (store *MessageMongoDBStore) CreateConversation(participants *domain.Participants) (error, *domain.Conversation) {
 
 	var Conversation *domain.Conversation
 
