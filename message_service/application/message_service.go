@@ -14,7 +14,7 @@ func NewMessageService(store domain.MessageStore) *MessageService {
 	}
 }
 
-func (service *MessageService) CreateConversation(participants *domain.Participants) (error, *domain.Conversation) {
+func (service *MessageService) CreateConversation(participants *domain.Participants) error {
 	return service.store.CreateConversation(participants)
 }
 func (service *MessageService) GetConversation(participants domain.Participants) (*domain.Conversation, error) {

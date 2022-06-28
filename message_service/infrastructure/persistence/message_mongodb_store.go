@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"github.com/dislinktxws-back/message_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const (
-	DATABASE   = "messageDB"
+	DATABASE   = "messDB"
 	COLLECTION = "messages"
 )
 
@@ -25,20 +24,26 @@ func NewMessageMongoDBStore(client *mongo.Client) domain.MessageStore {
 	}
 }
 
-func (store *MessageMongoDBStore) CreateConversation(participants *domain.Participants) (error, *domain.Conversation) {
+func (store *MessageMongoDBStore) CreateConversation(participants *domain.Participants) error {
+	
+	existingConversation, _ := store.GetConversation(*participants)
+	if existingConversation != nil {
+		return nil
+	} else {
 
-	var Conversation *domain.Conversation
+		Conversation := new(domain.Conversation)
+		Conversation.Messages = make([]domain.Message, 0)
+		Conversation.FirstParticipator = participants.Sender
+		Conversation.SecondParticipator = participants.Receiver
 
-	Conversation.Messages = make([]domain.Message, 0)
-	Conversation.FirstParticipator = participants.Sender
-	Conversation.SecondParticipator = participants.Receiver
+		_, err := store.messages.InsertOne(context.TODO(), Conversation)
+		if err != nil {
+			return err
+		}
 
-	result, err := store.messages.InsertOne(context.TODO(), Conversation)
-	if err != nil {
-		return err, &domain.Conversation{}
+		fmt.Println("DOSAO JE DO KRAJA STORE METODE")
+		return nil
 	}
-	Conversation.Id = result.InsertedID.(primitive.ObjectID)
-	return nil, Conversation
 }
 
 func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]*domain.Conversation, error) {
@@ -100,17 +105,21 @@ func (store *MessageMongoDBStore) GetConversation(participants domain.Participan
 		"second_participator": participants.Receiver,
 	}
 
-	result := store.messages.FindOne(context.TODO(), filter)
-	noMatch := result.Decode(&Conversation)
+	e := store.messages.FindOne(context.TODO(), filter).Decode(&Conversation)
 
-	if noMatch != nil {
+	if e != nil {
+
 		filter := bson.M{
 			"first_participator":  participants.Receiver,
 			"second_participator": participants.Sender,
 		}
-		result := store.messages.FindOne(context.TODO(), filter)
-		err = result.Decode(&Conversation)
+		eSecond := store.messages.FindOne(context.TODO(), filter).Decode(&Conversation)
+
+		if eSecond != nil {
+			return nil, nil
+		}
 	}
+	fmt.Println("USTVARI JE PROSAO STORE")
 	return
 }
 

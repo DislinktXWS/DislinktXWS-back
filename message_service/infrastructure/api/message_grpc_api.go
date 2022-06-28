@@ -21,13 +21,16 @@ func NewMessageHandler(service *application.MessageService) *MessageHandler {
 
 func (handler *MessageHandler) CreateConversation(ctx context.Context, request *pb.CreateConversationRequest) (*pb.EmptyResponse, error) {
 
-	fmt.Print("DESILA SE METODA ZA CREATE CONVERSATION")
 	participants := mapNewConversation(request.Participants)
-	err, _ := handler.service.CreateConversation(participants)
+	fmt.Println("OVO JE REZ MAPIRANJA")
+	fmt.Println(participants.Sender)
+	fmt.Println(participants.Receiver)
+	err := handler.service.CreateConversation(participants)
 
 	if err != nil {
 		return nil, err
 	}
+
 	return &pb.EmptyResponse{}, nil
 }
 
@@ -40,6 +43,11 @@ func (handler *MessageHandler) GetConversation(ctx context.Context, request *pb.
 	participants.Receiver = request.GetId2()
 
 	conversation, err := handler.service.GetConversation(participants)
+	if conversation == nil {
+		fmt.Println("CONVERSATION JE NULL")
+		return &pb.GetConversationResponse{}, nil
+	}
+
 	conversationPb := mapConversation(conversation)
 
 	if err != nil {
