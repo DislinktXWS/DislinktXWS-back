@@ -44,6 +44,10 @@ type UserServiceClient interface {
 	SearchProfiles(ctx context.Context, in *SearchProfilesRequest, opts ...grpc.CallOption) (*SearchProfilesResponse, error)
 	SetPrivacy(ctx context.Context, in *SetPrivacyRequest, opts ...grpc.CallOption) (*SetPrivacyResponse, error)
 	SetApiKey(ctx context.Context, in *SetApiKeyRequest, opts ...grpc.CallOption) (*SetApiKeyResponse, error)
+	SetChatNotifications(ctx context.Context, in *SetChatNotificationsRequest, opts ...grpc.CallOption) (*SetChatNotificationsResponse, error)
+	SetPostNotifications(ctx context.Context, in *SetPostNotificationsRequest, opts ...grpc.CallOption) (*SetPostNotificationsResponse, error)
+	SetConnectionsNotifications(ctx context.Context, in *SetConnectionsNotificationsRequest, opts ...grpc.CallOption) (*SetConnectionsNotificationsResponse, error)
+	GetNotificationsSettings(ctx context.Context, in *GetNotificationsSettingsRequest, opts ...grpc.CallOption) (*GetNotificationsSettingsResponse, error)
 }
 
 type userServiceClient struct {
@@ -252,6 +256,42 @@ func (c *userServiceClient) SetApiKey(ctx context.Context, in *SetApiKeyRequest,
 	return out, nil
 }
 
+func (c *userServiceClient) SetChatNotifications(ctx context.Context, in *SetChatNotificationsRequest, opts ...grpc.CallOption) (*SetChatNotificationsResponse, error) {
+	out := new(SetChatNotificationsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/SetChatNotifications", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) SetPostNotifications(ctx context.Context, in *SetPostNotificationsRequest, opts ...grpc.CallOption) (*SetPostNotificationsResponse, error) {
+	out := new(SetPostNotificationsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/SetPostNotifications", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) SetConnectionsNotifications(ctx context.Context, in *SetConnectionsNotificationsRequest, opts ...grpc.CallOption) (*SetConnectionsNotificationsResponse, error) {
+	out := new(SetConnectionsNotificationsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/SetConnectionsNotifications", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetNotificationsSettings(ctx context.Context, in *GetNotificationsSettingsRequest, opts ...grpc.CallOption) (*GetNotificationsSettingsResponse, error) {
+	out := new(GetNotificationsSettingsResponse)
+	err := c.cc.Invoke(ctx, "/users.UserService/GetNotificationsSettings", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -278,6 +318,10 @@ type UserServiceServer interface {
 	SearchProfiles(context.Context, *SearchProfilesRequest) (*SearchProfilesResponse, error)
 	SetPrivacy(context.Context, *SetPrivacyRequest) (*SetPrivacyResponse, error)
 	SetApiKey(context.Context, *SetApiKeyRequest) (*SetApiKeyResponse, error)
+	SetChatNotifications(context.Context, *SetChatNotificationsRequest) (*SetChatNotificationsResponse, error)
+	SetPostNotifications(context.Context, *SetPostNotificationsRequest) (*SetPostNotificationsResponse, error)
+	SetConnectionsNotifications(context.Context, *SetConnectionsNotificationsRequest) (*SetConnectionsNotificationsResponse, error)
+	GetNotificationsSettings(context.Context, *GetNotificationsSettingsRequest) (*GetNotificationsSettingsResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -350,6 +394,18 @@ func (UnimplementedUserServiceServer) SetPrivacy(context.Context, *SetPrivacyReq
 }
 func (UnimplementedUserServiceServer) SetApiKey(context.Context, *SetApiKeyRequest) (*SetApiKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetApiKey not implemented")
+}
+func (UnimplementedUserServiceServer) SetChatNotifications(context.Context, *SetChatNotificationsRequest) (*SetChatNotificationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetChatNotifications not implemented")
+}
+func (UnimplementedUserServiceServer) SetPostNotifications(context.Context, *SetPostNotificationsRequest) (*SetPostNotificationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPostNotifications not implemented")
+}
+func (UnimplementedUserServiceServer) SetConnectionsNotifications(context.Context, *SetConnectionsNotificationsRequest) (*SetConnectionsNotificationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetConnectionsNotifications not implemented")
+}
+func (UnimplementedUserServiceServer) GetNotificationsSettings(context.Context, *GetNotificationsSettingsRequest) (*GetNotificationsSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNotificationsSettings not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -760,6 +816,78 @@ func _UserService_SetApiKey_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SetChatNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetChatNotificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SetChatNotifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/SetChatNotifications",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SetChatNotifications(ctx, req.(*SetChatNotificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_SetPostNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetPostNotificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SetPostNotifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/SetPostNotifications",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SetPostNotifications(ctx, req.(*SetPostNotificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_SetConnectionsNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetConnectionsNotificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SetConnectionsNotifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/SetConnectionsNotifications",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SetConnectionsNotifications(ctx, req.(*SetConnectionsNotificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetNotificationsSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNotificationsSettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetNotificationsSettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.UserService/GetNotificationsSettings",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetNotificationsSettings(ctx, req.(*GetNotificationsSettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -854,6 +982,22 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetApiKey",
 			Handler:    _UserService_SetApiKey_Handler,
+		},
+		{
+			MethodName: "SetChatNotifications",
+			Handler:    _UserService_SetChatNotifications_Handler,
+		},
+		{
+			MethodName: "SetPostNotifications",
+			Handler:    _UserService_SetPostNotifications_Handler,
+		},
+		{
+			MethodName: "SetConnectionsNotifications",
+			Handler:    _UserService_SetConnectionsNotifications_Handler,
+		},
+		{
+			MethodName: "GetNotificationsSettings",
+			Handler:    _UserService_GetNotificationsSettings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

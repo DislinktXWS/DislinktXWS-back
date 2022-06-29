@@ -103,3 +103,13 @@ ERROR: 2022/06/28 14:13:29 user_grpc_api.go:47: Action: 1, Message: ID is not co
 ERROR: 2022/06/28 14:13:29 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/28 14:18:38 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/28 14:18:38 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 22:33:23 server.go:177: Action: 35, Message: Cannot validate token!
+ERROR: 2022/06/29 22:34:37 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/06/29 22:34:37 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/06/29 22:34:37 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/06/29 22:34:37 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/06/29 22:34:37 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 22:35:12 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/06/29 22:35:19 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 22:35:19 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 22:37:33 server.go:161: Action: 34, Message: Authorization token is not supplied!

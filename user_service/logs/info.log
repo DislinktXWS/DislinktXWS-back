@@ -10,3 +10,6 @@ INFO: 2022/06/17 11:16:13 user_grpc_api.go:140: Action: 3, Message: User sarapop
 INFO: 2022/06/17 11:27:45 user_grpc_api.go:140: Action: 3, Message: User ogijah registered successfully.
 INFO: 2022/06/17 11:31:06 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
 INFO: 2022/06/28 14:09:41 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
+INFO: 2022/06/29 22:35:46 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
+INFO: 2022/06/29 23:10:24 user_grpc_api.go:252: Action: 6, Message: User with id 62bcd3beadea4422602b99be added experience.
+INFO: 2022/06/29 23:10:24 user_grpc_api.go:172: Action: 6, Message: User nina edited.

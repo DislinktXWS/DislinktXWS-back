@@ -108,3 +108,23 @@ func (service *UserService) SearchProfiles(search string) (*[]domain.User, error
 func (service *UserService) SetPrivacy(private bool, id primitive.ObjectID) error {
 	return service.store.SetPrivacy(private, id)
 }
+
+func (service *UserService) SetChatNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetChatNotifications(objectId)
+}
+
+func (service *UserService) SetPostNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetPostNotifications(objectId)
+}
+
+func (service *UserService) SetConnectionsNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetConnectionsNotifications(objectId)
+}
+
+func (service *UserService) GetNotificationsSettings(id string) (domain.NotificationsSettingsDTO, error) {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.GetNotificationsSettings(objectId)
+}

@@ -27,14 +27,17 @@ func mapUser(user *domain.User) *pb.User {
 
 func mapNewUser(userPb *pb.User) *domain.User {
 	user := &domain.User{
-		Name:        userPb.Name,
-		Surname:     userPb.Surname,
-		Username:    userPb.Username,
-		DateOfBirth: userPb.DateOfBirth,
-		Gender:      userPb.Gender,
-		Email:       userPb.Email,
-		Phone:       userPb.Phone,
-		Biography:   userPb.Biography,
+		Name:                     userPb.Name,
+		Surname:                  userPb.Surname,
+		Username:                 userPb.Username,
+		DateOfBirth:              userPb.DateOfBirth,
+		Gender:                   userPb.Gender,
+		Email:                    userPb.Email,
+		Phone:                    userPb.Phone,
+		Biography:                userPb.Biography,
+		ChatNotifications:        true,
+		ConnectionsNotifications: true,
+		PostNotifications:        true,
 	}
 	return user
 }

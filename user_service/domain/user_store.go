@@ -27,4 +27,8 @@ type UserStore interface {
 	DeleteSkill(id primitive.ObjectID, index uint) error
 	SearchProfiles(search string) (*[]User, error)
 	SetPrivacy(public bool, id primitive.ObjectID) error
+	SetChatNotifications(id primitive.ObjectID) error
+	SetPostNotifications(id primitive.ObjectID) error
+	SetConnectionsNotifications(id primitive.ObjectID) error
+	GetNotificationsSettings(id primitive.ObjectID) (NotificationsSettingsDTO, error)
 }
