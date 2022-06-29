@@ -35,6 +35,8 @@ services:
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
       BUSINESS_OFFER_SERVICE_HOST: ${BUSINESS_OFFER_SERVICE_HOST}
       BUSINESS_OFFER_SERVICE_PORT: ${BUSINESS_OFFER_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
     networks:
       - network
   user_service:
@@ -207,6 +209,23 @@ services:
     networks:
       - network
 
+  notification_service:
+    image: notification_service
+    container_name: notification_service
+    build:
+      context: .
+      dockerfile: ./notification_service/Dockerfile
+    restart: on-failure
+    environment:
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+      NOTIFICATIONS_DB_HOST: ${NOTIFICATIONS_DB_HOST}
+      NOTIFICATIONS_DB_PORT: ${NOTIFICATIONS_DB_PORT}
+    depends_on:
+      - notifications_db
+    networks:
+      - network
+
   user_db:
     image: mongo
     container_name: user_db
@@ -251,6 +270,13 @@ services:
     environment:
       - NEO4J_AUTH=none
       - NEO4J_dbms_memory_pagecache_size=512M
+
+  notifications_db:
+    image: mongo
+    container_name: notifications_db
+    restart: on-failure
+    networks:
+      - network
 
 networks:
   network:

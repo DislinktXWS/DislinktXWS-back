@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "module/common/users";
+
+package notifications;
+
+import "google/api/annotations.proto";
+
+service NotificationsService{
+
+    rpc Get(GetRequest) returns(GetResponse) {
+      option (google.api.http) = {
+        get: "/notifications/notification/{id}"
+      };
+    }
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  Notification notification = 1;
+}
+
+message Notification {
+  string id = 1;
+}

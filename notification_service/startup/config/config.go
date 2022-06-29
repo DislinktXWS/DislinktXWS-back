@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	cnf "github.com/dislinktxws-back/common/config"
+	"os"
 )
 
 type Config struct {
@@ -21,9 +22,9 @@ func NewConfig() *Config {
 	}
 
 	return &Config{
-		Host:               "",
-		Port:               "",
-		NotificationDBHost: "",
-		NotificationDBPort: "",
+		Host:               os.Getenv("NOTIFICATIONS_SERVICE_HOST"),
+		Port:               os.Getenv("NOTIFICATIONS_SERVICE_PORT"),
+		NotificationDBHost: os.Getenv("NOTIFICATIONS_DB_HOST"),
+		NotificationDBPort: os.Getenv("NOTIFICATIONS_DB_PORT"),
 	}
 }
