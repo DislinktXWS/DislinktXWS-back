@@ -6,6 +6,8 @@ import (
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
+	"github.com/dislinktxws-back/common/saga/messaging/nats"
 	"github.com/dislinktxws-back/connection_service/application"
 	"github.com/dislinktxws-back/connection_service/domain"
 	"github.com/dislinktxws-back/connection_service/infrastructure/api"
@@ -46,8 +48,11 @@ func (server *Server) Start() {
 	neo4jsession := server.initNeo4jSession()
 	connectionStore := server.initConnectionStore(neo4jsession)
 
+	commandSubscriber := server.initSubscriber(server.config.InsertUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.InsertUserReplySubject)
+
 	connectionsService := server.initConnectionsService(connectionStore)
-	userHandler := server.initConnectionsHandler(connectionsService)
+	userHandler := server.initConnectionsHandler(connectionsService, replyPublisher, commandSubscriber)
 
 	server.startGrpcServer(userHandler)
 }
@@ -65,12 +70,32 @@ func (server *Server) initConnectionStore(client *neo4j.Session) domain.Connecti
 	return store
 }
 
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
+}
+
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
 func (server *Server) initConnectionsService(store domain.ConnectionsGraph) *application.ConnectionsService {
 	return application.NewConnectionsService(store)
 }
 
-func (server *Server) initConnectionsHandler(service *application.ConnectionsService) *api.ConnectionHandler {
-	return api.NewConnectionHandler(service)
+func (server *Server) initConnectionsHandler(service *application.ConnectionsService, publisher saga.Publisher, subscriber saga.Subscriber) *api.ConnectionHandler {
+	return api.NewConnectionHandler(service, publisher, subscriber)
 }
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {

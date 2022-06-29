@@ -117,6 +117,15 @@ func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {
 	return nil
 }
 
+func (store *AuthMongoDBStore) Delete(id string) error {
+	userId, _ := primitive.ObjectIDFromHex(id)
+	_, err := store.authentications.DeleteOne(context.TODO(), userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
@@ -258,8 +267,8 @@ func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int6
 	filter := bson.D{{}}
 	authentications, _ := store.filter(filter)
 	for _, auth := range authentications {
-		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) &&
-			time.Now().Sub(auth.VerificationCreationTime).Minutes() <= 10 {
+		fmt.Println(" token:" + auth.VerificationToken)
+		if utils.CheckPasswordHash(verificationToken, auth.VerificationToken) {
 			store.authentications.UpdateOne(
 				context.TODO(),
 				bson.M{"_id": auth.Id},
