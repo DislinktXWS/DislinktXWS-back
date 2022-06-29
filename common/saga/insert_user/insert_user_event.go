@@ -5,6 +5,7 @@ type User struct {
 	Name              string
 	Surname           string
 	Username          string
+	Password          string
 	DateOfBirth       string
 	Gender            string
 	Email             string
@@ -48,10 +49,9 @@ type SkillProficiency int8
 type InsertUserCommandType int8
 
 const (
-	InsertUser InsertUserCommandType = iota
-	RollbackInsertUser
+	InsertUserAuthentication InsertUserCommandType = iota
+	RollbackInsertUserAuthentication
 	InsertUserNode
-	RollbackInsertUserNode
 	UnknownCommand
 )
 
@@ -63,8 +63,9 @@ type InsertUserCommand struct {
 type InsertUserReplyType int8
 
 const (
-	UserInserted InsertUserReplyType = iota
-	UserNotInserted
+	UserAuthenticationInserted InsertUserReplyType = iota
+	UserAuthenticationNotInserted
+	UserAuthenticationRolledBack
 	UserNodeInserted
 	UserNodeNotInserted
 	UnknownReply

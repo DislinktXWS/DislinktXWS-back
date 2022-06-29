@@ -3,10 +3,8 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/dislinktxws-back/api_gateway/domain"
 	"github.com/dislinktxws-back/api_gateway/infrastructure/services"
-	connection_proto "github.com/dislinktxws-back/common/proto/connection_service"
 	user_proto "github.com/dislinktxws-back/common/proto/user_service"
 	"net/http"
 
@@ -14,14 +12,16 @@ import (
 )
 
 type RegistrationHandler struct {
-	userClientAddress       string
-	connectionClientAddress string
+	userClientAddress           string
+	connectionClientAddress     string
+	authenticationClientAddress string
 }
 
-func NewRegistrationHandler(userClientAddress, connectionClientAddress string) Handler {
+func NewRegistrationHandler(userClientAddress, connectionClientAddress, authenticationClientAddress string) Handler {
 	return &RegistrationHandler{
-		userClientAddress:       userClientAddress,
-		connectionClientAddress: connectionClientAddress,
+		userClientAddress:           userClientAddress,
+		connectionClientAddress:     connectionClientAddress,
+		authenticationClientAddress: authenticationClientAddress,
 	}
 }
 
@@ -48,17 +48,9 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
-	e := handler.addUserNode(newUserId)
-	if e != nil {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Println("*********************************************")
-		fmt.Println(e)
-		return
-	}
-
 	newUser.Id = newUserId
 	newUser.VerificationToken = token
+
 	response, err := json.Marshal(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -75,11 +67,4 @@ func (handler *RegistrationHandler) addUser(newUser domain.UserRegistration) (st
 	insertedUser, err := userClient.Insert(context.TODO(), &user_proto.InsertUserRequest{User: UserPb})
 
 	return insertedUser.User.Id, insertedUser.User.VerificationToken, err
-}
-func (handler *RegistrationHandler) addUserNode(userId string) error {
-
-	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
-	_, err := connectionClient.InsertNewUser(context.TODO(), &connection_proto.InsertUserRequest{User: userId})
-
-	return err
 }

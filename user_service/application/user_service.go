@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	"github.com/dislinktxws-back/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -40,10 +41,11 @@ func (service *UserService) GetPublicUsers() ([]*domain.User, error) {
 
 func (service *UserService) Insert(user *domain.User) (error, *domain.User) {
 	err, newUser := service.store.Insert(user)
+	fmt.Println("INSERTOVANO U USER")
 	if err != nil {
 		return err, nil
 	}
-	err = service.orchestrator.Start(user)
+	err = service.orchestrator.Start(newUser)
 	if err != nil {
 		return err, nil
 	}

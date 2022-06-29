@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	events "github.com/dislinktxws-back/common/saga/insert_user"
 	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"github.com/dislinktxws-back/user_service/domain"
@@ -24,8 +25,11 @@ func NewInsertUserOrchestrator(publisher saga.Publisher, subscriber saga.Subscri
 }
 
 func (o *InsertUserOrchestrator) Start(user *domain.User) error {
+	fmt.Println("STARTUJEMO ORKESTRATOR")
+	fmt.Println(user.Id)
+	fmt.Println(user.VerificationToken)
 	event := &events.InsertUserCommand{
-		Type: events.InsertUser,
+		Type: events.InsertUserAuthentication,
 		User: events.User{
 			Id:                user.Id.Hex(),
 			Name:              user.Name,
@@ -37,7 +41,7 @@ func (o *InsertUserOrchestrator) Start(user *domain.User) error {
 			Phone:             user.Phone,
 			Biography:         user.Biography,
 			IsPublic:          true,
-			VerificationToken: "",
+			VerificationToken: user.VerificationToken,
 			ApiKey:            "",
 		},
 	}
@@ -54,14 +58,17 @@ func (o *InsertUserOrchestrator) handle(reply *events.InsertUserReply) {
 
 func (o *InsertUserOrchestrator) nextCommandType(reply events.InsertUserReplyType) events.InsertUserCommandType {
 	switch reply {
-	case events.UserInserted:
+	case events.UserAuthenticationInserted:
 		return events.InsertUserNode
-	case events.UserNotInserted:
-		return events.RollbackInsertUser
+	case events.UserAuthenticationNotInserted:
+		return events.UnknownCommand //DA LI MOZDA TREBA RollBack za userService
+	case events.UserAuthenticationRolledBack:
+		return events.UnknownCommand //ISTO KAO PRETHODNO
 	case events.UserNodeInserted:
-		return events.InsertUserNode
+		return events.UnknownCommand //STA STAVITI KADA JE USPESAN KRAJ
 	case events.UserNodeNotInserted:
-		return events.RollbackInsertUserNode
+		return events.RollbackInsertUserAuthentication
+
 	default:
 		return events.UnknownCommand
 	}
