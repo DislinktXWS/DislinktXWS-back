@@ -47,9 +47,11 @@ func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, requ
 	err := handler.service.InsertUserConnection(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot create connection!")
+		log.Println("Action: 15, Message: Cannot create connection!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 16, Message: New connection between " + connection.Connected + " and " + connection.Connecting)
+	log.Println("Action: 16, Message: New connection between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -59,9 +61,11 @@ func (handler *ConnectionHandler) DeleteUserConnection(ctx context.Context, requ
 	err := handler.service.DeleteUserConnection(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 17, Cannot delete connection!")
+		log.Println("Action: 17, Cannot delete connection!")
 		return nil, err
 	}
 	InfoLogger.Println("Message: 18, Deleted connection between " + connection.Connected + " and " + connection.Connecting)
+	log.Println("Message: 18, Deleted connection between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
@@ -69,9 +73,11 @@ func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb
 	err := handler.service.InsertNewUser(user)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Cannot create user!")
+		log.Println("Action: 4, Message: Cannot create user!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 3, Message: User " + user + " created.")
+	log.Println("Action: 3, Message: User " + user + " created.")
 	return &pb.InsertUserResponse{}, nil
 }
 
@@ -140,9 +146,11 @@ func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, r
 	err := handler.service.InsertConnectionRequest(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot create connection request!")
+		log.Println("Action: 15, Message: Cannot create connection request!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 19, Message: New connection request created between " + connection.Connected + " and " + connection.Connecting)
+	log.Println("Action: 19, Message: New connection request created between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -152,9 +160,11 @@ func (handler *ConnectionHandler) CancelConnectionRequest(ctx context.Context, r
 	err := handler.service.CancelConnectionRequest(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 16, Message: Cannot cancel connection request!")
+		log.Println("Action: 16, Message: Cannot cancel connection request!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 20, Message: Canceled connection request between " + connection.Connected + " and " + connection.Connecting)
+	log.Println("Action: 20, Message: Canceled connection request between " + connection.Connected + " and " + connection.Connecting)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -163,9 +173,11 @@ func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.Ins
 	err := handler.service.BlockUser(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Cannot block user!")
+		log.Println("Action: 4, Message: Cannot block user!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 21, Message: User " + connection.Connecting + " blocked " + connection.Connected)
+	log.Println("Action: 21, Message: User " + connection.Connecting + " blocked " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -175,10 +187,11 @@ func (handler *ConnectionHandler) UnblockUser(ctx context.Context, request *pb.I
 	err := handler.service.UnblockUser(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Cannot unblock user!")
+		log.Println("Action: 4, Message: Cannot unblock user!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 22, Message: User " + connection.Connecting + " unblocked " + connection.Connected)
-
+	log.Println("Action: 22, Message: User " + connection.Connecting + " unblocked " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -188,8 +201,10 @@ func (handler *ConnectionHandler) AcceptConnectionRequest(ctx context.Context, r
 	err := handler.service.AcceptUserConnection(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot accept connection request!")
+		log.Println("Action: 15, Message: Cannot accept connection request!")
 	}
 	InfoLogger.Println("Action: 23, Message: User " + connection.Connecting + " accepted connection request for " + connection.Connected)
+	log.Println("Action: 23, Message: User " + connection.Connecting + " accepted connection request for " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 
@@ -199,8 +214,10 @@ func (handler *ConnectionHandler) DeclineConnectionRequest(ctx context.Context, 
 	err := handler.service.DeclineUserConnection(connection)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot decline connection request!")
+		log.Println("Action: 15, Message: Cannot decline connection request!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 24, Message: User " + connection.Connecting + " declined connection request for " + connection.Connected)
+	log.Println("Action: 24, Message: User " + connection.Connecting + " declined connection request for " + connection.Connected)
 	return &pb.InsertUserConnectionResponse{}, nil
 }

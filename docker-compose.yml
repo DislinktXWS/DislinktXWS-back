@@ -17,8 +17,6 @@ services:
       - type: bind
         source: ./api_gateway/api-gateway.crt
         target: /root/apigateway.crt
-
-
     restart: on-failure
     ports:
       - ${GATEWAY_PORT}:${GATEWAY_PORT}
@@ -59,17 +57,27 @@ services:
       - type: bind
         source: ./user_service/user-service.csr
         target: /root/userservice.csr
-
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     restart: on-failure
     environment:
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
+      JAEGER_SERVICE_NAME: user-service
+      JAEGER_AGENT_HOST: jaeger
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - user_db
     networks:
       - network
+
 
   post_service:
     image: post_service
@@ -94,6 +102,10 @@ services:
         source: ./post_service/post-service.csr
         target: /root/postservice.csr
     restart: on-failure
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     environment:
       POST_SERVICE_HOST: ${POST_SERVICE_HOST}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
@@ -127,6 +139,10 @@ services:
       - type: bind
         source: ./authentication_service/authentication-service.csr
         target: /root/authenticationservice.csr
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     environment:
       AUTHENTICATION_SERVICE_HOST: ${AUTHENTICATION_SERVICE_HOST}
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
@@ -136,6 +152,7 @@ services:
       - auth_db
     networks:
       - network
+
 
   connection_service:
     image: connection_service
@@ -159,6 +176,10 @@ services:
       - type: bind
         source: ./connection_service/connection-service.csr
         target: /root/connectionservice.csr
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     restart: on-failure
     environment:
       - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
@@ -195,6 +216,10 @@ services:
       - type: bind
         source: ./business_offer_service/business-offer-service.csr
         target: /root/businessofferservice.csr
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
     environment:
       - BUSINESS_OFFER_DB_HOST=${BUSINESS_OFFER_DB_HOST}
       - BUSINESS_OFFER_DB_PORT=${BUSINESS_OFFER_DB_PORT}

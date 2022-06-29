@@ -224,6 +224,7 @@ func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {
 }
 
 func (store *UserMongoDBStore) Get(id primitive.ObjectID) (*domain.User, error) {
+
 	filter := bson.M{"_id": id} //M je getovanje ali NE po redosledu kakav je u bazi
 	return store.filterOne(filter)
 }
@@ -244,6 +245,7 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 }
 
 func (store *UserMongoDBStore) GetPublicUsers() ([]*domain.User, error) {
+
 	filter := bson.M{"isPublic": true}
 	return store.filter(filter)
 }

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/user_service"
 	"github.com/dislinktxws-back/user_service/application"
+	"github.com/dislinktxws-back/user_service/tracer"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
-	"os"
 )
 
 var (
@@ -24,20 +24,6 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 	return &UserHandler{
 		service: service,
 	}
-}
-
-func init() {
-	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
-
-	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
-	if err1 != nil {
-		log.Fatal(err1)
-	}
-	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
 }
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
@@ -105,6 +91,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetPublicUsersRequest) (*pb.GetPublicUsersResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetPublicUsers")
 	Users, err := handler.service.GetPublicUsers()
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Users not found!")
@@ -117,6 +104,7 @@ func (handler *UserHandler) GetPublicUsers(ctx context.Context, request *pb.GetP
 		current := mapUser(User)
 		response.Users = append(response.Users, current)
 	}
+	span.Finish()
 	return response, nil
 }
 

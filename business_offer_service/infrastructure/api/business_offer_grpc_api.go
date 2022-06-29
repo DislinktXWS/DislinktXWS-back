@@ -43,9 +43,11 @@ func (handler *BusinessOfferHandler) InsertBusinessOffer(ctx context.Context, re
 	err, offerId := handler.service.InsertBusinessOffer(businessOffer)
 	if err != nil {
 		ErrorLogger.Println("Action: 25, Message: Cannot create business offer!")
+		log.Println("Action: 25, Message: Cannot create business offer!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 26, Message: User with id " + request.Offer.AuthorId + " created new business offer.")
+	log.Println("Action: 26, Message: User with id " + request.Offer.AuthorId + " created new business offer.")
 	return &pb.InsertOfferResponse{Id: offerId}, nil
 }
 
@@ -54,10 +56,11 @@ func (handler *BusinessOfferHandler) InsertSkill(ctx context.Context, request *p
 	err := handler.service.InsertSkill(skill)
 	if err != nil {
 		ErrorLogger.Println("Action: 25, Message: Cannot create new skill!")
+		log.Println("Action: 25, Message: Cannot create new skill!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 27, Message: Created new skill for business offer.")
-
+	log.Println("Action: 27, Message: Created new skill for business offer.")
 	return &pb.InsertSkillsResponse{}, nil
 }
 
@@ -65,6 +68,7 @@ func (handler *BusinessOfferHandler) GetBusinessOffers(ctx context.Context, requ
 	offers, err := handler.service.GetBusinessOffers()
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Business offers not found")
+		log.Println("Action: 2, Message: Business offers not found")
 		return nil, err
 	}
 	response := &pb.GetAllOffersResponse{

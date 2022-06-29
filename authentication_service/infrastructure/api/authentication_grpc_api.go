@@ -46,9 +46,11 @@ func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.Log
 	status, err, token, isTwoFactorEnabled := handler.service.Login(newAuth)
 	if status != 200 {
 		ErrorLogger.Println("Action: 28, Message: Wrong credentials for login")
+		log.Println("Action: 28, Message: Wrong credentials for login")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 29, Message: Login successfull")
+		log.Println("Action: 29, Message: Login successfull")
 	}
 	return &pb.LoginResponse{
 		Status:             status,
@@ -62,9 +64,11 @@ func (handler *AuthenticationHandler) PasswordlessLogin(ctx context.Context, req
 	status, err, token := handler.service.PasswordlessLogin(request.VerificationToken)
 	if status != 200 {
 		ErrorLogger.Println("Action: 28, Message: Wrong email for passwordless login")
+		log.Println("Action: 28, Message: Wrong email for passwordless login")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 29, Message: Login successfull")
+		log.Println("Action: 29, Message: Login successfull")
 	}
 	return &pb.PasswordlessLoginResponse{
 		Status: status,
@@ -78,9 +82,11 @@ func (handler *AuthenticationHandler) Validate(ctx context.Context, request *pb.
 	status, err, user := handler.service.Validate(token)
 	if status != 200 {
 		ErrorLogger.Println("Action: 30, Message: Token is not valid or expired!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 31, Message: User validation successfull")
+		log.Println("Action: 31, Message: User validation successfull")
 	}
 	return &pb.ValidateResponse{
 		Status: status,
@@ -98,9 +104,11 @@ func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.
 	err := handler.service.Register(Auth)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Can not register user!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 3, Message: User " + Auth.Username + " registered successfully!")
+	log.Println("Action: 3, Message: User " + Auth.Username + " registered successfully!")
 	return &pb.RegisterResponse{}, nil
 }
 
@@ -109,9 +117,11 @@ func (handler *AuthenticationHandler) EditUsername(ctx context.Context, request 
 	_, err := handler.service.EditUsername(auth)
 	if err != nil {
 		ErrorLogger.Println("Action: 5, Message: Username is not unique!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 6, Message: User " + auth.Username + " edited successfully")
+	log.Println("Action: 6, Message: User " + auth.Username + " edited successfully")
 	return &pb.EditUsernameResponse{}, nil
 }
 
@@ -120,9 +130,11 @@ func (handler *AuthenticationHandler) ChangePassword(ctx context.Context, reques
 	err := handler.service.ChangePassword(auth)
 	if err != nil {
 		ErrorLogger.Println("Action 5, Message: Cannot change password!")
+		log.Println("Action 5, Message: Cannot change password!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 6, Message: User " + auth.Username + " changed password successfully")
+	log.Println("Action: 6, Message: User " + auth.Username + " changed password successfully")
 	return &pb.ChangePasswordResponse{}, nil
 }
 
@@ -130,6 +142,7 @@ func (handler *AuthenticationHandler) GenerateVerificationToken(ctx context.Cont
 	request *pb.GenerateVerificationTokenRequest) (*pb.GenerateVerificationTokenResponse, error) {
 	err := handler.service.GenerateVerificationToken(request.Email)
 	InfoLogger.Println("Action: 32, Message: E-mail sent successfully")
+	log.Println("Action: 32, Message: E-mail sent successfully")
 	return &pb.GenerateVerificationTokenResponse{}, err
 }
 
@@ -137,9 +150,11 @@ func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, reque
 	status, err := handler.service.AccountRecovery(request.Email)
 	if status != 200 {
 		ErrorLogger.Println("Action: 33, Message: Wrong email")
+		log.Println("Action: 33, Message: Wrong email")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 32, Message: Recovery mail sent successfull")
+		log.Println("Action: 32, Message: Recovery mail sent successfull")
 	}
 	return &pb.AccountRecoveryResponse{
 		Status: status,

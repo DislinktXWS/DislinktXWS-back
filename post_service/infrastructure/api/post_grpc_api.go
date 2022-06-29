@@ -46,10 +46,12 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.LikePostRe
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: ID is not correct!")
+		log.Println("Action: 2, Message: ID is not correct!")
 		return nil, err
 	}
 	handler.service.LikePost(objectId, username)
 	InfoLogger.Println("Action: 10, Message: User " + username + " liked post with id " + id)
+	log.Println("Action: 10, Message: User " + username + " liked post with id " + id)
 	return &pb.LikePostResponse{}, nil
 }
 
@@ -59,9 +61,11 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.Dislike
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: ID is not correct!")
+		log.Println("Action: 2, Message: ID is not correct!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 10, Message: User " + username + " disliked post with id " + id)
+	log.Println("Action: 10, Message: User " + username + " disliked post with id " + id)
 	handler.service.DislikePost(objectId, username)
 	return &pb.DislikePostResponse{}, nil
 }
@@ -71,6 +75,7 @@ func (handler *PostHandler) GetPostsByUser(ctx context.Context, request *pb.GetP
 	Posts, err := handler.service.GetPostsByUser(user)
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Posts not found!")
+		log.Println("Action: 2, Message: Posts not found!")
 		return nil, err
 	}
 	response := &pb.GetPostsByUserResponse{
@@ -90,11 +95,13 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 1, Message: ID is not correct!")
+		log.Println("Action: 1, Message: ID is not correct!")
 		return nil, err
 	}
 	Post, err := handler.service.Get(objectId)
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Posts not found!")
+		log.Println("Action: 2, Message: Posts not found!")
 		return nil, err
 	}
 	PostPb := mapPost(Post)
@@ -108,6 +115,7 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	Posts, err := handler.service.GetAll()
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Posts not found!")
+		log.Println("Action: 2, Message: Posts not found!")
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
@@ -125,9 +133,11 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertPostRe
 	err := handler.service.Insert(Post)
 	if err != nil {
 		ErrorLogger.Println("Action: 11, Message: Cannot create post!")
+		log.Println("Action: 11, Message: Cannot create post!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 12, Message: User " + Post.User + " created a new post.")
+	log.Println("Action: 12, Message: User " + Post.User + " created a new post.")
 	return &pb.InsertPostResponse{Id: Post.Id.String()}, nil
 }
 
@@ -136,8 +146,10 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.Comment
 	err := handler.service.CommentPost(Comment)
 	if err != nil {
 		ErrorLogger.Println("Action: 13, Message: Cannot comment post!")
+		log.Println("Action: 13, Message: Cannot comment post!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 14, Message: User " + Comment.User + " commented post " + Comment.PostId)
+	log.Println("Action: 14, Message: User " + Comment.User + " commented post " + Comment.PostId)
 	return &pb.CommentPostResponse{}, nil
 }

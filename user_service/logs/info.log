@@ -9,3 +9,4 @@ INFO: 2022/06/17 11:03:15 user_grpc_api.go:140: Action: 3, Message: User sara re
 INFO: 2022/06/17 11:16:13 user_grpc_api.go:140: Action: 3, Message: User sarapoparic registered successfully.
 INFO: 2022/06/17 11:27:45 user_grpc_api.go:140: Action: 3, Message: User ogijah registered successfully.
 INFO: 2022/06/17 11:31:06 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/24 17:12:51 user_grpc_api.go:140: Action: 3, Message: User majlo registered successfully.

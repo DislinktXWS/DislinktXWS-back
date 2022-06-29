@@ -402,3 +402,12 @@ INFO: 2022/06/17 11:31:32 authentication_grpc_api.go:83: Action: 31, Message: Us
 INFO: 2022/06/17 11:31:32 authentication_grpc_api.go:83: Action: 31, Message: User validation successfull
 INFO: 2022/06/17 11:31:32 authentication_grpc_api.go:83: Action: 31, Message: User validation successfull
 INFO: 2022/06/17 11:31:32 authentication_grpc_api.go:83: Action: 31, Message: User validation successfull
+INFO: 2022/06/24 17:12:54 authentication_grpc_api.go:103: Action: 3, Message: User majlo registered successfully!
+INFO: 2022/06/25 10:40:47 authentication_grpc_api.go:51: Action: 29, Message: Login successfull
+INFO: 2022/06/25 10:41:34 authentication_grpc_api.go:51: Action: 29, Message: Login successfull
+INFO: 2022/06/25 10:45:33 authentication_grpc_api.go:51: Action: 29, Message: Login successfull
+INFO: 2022/06/25 10:50:37 authentication_grpc_api.go:51: Action: 29, Message: Login successfull
+INFO: 2022/06/25 11:19:50 authentication_grpc_api.go:52: Action: 29, Message: Login successfull
+INFO: 2022/06/25 11:29:27 authentication_grpc_api.go:52: Action: 29, Message: Login successfull
+INFO: 2022/06/25 12:45:21 authentication_grpc_api.go:52: Action: 29, Message: Login successfull
+INFO: 2022/06/25 12:48:24 authentication_grpc_api.go:52: Action: 29, Message: Login successfull
