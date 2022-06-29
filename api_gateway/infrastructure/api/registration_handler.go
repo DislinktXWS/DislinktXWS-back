@@ -49,8 +49,6 @@ func (handler *RegistrationHandler) RegisterUser(w http.ResponseWriter, r *http.
 		return
 	}
 
-	//samo dok se ne resi problem sa dockerom i neo4j je zakomentarisano, ogi <3
-
 	e := handler.addUserNode(newUserId)
 	if e != nil {
 		w.WriteHeader(http.StatusNotFound)

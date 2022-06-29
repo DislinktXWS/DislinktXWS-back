@@ -7,12 +7,14 @@ import (
 )
 
 type UserService struct {
-	store domain.UserStore
+	store        domain.UserStore
+	orchestrator *InsertUserOrchestrator
 }
 
-func NewUserService(store domain.UserStore) *UserService {
+func NewUserService(store domain.UserStore, orchestrator *InsertUserOrchestrator) *UserService {
 	return &UserService{
-		store: store,
+		store:        store,
+		orchestrator: orchestrator,
 	}
 }
 
@@ -37,7 +39,15 @@ func (service *UserService) GetPublicUsers() ([]*domain.User, error) {
 }
 
 func (service *UserService) Insert(user *domain.User) (error, *domain.User) {
-	return service.store.Insert(user)
+	err, newUser := service.store.Insert(user)
+	if err != nil {
+		return err, nil
+	}
+	err = service.orchestrator.Start(user)
+	if err != nil {
+		return err, nil
+	}
+	return nil, newUser
 }
 
 func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
