@@ -1,6 +1,8 @@
 package persistence
 
 import (
+	"context"
+	"fmt"
 	"github.com/dislinktxws-back/notification_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +17,18 @@ type NotificationsMongoDBStore struct {
 	notifications *mongo.Collection
 }
 
-func (n NotificationsMongoDBStore) Get(id primitive.ObjectID) error {
+func (store *NotificationsMongoDBStore) Insert(notification *domain.Notification) (*domain.Notification, error) {
+	fmt.Println("PRED SAM ULAZAK U BAZU")
+	_, err := store.notifications.InsertOne(context.TODO(), notification)
+	fmt.Println("IZASLO IZ BAZE")
+	if err != nil {
+		return &domain.Notification{}, err
+	}
+	//notification.Id = result.InsertedID.(primitive.ObjectID)
+	return notification, nil
+}
+
+func (store *NotificationsMongoDBStore) Get(id primitive.ObjectID) error {
 	//TODO implement me
 	panic("implement me")
 }

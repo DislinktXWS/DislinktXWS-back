@@ -13,6 +13,13 @@ service NotificationsService{
         get: "/notifications/notification/{id}"
       };
     }
+
+    rpc Insert(InsertRequest) returns (InsertResponse){
+      option (google.api.http) = {
+        post: "/notifications/notification"
+        body: "notification"
+      };
+    }
 }
 
 message GetRequest {
@@ -23,6 +30,24 @@ message GetResponse {
   Notification notification = 1;
 }
 
+message InsertRequest {
+  Notification notification = 1;
+}
+
+message InsertResponse {
+  Notification notification = 1;
+}
+
 message Notification {
   string id = 1;
+  User from = 2;
+  User to = 3;
+  string date = 4;
+  string content = 5;
+}
+
+message User {
+  string username = 1;
+  string name = 2;
+  string surname = 3;
 }

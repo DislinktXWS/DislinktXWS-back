@@ -18,6 +18,7 @@ import (
 
 	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
+	notificationsGW "github.com/dislinktxws-back/common/proto/notifications_service"
 	postGw "github.com/dislinktxws-back/common/proto/post_service"
 	userGw "github.com/dislinktxws-back/common/proto/user_service"
 	"net/http"
@@ -90,6 +91,12 @@ func (server *Server) initHandlers() {
 
 	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
+	err = notificationsGW.RegisterNotificationsServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationsEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

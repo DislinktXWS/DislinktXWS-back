@@ -31,7 +31,7 @@ func NewServer(config *config.Config) *Server {
 }
 
 const (
-	QueueGroup = "notification_service"
+	QueueGroup = "notifications_service"
 )
 
 func (server *Server) Start() {
@@ -65,6 +65,7 @@ func (server *Server) initNotificationsHandler(service *application.Notification
 
 func (server *Server) startGrpcServer(notificationsHandler *api.NotificationHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	fmt.Println("POKRENUT SERVER")
 
 	if err != nil {
 		fmt.Println("Failed to listen: %v", err)
