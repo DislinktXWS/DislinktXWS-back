@@ -51,12 +51,12 @@ func init() {
 
 func (handler *AuthenticationHandler) handle(command *events.InsertUserCommand) {
 	reply := events.InsertUserReply{User: command.User}
-	fmt.Println("AUTH HANDLER")
+	fmt.Println("AUTHENTICATION HANDLER")
 	fmt.Println(command.Type)
 
 	switch command.Type {
 	case events.InsertUserAuthentication:
-		fmt.Println("REGISTRUJEMO USERA")
+		fmt.Println("INSERT USER AUTHENTICATION")
 		user := mapCommandToAuth(command)
 		err := handler.service.Register(user)
 		if err != nil {
@@ -65,6 +65,7 @@ func (handler *AuthenticationHandler) handle(command *events.InsertUserCommand) 
 		}
 		reply.Type = events.UserAuthenticationInserted
 	case events.RollbackInsertUserAuthentication:
+		fmt.Println("ROLLBACK INSERT USER AUTHENTICATION")
 		err := handler.service.Delete(command.User.Id)
 		if err != nil {
 			return

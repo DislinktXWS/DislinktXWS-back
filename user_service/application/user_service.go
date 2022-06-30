@@ -52,6 +52,10 @@ func (service *UserService) Insert(user *domain.User) (error, *domain.User) {
 	return nil, newUser
 }
 
+func (service *UserService) Delete(id primitive.ObjectID) error {
+	return service.store.Delete(id)
+}
+
 func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 	return service.store.EditUser(user)
 }

@@ -55,17 +55,19 @@ func (handler *ConnectionHandler) handle(command *events.InsertUserCommand) {
 
 	switch command.Type {
 	case events.InsertUserNode:
-		fmt.Println("DODAJEMO NODE")
+		fmt.Println("INSERT NODE")
 		err := handler.service.InsertNewUser(command.User.Id)
 		if err != nil {
 			reply.Type = events.UserNodeNotInserted
 			break
 		}
 		reply.Type = events.UserNodeInserted
+		//reply.Type = events.UserNodeNotInserted
 	default:
 		reply.Type = events.UnknownReply
 	}
 
+	fmt.Println(reply.Type)
 	if reply.Type != events.UnknownReply {
 		_ = handler.replyPublisher.Publish(reply)
 	}

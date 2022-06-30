@@ -119,7 +119,7 @@ func (store *AuthMongoDBStore) Register(auth *domain.Auth) error {
 
 func (store *AuthMongoDBStore) Delete(id string) error {
 	userId, _ := primitive.ObjectIDFromHex(id)
-	_, err := store.authentications.DeleteOne(context.TODO(), userId)
+	_, err := store.authentications.DeleteOne(context.TODO(), bson.M{"_id": userId})
 	if err != nil {
 		return err
 	}
