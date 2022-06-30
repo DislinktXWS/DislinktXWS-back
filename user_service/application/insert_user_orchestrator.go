@@ -59,17 +59,25 @@ func (o *InsertUserOrchestrator) handle(reply *events.InsertUserReply) {
 func (o *InsertUserOrchestrator) nextCommandType(reply events.InsertUserReplyType) events.InsertUserCommandType {
 	switch reply {
 	case events.UserAuthenticationInserted:
+		fmt.Println("REPLY: 0")
 		return events.InsertUserNode
 	case events.UserAuthenticationNotInserted:
-		return events.UnknownCommand //DA LI MOZDA TREBA RollBack za userService
+		fmt.Println("REPLY: 1")
+		return events.RollbackInsertUser
 	case events.UserAuthenticationRolledBack:
-		return events.UnknownCommand //ISTO KAO PRETHODNO
+		fmt.Println("REPLY: 2")
+		return events.RollbackInsertUser
 	case events.UserNodeInserted:
-		return events.UnknownCommand //STA STAVITI KADA JE USPESAN KRAJ
+		fmt.Println("REPLY: 3")
+		return events.UnknownCommand //successful end
 	case events.UserNodeNotInserted:
+		fmt.Println("REPLY: 4")
 		return events.RollbackInsertUserAuthentication
-
+	case events.UserInsertRolledBack:
+		fmt.Println("REPLY: 5")
+		return events.UnknownCommand //unsuccessful end
 	default:
+		fmt.Println("NEPOZNATI REPLY")
 		return events.UnknownCommand
 	}
 }

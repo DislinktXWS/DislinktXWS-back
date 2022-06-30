@@ -52,6 +52,7 @@ const (
 	InsertUserAuthentication InsertUserCommandType = iota
 	RollbackInsertUserAuthentication
 	InsertUserNode
+	RollbackInsertUser
 	UnknownCommand
 )
 
@@ -68,6 +69,7 @@ const (
 	UserAuthenticationRolledBack
 	UserNodeInserted
 	UserNodeNotInserted
+	UserInsertRolledBack
 	UnknownReply
 )
 

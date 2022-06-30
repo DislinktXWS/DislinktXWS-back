@@ -68,8 +68,11 @@ func (server *Server) Start() {
 	replySubscriber := server.initSubscriber(server.config.InsertUserReplySubject, QueueGroup)
 	insertUserOrchestrator := server.initInsertUserOrchestrator(commandPublisher, replySubscriber)
 
+	commandSubscriber := server.initSubscriber(server.config.InsertUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.InsertUserReplySubject)
+
 	userService := server.initUserService(userStore, insertUserOrchestrator)
-	userHandler := server.initUserHandler(userService)
+	userHandler := server.initUserHandler(userService, replyPublisher, commandSubscriber)
 	server.startGrpcServer(userHandler)
 }
 
@@ -117,8 +120,8 @@ func (server *Server) initUserService(store domain.UserStore, orchestrator *appl
 	return application.NewUserService(store, orchestrator)
 }
 
-func (server *Server) initUserHandler(service *application.UserService) *api.UserHandler {
-	return api.NewUserHandler(service)
+func (server *Server) initUserHandler(service *application.UserService, publisher saga.Publisher, subscriber saga.Subscriber) *api.UserHandler {
+	return api.NewUserHandler(service, publisher, subscriber)
 }
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
