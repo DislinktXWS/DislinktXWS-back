@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/post_service"
 	"github.com/dislinktxws-back/post_service/application"
 	"log"
@@ -87,6 +88,7 @@ func (handler *PostHandler) GetPostsByUser(ctx context.Context, request *pb.GetP
 
 func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
 	id := request.Id
+	fmt.Println("USLO U GETPOSTBYID")
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 1, Message: ID is not correct!")

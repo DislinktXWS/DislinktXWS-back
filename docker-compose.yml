@@ -295,7 +295,7 @@ services:
     restart: on-failure
     networks:
       - network
-      -
+
   nats:
     image: nats
     container_name: nats

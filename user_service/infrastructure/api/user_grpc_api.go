@@ -70,6 +70,7 @@ func (handler *UserHandler) handle(command *events.InsertUserCommand) {
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
 	id := request.Id
+	//fmt.Println("DOBAVLJANJE INFORMACIJA O SENDERU")
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 1, Message: ID is not correct!")
@@ -416,6 +417,7 @@ func (handler *UserHandler) SetConnectionsNotifications(ctx context.Context, req
 }
 
 func (handler *UserHandler) GetNotificationsSettings(ctx context.Context, request *pb.GetNotificationsSettingsRequest) (*pb.GetNotificationsSettingsResponse, error) {
+	fmt.Println("ULAZI U GET NOTIF SETTING")
 	notificationSettings, _ := handler.service.GetNotificationsSettings(request.Id)
 	fmt.Println("IZASLO IZ GET NOTIF SETTING")
 	fmt.Println(notificationSettings)

@@ -146,6 +146,9 @@ func (server *Server) initCustomHandlers() {
 
 	notificationHandler := api.NewNotificationHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
 	notificationHandler.Init(server.mux)
+
+	postNotificationHandler := api.NewPostNotificationsHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
+	postNotificationHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

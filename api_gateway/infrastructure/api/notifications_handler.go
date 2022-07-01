@@ -50,11 +50,15 @@ func (handler *NotificationHandler) NotifyConnections(w http.ResponseWriter, r *
 	}
 
 	userConnections, err := handler.getUserConnections(id)
+	fmt.Println("KONEKCIJE USERA")
+	fmt.Println(userConnections)
 
 	users := []domain.UserBasicInfo{}
 	sender := domain.UserBasicInfo{}
 
 	handler.getSenderInformation(id, &sender)
+	fmt.Println("SENDER INFORMATION:")
+	fmt.Println(sender)
 
 	handler.getUsersToNotify(userConnections, &users)
 
@@ -82,12 +86,12 @@ func (handler *NotificationHandler) getUsersToNotify(userIds []string, users *[]
 	for _, id := range userIds {
 		user, _ := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: id})
 		domainUser := mapNewUser(user.User)
-		fmt.Println("NABAVI PODESAVANJA OBAVESTENJA OD USERA")
-		userNotificationSettings, _ := userClient.GetNotificationsSettings(context.TODO(), &user_proto.GetNotificationsSettingsRequest{Id: id})
+		fmt.Println("NABAVI PODESAVANJA OBAVESTENJA OD USERA:" + id)
+		/*userNotificationSettings, _ := userClient.GetNotificationsSettings(context.TODO(), &user_proto.GetNotificationsSettingsRequest{Id: id})
 		fmt.Println(userNotificationSettings)
-		if userNotificationSettings.ConnectionsNotifications {
-			*users = append(*users, *domainUser)
-		}
+		if userNotificationSettings.ConnectionsNotifications {*/
+		*users = append(*users, *domainUser)
+		//}
 	}
 	return users
 }
