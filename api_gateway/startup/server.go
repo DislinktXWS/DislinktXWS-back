@@ -100,8 +100,9 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
+	authenticationEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
 
-	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
+	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint, authenticationEndpoint)
 	registrationHandler.Init(server.mux)
 
 	connectUserAgentHandler := api.NewConnectUserAgentsHandler(userEndpoint)
@@ -124,6 +125,9 @@ func (server *Server) initCustomHandlers() {
 
 	blockedUsersHandler := api.NewBlockedUsersHandler(userEndpoint, connectionEndpoint)
 	blockedUsersHandler.Init(server.mux)
+
+	userRecommendationsHandler := api.NewUserRecommendationsHandler(userEndpoint, connectionEndpoint)
+	userRecommendationsHandler.Init(server.mux)
 
 	connectionReqHandler := api.NewUserConnectionRequestsHandler(userEndpoint, connectionEndpoint)
 	connectionReqHandler.Init(server.mux)

@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/dislinktxws-back/api_gateway/domain"
+	pbAuth "github.com/dislinktxws-back/common/proto/authentication_service"
 	pbOffer "github.com/dislinktxws-back/common/proto/business_offer_service"
 	pbPost "github.com/dislinktxws-back/common/proto/post_service"
 	pbUser "github.com/dislinktxws-back/common/proto/user_service"
@@ -52,4 +53,14 @@ func mapToSkillPb(offer *domain.Skill) *pbOffer.Skill {
 		Proficiency: pbOffer.Skill_SkillProficiency(offer.Proficiency),
 	}
 	return offerPb
+}
+
+func mapToAuthPb(user *domain.UserRegistration) *pbAuth.Auth {
+	authPb := &pbAuth.Auth{
+		Id:                user.Id,
+		Username:          user.Username,
+		VerificationToken: user.VerificationToken,
+		Email:             user.Email,
+	}
+	return authPb
 }

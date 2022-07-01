@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/user_service"
+	events "github.com/dislinktxws-back/common/saga/insert_user"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"github.com/dislinktxws-back/user_service/application"
 	"github.com/dislinktxws-back/user_service/tracer"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,12 +19,52 @@ var (
 
 type UserHandler struct {
 	pb.UnimplementedUserServiceServer
-	service *application.UserService
+	service           *application.UserService
+	replyPublisher    saga.Publisher
+	commandSubscriber saga.Subscriber
 }
 
-func NewUserHandler(service *application.UserService) *UserHandler {
-	return &UserHandler{
-		service: service,
+func NewUserHandler(service *application.UserService, publisher saga.Publisher, subscriber saga.Subscriber) *UserHandler {
+	o := &UserHandler{
+		service:           service,
+		replyPublisher:    publisher,
+		commandSubscriber: subscriber,
+	}
+	o.commandSubscriber.Subscribe(o.handle)
+	return o
+}
+
+func init() {
+	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
+
+	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
+
+func (handler *UserHandler) handle(command *events.InsertUserCommand) {
+	reply := events.InsertUserReply{User: command.User}
+	fmt.Println("USER HANDLER")
+	fmt.Println(command.Type)
+
+	switch command.Type {
+	case events.RollbackInsertUser:
+		fmt.Println("ROLLBACK USER INSERT")
+		objectId, _ := primitive.ObjectIDFromHex(command.User.Id)
+		handler.service.Delete(objectId)
+		reply.Type = events.UserInsertRolledBack
+	default:
+		reply.Type = events.UnknownReply
+	}
+
+	if reply.Type != events.UnknownReply {
+		_ = handler.replyPublisher.Publish(reply)
 	}
 }
 

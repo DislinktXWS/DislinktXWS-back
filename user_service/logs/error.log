@@ -95,6 +95,30 @@ ERROR: 2022/06/17 11:26:24 user_grpc_api.go:47: Action: 1, Message: ID is not co
 ERROR: 2022/06/17 11:26:24 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/17 11:29:42 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/17 11:29:42 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
-ERROR: 2022/06/28 09:34:41 server.go:178: Action: 35, Message: Cannot validate token!
-ERROR: 2022/06/28 09:45:16 server.go:184: Action: 35, Message: Cannot validate token!
-ERROR: 2022/06/28 10:03:36 server.go:184: Action: 35, Message: Cannot validate token!
+ERROR: 2022/06/29 14:46:45 user_grpc_api.go:146: Action: 4, Message: Username or email not unique!
+ERROR: 2022/06/29 14:48:14 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 14:48:14 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 18:41:30 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 18:41:30 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 18:51:10 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 18:51:10 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:06:38 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:06:38 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:07:00 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:07:00 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:32:17 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:32:17 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:33:34 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 19:33:34 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:08:13 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:08:13 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:14:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:14:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:38:41 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 20:38:41 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:38:34 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:38:34 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:40:12 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:40:12 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:52:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/06/29 21:52:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!

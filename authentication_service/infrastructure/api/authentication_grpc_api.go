@@ -6,6 +6,8 @@ import (
 	"github.com/dislinktxws-back/authentication_service/application"
 	"github.com/dislinktxws-back/authentication_service/utils"
 	pb "github.com/dislinktxws-back/common/proto/authentication_service"
+	events "github.com/dislinktxws-back/common/saga/insert_user"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"log"
 	"os"
 	"time"
@@ -18,13 +20,19 @@ var (
 
 type AuthenticationHandler struct {
 	pb.UnimplementedAuthenticationServiceServer
-	service *application.AuthenticationService
+	service           *application.AuthenticationService
+	replyPublisher    saga.Publisher
+	commandSubscriber saga.Subscriber
 }
 
-func NewAuthenticationHandler(service *application.AuthenticationService) *AuthenticationHandler {
-	return &AuthenticationHandler{
-		service: service,
+func NewAuthenticationHandler(service *application.AuthenticationService, publisher saga.Publisher, subscriber saga.Subscriber) *AuthenticationHandler {
+	o := &AuthenticationHandler{
+		service:           service,
+		replyPublisher:    publisher,
+		commandSubscriber: subscriber,
 	}
+	o.commandSubscriber.Subscribe(o.handle)
+	return o
 }
 
 func init() {
@@ -39,6 +47,37 @@ func init() {
 		log.Fatal(err1)
 	}
 	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
+
+func (handler *AuthenticationHandler) handle(command *events.InsertUserCommand) {
+	reply := events.InsertUserReply{User: command.User}
+	fmt.Println("AUTHENTICATION HANDLER")
+	fmt.Println(command.Type)
+
+	switch command.Type {
+	case events.InsertUserAuthentication:
+		fmt.Println("INSERT USER AUTHENTICATION")
+		user := mapCommandToAuth(command)
+		err := handler.service.Register(user)
+		if err != nil {
+			reply.Type = events.UserAuthenticationNotInserted
+			break
+		}
+		reply.Type = events.UserAuthenticationInserted
+	case events.RollbackInsertUserAuthentication:
+		fmt.Println("ROLLBACK INSERT USER AUTHENTICATION")
+		err := handler.service.Delete(command.User.Id)
+		if err != nil {
+			return
+		}
+		reply.Type = events.UserAuthenticationRolledBack
+	default:
+		reply.Type = events.UnknownReply
+	}
+
+	if reply.Type != events.UnknownReply {
+		_ = handler.replyPublisher.Publish(reply)
+	}
 }
 
 func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {

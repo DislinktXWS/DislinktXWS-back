@@ -5,6 +5,8 @@ import (
 	"fmt"
 	connections "github.com/dislinktxws-back/common/proto/connection_service"
 	pb "github.com/dislinktxws-back/common/proto/connection_service"
+	events "github.com/dislinktxws-back/common/saga/insert_user"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"github.com/dislinktxws-back/connection_service/application"
 	"log"
 	"os"
@@ -12,7 +14,9 @@ import (
 
 type ConnectionHandler struct {
 	pb.UnimplementedConnectionsServiceServer
-	service *application.ConnectionsService
+	service           *application.ConnectionsService
+	replyPublisher    saga.Publisher
+	commandSubscriber saga.Subscriber
 }
 
 var (
@@ -20,10 +24,14 @@ var (
 	ErrorLogger *log.Logger
 )
 
-func NewConnectionHandler(service *application.ConnectionsService) *ConnectionHandler {
-	return &ConnectionHandler{
-		service: service,
+func NewConnectionHandler(service *application.ConnectionsService, publisher saga.Publisher, subscriber saga.Subscriber) *ConnectionHandler {
+	o := &ConnectionHandler{
+		service:           service,
+		replyPublisher:    publisher,
+		commandSubscriber: subscriber,
 	}
+	o.commandSubscriber.Subscribe(o.handle)
+	return o
 }
 
 func init() {
@@ -38,6 +46,31 @@ func init() {
 		log.Fatal(err1)
 	}
 	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
+
+func (handler *ConnectionHandler) handle(command *events.InsertUserCommand) {
+	reply := events.InsertUserReply{User: command.User}
+	fmt.Println("CONNECTION HANDLER")
+	fmt.Println(command.Type)
+
+	switch command.Type {
+	case events.InsertUserNode:
+		fmt.Println("INSERT NODE")
+		err := handler.service.InsertNewUser(command.User.Id)
+		if err != nil {
+			reply.Type = events.UserNodeNotInserted
+			break
+		}
+		reply.Type = events.UserNodeInserted
+		//reply.Type = events.UserNodeNotInserted
+	default:
+		reply.Type = events.UnknownReply
+	}
+
+	fmt.Println(reply.Type)
+	if reply.Type != events.UnknownReply {
+		_ = handler.replyPublisher.Publish(reply)
+	}
 }
 
 func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
@@ -115,6 +148,17 @@ func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, req
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetUserRecommendations(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
+
+	Connections := handler.service.GetUserRecommendations(request.Id)
+
+	response := &pb.GetAllConnectionsResponse{}
+
+	for _, connection := range Connections {
+		response.Ids = append(response.Ids, connection)
+	}
+	return response, nil
+}
 func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, request *pb.ConnectionStatusRequest) (*pb.ConnectionStatusResponse, error) {
 
 	var enums int32

@@ -73,6 +73,12 @@ services:
       JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      INSERT_USER_COMMAND_SUBJECT: ${INSERT_USER_COMMAND_SUBJECT}
+      INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - user_db
     networks:
@@ -148,6 +154,12 @@ services:
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
       AUTH_DB_HOST: ${AUTH_DB_HOST}
       AUTH_DB_PORT: ${AUTH_DB_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      INSERT_USER_COMMAND_SUBJECT: ${INSERT_USER_COMMAND_SUBJECT}
+      INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - auth_db
     networks:
@@ -182,12 +194,18 @@ services:
         fluentd-address: 127.0.0.1:24224
     restart: on-failure
     environment:
-      - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
-      - CONNECTION_DB_PORT=${CONNECTION_DB_PORT}
-      - CONNECTION_SERVICE_PORT=${CONNECTION_SERVICE_PORT}
-      - CONNECTION_SERVICE_HOST=${CONNECTION_SERVICE_HOST}
-      - CONNECTION_DB_USER=${CONNECTION_DB_USER}
-      - CONNECTION_DB_PASS=${CONNECTION_DB_PASS}
+        - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
+        - CONNECTION_DB_PORT=${CONNECTION_DB_PORT}
+        - CONNECTION_SERVICE_PORT=${CONNECTION_SERVICE_PORT}
+        - CONNECTION_SERVICE_HOST=${CONNECTION_SERVICE_HOST}
+        - CONNECTION_DB_USER=${CONNECTION_DB_USER}
+        - CONNECTION_DB_PASS=${CONNECTION_DB_PASS}
+        - NATS_HOST=${NATS_HOST}
+        - NATS_PORT=${NATS_PORT}
+        - NATS_USER=${NATS_USER}
+        - NATS_PASS=${NATS_PASS}
+        - INSERT_USER_COMMAND_SUBJECT=${INSERT_USER_COMMAND_SUBJECT}
+        - INSERT_USER_REPLY_SUBJECT=${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - neo4j
     networks:
@@ -276,6 +294,13 @@ services:
     environment:
       - NEO4J_AUTH=none
       - NEO4J_dbms_memory_pagecache_size=512M
+
+  nats:
+    image: nats
+    container_name: nats
+    restart: on-failure
+    networks:
+      - network
 
 networks:
   network:

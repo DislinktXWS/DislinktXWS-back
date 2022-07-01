@@ -24,6 +24,10 @@ func (service *AuthenticationService) Register(auth *domain.Auth) error {
 	return service.store.Register(auth)
 }
 
+func (service *AuthenticationService) Delete(id string) error {
+	return service.store.Delete(id)
+}
+
 func (service *AuthenticationService) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
 	return service.store.EditUsername(auth)
 }
