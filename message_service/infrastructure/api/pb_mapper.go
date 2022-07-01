@@ -40,6 +40,7 @@ func mapConversation(conversation *domain.Conversation) *pb.GetConversationRespo
 			Receiver: message.Receiver,
 			Content:  message.Content,
 			Date:     message.Date.String(),
+			IsRead:   message.IsRead,
 		})
 	}
 

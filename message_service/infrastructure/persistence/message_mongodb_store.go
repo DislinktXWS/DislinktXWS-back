@@ -26,10 +26,22 @@ func NewMessageMongoDBStore(client *mongo.Client) domain.MessageStore {
 
 func (store *MessageMongoDBStore) CreateConversation(participants *domain.Participants) error {
 
-	existingConversation, _ := store.GetConversation(participants)
-	if existingConversation != nil {
-		return nil
-	} else {
+	filter := bson.M{
+		"$or": []bson.M{
+			{"$and": []bson.M{
+				{"first_participator": participants.Receiver},
+				{"second_participator": participants.Sender},
+			}},
+			{"$and": []bson.M{
+				{"first_participator": participants.Sender},
+				{"second_participator": participants.Receiver},
+			}},
+		},
+	}
+
+	_, e := store.filterOne(filter)
+
+	if e != nil {
 
 		Conversation := new(domain.Conversation)
 		Conversation.Messages = make([]domain.Message, 0)
@@ -42,8 +54,8 @@ func (store *MessageMongoDBStore) CreateConversation(participants *domain.Partic
 		}
 
 		fmt.Println("DOSAO JE DO KRAJA STORE METODE")
-		return nil
 	}
+	return nil
 }
 
 func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]*domain.Conversation, error) {
@@ -96,15 +108,21 @@ func (store *MessageMongoDBStore) GetConversation(participants *domain.Participa
 
 	conversation, err := store.filterOne(filter)
 
-	for _, message := range conversation.Messages {
-		if !message.IsRead && message.Sender != participants.Sender {
-			message.IsRead = true
+	for index, message := range conversation.Messages {
+		if message.Receiver == participants.Sender {
+			conversation.Messages[index].IsRead = true
 		}
 	}
-	store.messages.UpdateOne(context.TODO(), bson.M{"_id": conversation.Id}, bson.D{
-		{"$set", bson.D{{"messages", conversation.Messages}}},
-	})
 
+	store.messages.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": conversation.Id},
+		bson.D{
+			{"$set", bson.D{
+				{"messages", conversation.Messages},
+			}},
+		},
+	)
 	return conversation, err
 }
 
