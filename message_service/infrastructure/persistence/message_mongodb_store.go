@@ -25,8 +25,8 @@ func NewMessageMongoDBStore(client *mongo.Client) domain.MessageStore {
 }
 
 func (store *MessageMongoDBStore) CreateConversation(participants *domain.Participants) error {
-	
-	existingConversation, _ := store.GetConversation(*participants)
+
+	existingConversation, _ := store.GetConversation(participants)
 	if existingConversation != nil {
 		return nil
 	} else {
@@ -47,80 +47,65 @@ func (store *MessageMongoDBStore) CreateConversation(participants *domain.Partic
 }
 
 func (store *MessageMongoDBStore) GetAllConversations(userId string) ([]*domain.Conversation, error) {
-
-	var conversations []string
-	var conversationsObject []*domain.Conversation
-
-	filterFirst := bson.M{"first_participator": userId}
-	resultFirst, errFirst := store.filter(filterFirst)
-
-	if errFirst == nil {
-		for index, element := range resultFirst {
-			fmt.Println("At index", index, "value is", element.SecondParticipator)
-
-			if !contains(conversations, element.SecondParticipator) {
-				conversations = append(conversations, element.SecondParticipator)
-				conversationsObject = append(conversationsObject, element)
-			}
-		}
-	}
-
-	filterSecond := bson.M{"second_participator": userId}
-	resultSecond, errSecond := store.filter(filterSecond)
-
-	if errSecond == nil {
-		for index, element := range resultSecond {
-			fmt.Println("At index", index, "value is", element.SecondParticipator)
-
-			if !contains(conversations, element.SecondParticipator) {
-				conversations = append(conversations, element.SecondParticipator)
-				conversationsObject = append(conversationsObject, element)
-			}
-		}
-	}
-	return conversationsObject, nil
+	filter := bson.M{
+		"$or": []bson.M{
+			{"first_participator": userId},
+			{"second_participator": userId},
+		}}
+	return store.filter(filter)
 }
 
-func (store *MessageMongoDBStore) AddMessage(message *domain.Message, participants domain.Participants) error {
+func (store *MessageMongoDBStore) AddMessage(message *domain.Message) error {
 
-	conversation, _ := store.GetConversation(participants)
+	participants := new(domain.Participants)
+	participants.Sender = message.Sender
+	participants.Receiver = message.Receiver
+	messageHistory, err := store.GetConversation(participants)
 
-	messages := conversation.Messages
-	messages = append(messages, *message)
+	message.IsRead = false
 
-	_, err := store.messages.UpdateOne(
-		context.TODO(),
-		bson.M{"_id": conversation.Id},
-		bson.D{
+	if messageHistory == nil {
+		fmt.Println("Ne postoji conversation za ovu gospodu")
+	} else {
+		messages := append(messageHistory.Messages, *message)
+
+		_, err := store.messages.UpdateOne(context.TODO(), bson.M{"_id": messageHistory.Id}, bson.D{
 			{"$set", bson.D{{"messages", messages}}},
-		},
-	)
+		})
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
-func (store *MessageMongoDBStore) GetConversation(participants domain.Participants) (Conversation *domain.Conversation, err error) {
+func (store *MessageMongoDBStore) GetConversation(participants *domain.Participants) (*domain.Conversation, error) {
 
 	filter := bson.M{
-		"first_participator":  participants.Sender,
-		"second_participator": participants.Receiver,
+		"$or": []bson.M{
+			{"$and": []bson.M{
+				{"first_participator": participants.Receiver},
+				{"second_participator": participants.Sender},
+			}},
+			{"$and": []bson.M{
+				{"first_participator": participants.Sender},
+				{"second_participator": participants.Receiver},
+			}},
+		},
 	}
 
-	e := store.messages.FindOne(context.TODO(), filter).Decode(&Conversation)
+	conversation, err := store.filterOne(filter)
 
-	if e != nil {
-
-		filter := bson.M{
-			"first_participator":  participants.Receiver,
-			"second_participator": participants.Sender,
-		}
-		eSecond := store.messages.FindOne(context.TODO(), filter).Decode(&Conversation)
-
-		if eSecond != nil {
-			return nil, nil
+	for _, message := range conversation.Messages {
+		if !message.IsRead && message.Sender != participants.Sender {
+			message.IsRead = true
 		}
 	}
-	fmt.Println("USTVARI JE PROSAO STORE")
-	return
+	store.messages.UpdateOne(context.TODO(), bson.M{"_id": conversation.Id}, bson.D{
+		{"$set", bson.D{{"messages", conversation.Messages}}},
+	})
+
+	return conversation, err
 }
 
 func (store *MessageMongoDBStore) filter(filter interface{}) ([]*domain.Conversation, error) {
@@ -150,14 +135,4 @@ func decode(cursor *mongo.Cursor) (orders []*domain.Conversation, err error) {
 	}
 	err = cursor.Err()
 	return
-}
-
-func contains(s []string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
-	}
-
-	return false
 }

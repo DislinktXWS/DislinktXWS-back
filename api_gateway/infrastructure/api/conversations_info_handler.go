@@ -26,13 +26,13 @@ func NewConversationInfoHandler(userClientAddress, messageClientAddress string) 
 }
 
 func (handler *ConversationInfoHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("GET", "/conversations/{id}", handler.GetSortedConversations)
+	err := mux.HandlePath("GET", "/messages/{id}", handler.GetConversationsInfo)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (handler *ConversationInfoHandler) GetSortedConversations(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+func (handler *ConversationInfoHandler) GetConversationsInfo(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
 	id := pathParams["id"]
 	if id == "" {
@@ -43,12 +43,10 @@ func (handler *ConversationInfoHandler) GetSortedConversations(w http.ResponseWr
 	fmt.Print("ID je -> ")
 	fmt.Print(id)
 
-	//result := []domain.ConversationInfo{}
-	//_ = handler.getConversationsInfo(&result, id)
+	result := []domain.ConversationInfo{}
+	_ = handler.getConversationsInfoList(&result, id)
 
-	result, _ := handler.getConversations(id)
-
-	response, err := json.Marshal(result.Conversations)
+	response, err := json.Marshal(result)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -58,18 +56,28 @@ func (handler *ConversationInfoHandler) GetSortedConversations(w http.ResponseWr
 
 }
 
-func (handler *ConversationInfoHandler) getConversationsInfo(users *[]domain.ConversationInfo, userId string) error {
+func (handler *ConversationInfoHandler) getConversationsInfoList(users *[]domain.ConversationInfo, userId string) error {
 
-	conversations, _ := handler.getConversations(userId)
+	fmt.Println("USLI SMO U OVU JEBENU METODY")
+	messagesClient := services.NewMessageClient(handler.messageClientAddress)
+	conversationsPb, err := messagesClient.GetAllConversations(context.TODO(), &message_proto.GetAllConversationsRequest{Id: userId})
 
-	for _, conversation := range conversations.Conversations {
+	if err != nil {
+		fmt.Println("problem u gettovanju svih razgovora")
+	}
+	fmt.Println("DUzina")
+	fmt.Println(len(conversationsPb.GetConversations()))
 
+	for _, conversation := range conversationsPb.GetConversations() {
+
+		fmt.Println("Pronadjen je conversation")
+		fmt.Println(conversation.GetId())
 		var otherUserId string
 
-		if conversation.FirstParticipator == userId {
-			otherUserId = conversation.SecondParticipator
+		if conversation.GetFirstParticipator() == userId {
+			otherUserId = conversation.GetSecondParticipator()
 		} else {
-			otherUserId = conversation.FirstParticipator
+			otherUserId = conversation.GetFirstParticipator()
 		}
 
 		var userInfo *domain.UserBasicInfo
@@ -79,17 +87,6 @@ func (handler *ConversationInfoHandler) getConversationsInfo(users *[]domain.Con
 		*users = append(*users, *conversationInfo)
 	}
 	return nil
-}
-
-func (handler *ConversationInfoHandler) getConversations(userId string) (*message_proto.GetAllConversationsResponse, error) {
-
-	messagesClient := services.NewMessageClient(handler.messageClientAddress)
-	conversations, err := messagesClient.GetAllConversations(context.TODO(), &message_proto.GetAllConversationsRequest{Id: userId})
-
-	if err != nil {
-		fmt.Println("DESILO SE TO DA SE DESIO ERROR U GETOVANJU SVIH RAZGOVORA")
-	}
-	return conversations, err
 }
 
 func (handler *ConversationInfoHandler) getUser(user *domain.UserBasicInfo, userId string) error {

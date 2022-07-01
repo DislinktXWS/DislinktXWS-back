@@ -71,7 +71,7 @@ func (server *Server) initCustomHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	//messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
@@ -97,8 +97,8 @@ func (server *Server) initCustomHandlers() {
 	userFeedHandler := api.NewUserFeedHandler(connectionEndpoint, postEndpoint)
 	userFeedHandler.Init(server.mux)
 
-	conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
-	conversationInfoHandler.Init(server.mux)
+	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
+	//conversationInfoHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

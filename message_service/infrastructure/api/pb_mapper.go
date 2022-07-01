@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/message_service"
 	"github.com/dislinktxws-back/message_service/domain"
 	"time"
@@ -27,7 +28,7 @@ func mapNewMessage(messagePb *pb.Message) *domain.Message {
 
 func mapConversation(conversation *domain.Conversation) *pb.GetConversationResponse {
 	id := conversation.Id.Hex()
-
+	fmt.Println("MAPIRA SE CONVERSATION")
 	conversationPb := &pb.GetConversationResponse{
 		Id:                 id,
 		FirstParticipator:  conversation.FirstParticipator,
