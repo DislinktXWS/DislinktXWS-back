@@ -71,14 +71,15 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
-
 	if err != nil {
 		panic(err)
 	}
@@ -107,6 +108,7 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
+	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
 	registrationHandler.Init(server.mux)
@@ -140,6 +142,9 @@ func (server *Server) initCustomHandlers() {
 
 	userFeedHandler := api.NewUserFeedHandler(connectionEndpoint, postEndpoint)
 	userFeedHandler.Init(server.mux)
+
+	notificationHandler := api.NewNotificationHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
+	notificationHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

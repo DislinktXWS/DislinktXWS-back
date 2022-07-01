@@ -1,0 +1,9 @@
+INFO: 2022/07/01 16:09:14 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:11:42 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:12:19 post_grpc_api.go:52: Action: 10, Message: User 62bf0385bbc7b5925a5f7331 liked post with id 62bf1c29d74efbdce8203558
+INFO: 2022/07/01 16:12:21 post_grpc_api.go:52: Action: 10, Message: User 62bf0385bbc7b5925a5f7331 liked post with id 62bf1c29d74efbdce8203558
+INFO: 2022/07/01 16:14:42 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:16:25 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:27:43 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:33:38 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.
+INFO: 2022/07/01 16:41:57 post_grpc_api.go:130: Action: 12, Message: User 62bf0385bbc7b5925a5f7331 created a new post.

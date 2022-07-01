@@ -389,6 +389,8 @@ func (handler *UserHandler) SetConnectionsNotifications(ctx context.Context, req
 
 func (handler *UserHandler) GetNotificationsSettings(ctx context.Context, request *pb.GetNotificationsSettingsRequest) (*pb.GetNotificationsSettingsResponse, error) {
 	notificationSettings, _ := handler.service.GetNotificationsSettings(request.Id)
+	fmt.Println("IZASLO IZ GET NOTIF SETTING")
+	fmt.Println(notificationSettings)
 	return &pb.GetNotificationsSettingsResponse{
 		ChatNotifications:        notificationSettings.ChatNotifications,
 		ConnectionsNotifications: notificationSettings.ConnectionsNotifications,

@@ -69,3 +69,17 @@ type BusinessOffer struct {
 	Description string
 	Industry    string
 }
+
+type Notification struct {
+	Id      string
+	From    string //id
+	To      string //id
+	Date    string
+	Content string
+}
+
+type NotificationsSettings struct {
+	ChatNotificatons         bool
+	ConnectionsNotifications bool
+	PostNotifications        bool
+}

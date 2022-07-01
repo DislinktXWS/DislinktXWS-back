@@ -113,3 +113,22 @@ ERROR: 2022/06/29 22:35:12 server.go:161: Action: 34, Message: Authorization tok
 ERROR: 2022/06/29 22:35:19 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/29 22:35:19 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/29 22:37:33 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/01 14:23:36 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:23:36 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:24:40 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:24:40 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:28:08 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:28:08 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:30:31 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:30:31 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:31:53 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 14:31:53 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 15:22:10 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 15:22:10 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 16:25:56 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 16:25:56 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 16:27:53 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/01 16:33:46 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/01 16:42:07 server.go:161: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/01 16:49:28 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 16:49:29 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
