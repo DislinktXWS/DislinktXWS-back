@@ -9,6 +9,7 @@ type UserStore interface {
 	GetAll() ([]*User, error)
 	GetPublicUsers() ([]*User, error)
 	Insert(user *User) (error, *User)
+	Delete(id primitive.ObjectID) error
 	DeleteAll()
 	EditUser(user *User) (*User, error)
 	EditUsername(user *User) (*User, error)

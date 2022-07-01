@@ -9,12 +9,27 @@ INFO: 2022/06/17 11:03:15 user_grpc_api.go:140: Action: 3, Message: User sara re
 INFO: 2022/06/17 11:16:13 user_grpc_api.go:140: Action: 3, Message: User sarapoparic registered successfully.
 INFO: 2022/06/17 11:27:45 user_grpc_api.go:140: Action: 3, Message: User ogijah registered successfully.
 INFO: 2022/06/17 11:31:06 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
-INFO: 2022/06/28 14:09:41 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
-INFO: 2022/06/29 22:35:46 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
-INFO: 2022/06/29 23:10:24 user_grpc_api.go:252: Action: 6, Message: User with id 62bcd3beadea4422602b99be added experience.
-INFO: 2022/06/29 23:10:24 user_grpc_api.go:172: Action: 6, Message: User nina edited.
-INFO: 2022/07/01 14:24:09 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
-INFO: 2022/07/01 14:25:18 user_grpc_api.go:140: Action: 3, Message: User mima registered successfully.
-INFO: 2022/07/01 14:29:14 user_grpc_api.go:140: Action: 3, Message: User deja registered successfully.
-INFO: 2022/07/01 16:53:07 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
-INFO: 2022/07/01 16:57:15 user_grpc_api.go:140: Action: 3, Message: User nina registered successfully.
+INFO: 2022/06/29 14:49:22 user_grpc_api.go:140: Action: 3, Message: User mila registered successfully.
+INFO: 2022/06/29 18:42:48 user_grpc_api.go:140: Action: 3, Message: User goran registered successfully.
+INFO: 2022/06/29 18:52:04 user_grpc_api.go:140: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/29 19:23:39 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/29 19:33:02 user_grpc_api.go:140: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/29 20:08:52 user_grpc_api.go:140: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/29 20:17:26 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/29 20:21:39 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/29 20:39:22 user_grpc_api.go:140: Action: 3, Message: User bobi registered successfully.
+INFO: 2022/06/29 21:39:22 user_grpc_api.go:140: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/29 21:52:15 user_grpc_api.go:140: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/29 22:13:11 user_grpc_api.go:140: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/30 18:59:38 user_grpc_api.go:168: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/30 19:08:31 user_grpc_api.go:168: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/30 19:23:01 user_grpc_api.go:168: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/30 19:33:27 user_grpc_api.go:168: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/30 20:11:03 user_grpc_api.go:168: Action: 3, Message: User mila registered successfully.
+INFO: 2022/06/30 20:20:03 user_grpc_api.go:168: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/30 20:34:57 user_grpc_api.go:168: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/30 20:39:46 user_grpc_api.go:168: Action: 3, Message: User mila registered successfully.
+INFO: 2022/06/30 20:45:35 user_grpc_api.go:168: Action: 3, Message: User sara registered successfully.
+INFO: 2022/06/30 20:53:05 user_grpc_api.go:168: Action: 3, Message: User ogi registered successfully.
+INFO: 2022/06/30 20:59:57 user_grpc_api.go:168: Action: 3, Message: User  registered successfully.
+INFO: 2022/06/30 21:03:33 user_grpc_api.go:168: Action: 3, Message: User sara registered successfully.

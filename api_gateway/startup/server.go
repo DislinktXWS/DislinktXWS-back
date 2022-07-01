@@ -109,8 +109,9 @@ func (server *Server) initCustomHandlers() {
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
+	authenticationEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
 
-	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint)
+	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint, authenticationEndpoint)
 	registrationHandler.Init(server.mux)
 
 	connectUserAgentHandler := api.NewConnectUserAgentsHandler(userEndpoint)

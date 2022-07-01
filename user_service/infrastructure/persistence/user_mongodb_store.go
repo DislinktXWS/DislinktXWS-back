@@ -331,6 +331,11 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 	return nil, User
 }
 
+func (store *UserMongoDBStore) Delete(id primitive.ObjectID) error {
+	_, err := store.users.DeleteOne(context.TODO(), bson.M{"_id": id})
+	return err
+}
+
 func sendEmail(email, token string) {
 	// Sender data.
 	from := "bezbednostsomn@yahoo.com"

@@ -1,6 +1,7 @@
 package services
 
 import (
+	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	business_offer "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
 	notifications_service "github.com/dislinktxws-back/common/proto/notifications_service"
@@ -18,6 +19,14 @@ func NewUserClient(address string) user_service.UserServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
 	}
 	return user_service.NewUserServiceClient(connection)
+}
+
+func NewAuthenticationClient(address string) authentication_service.AuthenticationServiceClient {
+	connection, err := getClientConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Authentication service: %v", err)
+	}
+	return authentication_service.NewAuthenticationServiceClient(connection)
 }
 
 func NewPostClient(address string) post_service.PostServiceClient {

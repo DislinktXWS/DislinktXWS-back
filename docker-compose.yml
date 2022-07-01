@@ -68,6 +68,12 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      INSERT_USER_COMMAND_SUBJECT: ${INSERT_USER_COMMAND_SUBJECT}
+      INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - user_db
     networks:
@@ -134,6 +140,12 @@ services:
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
       AUTH_DB_HOST: ${AUTH_DB_HOST}
       AUTH_DB_PORT: ${AUTH_DB_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      INSERT_USER_COMMAND_SUBJECT: ${INSERT_USER_COMMAND_SUBJECT}
+      INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - auth_db
     networks:
@@ -163,12 +175,18 @@ services:
         target: /root/connectionservice.csr
     restart: on-failure
     environment:
-      - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
-      - CONNECTION_DB_PORT=${CONNECTION_DB_PORT}
-      - CONNECTION_SERVICE_PORT=${CONNECTION_SERVICE_PORT}
-      - CONNECTION_SERVICE_HOST=${CONNECTION_SERVICE_HOST}
-      - CONNECTION_DB_USER=${CONNECTION_DB_USER}
-      - CONNECTION_DB_PASS=${CONNECTION_DB_PASS}
+        - CONNECTION_DB_HOST=${CONNECTION_DB_HOST}
+        - CONNECTION_DB_PORT=${CONNECTION_DB_PORT}
+        - CONNECTION_SERVICE_PORT=${CONNECTION_SERVICE_PORT}
+        - CONNECTION_SERVICE_HOST=${CONNECTION_SERVICE_HOST}
+        - CONNECTION_DB_USER=${CONNECTION_DB_USER}
+        - CONNECTION_DB_PASS=${CONNECTION_DB_PASS}
+        - NATS_HOST=${NATS_HOST}
+        - NATS_PORT=${NATS_PORT}
+        - NATS_USER=${NATS_USER}
+        - NATS_PASS=${NATS_PASS}
+        - INSERT_USER_COMMAND_SUBJECT=${INSERT_USER_COMMAND_SUBJECT}
+        - INSERT_USER_REPLY_SUBJECT=${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - neo4j
     networks:
@@ -274,6 +292,13 @@ services:
   notifications_db:
     image: mongo
     container_name: notifications_db
+    restart: on-failure
+    networks:
+      - network
+      -
+  nats:
+    image: nats
+    container_name: nats
     restart: on-failure
     networks:
       - network

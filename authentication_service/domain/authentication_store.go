@@ -6,6 +6,7 @@ type AuthenticationStore interface {
 	GenerateVerificationToken(email string) error
 	Validate(token string) (status int64, error string, username string)
 	Register(auth *Auth) error
+	Delete(id string) error
 	EditUsername(auth *Auth) (*Auth, error)
 	ChangePassword(auth *Auth) error
 	AccountRecovery(email string) (status int64, error string)
