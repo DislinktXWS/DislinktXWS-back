@@ -20,6 +20,12 @@ service NotificationsService{
         body: "notification"
       };
     }
+
+    rpc GetUserNotifications(GetUserNotificationsRequest) returns (GetUserNotificationsResponse) {
+      option (google.api.http) = {
+        get: "/notifications/notification/user/{username}"
+      };
+    }
 }
 
 message GetRequest {
@@ -38,6 +44,14 @@ message InsertResponse {
   Notification notification = 1;
 }
 
+message GetUserNotificationsRequest{
+  string username = 1;
+}
+
+message GetUserNotificationsResponse {
+  repeated NotificationView notificationView = 1;
+}
+
 message Notification {
   string id = 1;
   User from = 2;
@@ -50,4 +64,13 @@ message User {
   string username = 1;
   string name = 2;
   string surname = 3;
+}
+
+message NotificationView {
+  string id = 1;
+  string fromUsername = 2;
+  string fromName = 3;
+  string fromSurname = 4;
+  string date = 5;
+  string content = 6;
 }

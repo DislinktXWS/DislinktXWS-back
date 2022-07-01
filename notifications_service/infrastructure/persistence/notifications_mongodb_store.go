@@ -2,7 +2,9 @@ package persistence
 
 import (
 	"context"
+	"fmt"
 	"github.com/dislinktxws-back/notification_service/domain"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -14,6 +16,19 @@ const (
 
 type NotificationsMongoDBStore struct {
 	notifications *mongo.Collection
+}
+
+func (store *NotificationsMongoDBStore) GetUserNotifications(username string) ([]*domain.Notification, error) {
+	filter := bson.D{{}}
+	allNotifications, _ := store.filter(filter)
+	fmt.Println(allNotifications)
+	notifications := []*domain.Notification{}
+	for _, notification := range allNotifications {
+		if notification.To.Username == username {
+			notifications = append(notifications, notification)
+		}
+	}
+	return notifications, nil
 }
 
 func (store *NotificationsMongoDBStore) Insert(notification *domain.Notification) (*domain.Notification, error) {
@@ -35,4 +50,27 @@ func NewNotificationsMongoDBStore(client *mongo.Client) domain.NotificationsStor
 	return &NotificationsMongoDBStore{
 		notifications: notificaitions,
 	}
+}
+
+func (store *NotificationsMongoDBStore) filter(filter interface{}) ([]*domain.Notification, error) {
+	cursor, err := store.notifications.Find(context.TODO(), filter)
+	defer cursor.Close(context.TODO())
+
+	if err != nil {
+		return nil, err
+	}
+	return decode(cursor)
+}
+
+func decode(cursor *mongo.Cursor) (posts []*domain.Notification, err error) {
+	for cursor.Next(context.TODO()) {
+		var Notification domain.Notification
+		err = cursor.Decode(&Notification)
+		if err != nil {
+			return
+		}
+		posts = append(posts, &Notification)
+	}
+	err = cursor.Err()
+	return
 }

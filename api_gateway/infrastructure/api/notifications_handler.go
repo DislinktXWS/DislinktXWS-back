@@ -56,7 +56,7 @@ func (handler *NotificationHandler) NotifyConnections(w http.ResponseWriter, r *
 	users := []domain.UserBasicInfo{}
 	sender := domain.UserBasicInfo{}
 
-	handler.getSenderInformation(id, &sender)
+	sender = *handler.getSenderInformation(id, &sender)
 	fmt.Println("SENDER INFORMATION:")
 	fmt.Println(sender)
 
@@ -76,7 +76,10 @@ func (handler *NotificationHandler) getUserConnections(userId string) ([]string,
 func (handler *NotificationHandler) getSenderInformation(id string, sender *domain.UserBasicInfo) *domain.UserBasicInfo {
 	userClient := services.NewUserClient(handler.userClientAddress)
 	user, _ := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: id})
+	fmt.Println(user.User)
 	sender = mapNewUser(user.User)
+	fmt.Println("SENDEr nakon dobavlajanja")
+	fmt.Println(sender)
 	return sender
 }
 
@@ -87,11 +90,11 @@ func (handler *NotificationHandler) getUsersToNotify(userIds []string, users *[]
 		user, _ := userClient.Get(context.TODO(), &user_proto.GetRequest{Id: id})
 		domainUser := mapNewUser(user.User)
 		fmt.Println("NABAVI PODESAVANJA OBAVESTENJA OD USERA:" + id)
-		/*userNotificationSettings, _ := userClient.GetNotificationsSettings(context.TODO(), &user_proto.GetNotificationsSettingsRequest{Id: id})
+		userNotificationSettings, _ := userClient.GetNotificationsSettings(context.TODO(), &user_proto.GetNotificationsSettingsRequest{Id: id})
 		fmt.Println(userNotificationSettings)
-		if userNotificationSettings.ConnectionsNotifications {*/
-		*users = append(*users, *domainUser)
-		//}
+		if userNotificationSettings.ConnectionsNotifications {
+			*users = append(*users, *domainUser)
+		}
 	}
 	return users
 }

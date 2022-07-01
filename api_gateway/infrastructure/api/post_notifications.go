@@ -46,8 +46,8 @@ func (handler *PostNotificationsHandler) PostNotifications(w http.ResponseWriter
 
 	sender := domain.UserBasicInfo{}
 	receiver := domain.UserBasicInfo{}
-	handler.getUserInformation(id, &sender)
-	handler.getUserInformation(id, &receiver)
+	sender = *handler.getUserInformation(id, &sender)
+	receiver = *handler.getUserInformation(id, &receiver)
 	handler.sendNotification(&sender, &receiver, newNotification)
 
 }

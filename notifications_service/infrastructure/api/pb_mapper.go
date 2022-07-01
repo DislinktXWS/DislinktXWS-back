@@ -48,3 +48,15 @@ func mapNewNotificationPb(notification *domain.Notification) *pb.Notification {
 
 	return notificationPb
 }
+
+func mapNotification(notification *domain.Notification) *pb.NotificationView {
+	notificationPb := &pb.NotificationView{
+		Id:           notification.Id.Hex(),
+		FromUsername: notification.From.Username,
+		FromName:     notification.From.Name,
+		FromSurname:  notification.From.Surname,
+		Date:         notification.Date,
+		Content:      notification.Content,
+	}
+	return notificationPb
+}
