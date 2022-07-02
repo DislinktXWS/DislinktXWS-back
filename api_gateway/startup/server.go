@@ -5,6 +5,9 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"io/ioutil"
+	"log"
+
 	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
@@ -13,15 +16,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
-	"io/ioutil"
-	"log"
+
+	"net/http"
 
 	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
+	messageGw "github.com/dislinktxws-back/common/proto/message_service"
 	notificationsGW "github.com/dislinktxws-back/common/proto/notifications_service"
 	postGw "github.com/dislinktxws-back/common/proto/post_service"
 	userGw "github.com/dislinktxws-back/common/proto/user_service"
-	"net/http"
 )
 
 type Server struct {
@@ -98,6 +101,12 @@ func (server *Server) initHandlers() {
 
 	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
 	err = notificationsGW.RegisterNotificationsServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationsEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}

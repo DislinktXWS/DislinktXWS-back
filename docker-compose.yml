@@ -244,6 +244,23 @@ services:
     networks:
       - network
 
+  message_service:
+    image: message_service
+    container_name: message_service
+    build:
+      context: .
+      dockerfile: ./message_service/Dockerfile
+    restart: on-failure
+    environment:
+      MESSAGE_SERVICE_HOST: ${MESSAGE_SERVICE_HOST}
+      MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
+      MESSAGE_DB_HOST: ${MESSAGE_DB_HOST}
+      MESSAGE_DB_PORT: ${MESSAGE_DB_PORT}
+    depends_on:
+      - mess_db
+    networks:
+      - network
+
   user_db:
     image: mongo
     container_name: user_db
@@ -302,6 +319,13 @@ services:
     restart: on-failure
     networks:
       - network
+  
+  mess_db:
+  image: mongo
+  container_name: mess_db
+  restart: on-failure
+  networks:
+    - network
 
 networks:
   network:
