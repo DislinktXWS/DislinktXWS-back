@@ -49,3 +49,49 @@ type Comment struct {
 	User    string
 	Content string
 }
+
+type ApiKey struct {
+	Username string
+	ApiKey   string
+}
+
+type BusinessOfferDto struct {
+	Id          int64
+	AuthorId    string
+	Name        string
+	Position    string
+	Description string
+	Industry    string
+	Skills      []Skill
+}
+
+type Skill struct {
+	Id          int64
+	Name        string
+	Proficiency SkillProficiency
+}
+
+type SkillProficiency int64
+
+type BusinessOffer struct {
+	Id          int64
+	AuthorId    string
+	Name        string
+	Position    string
+	Description string
+	Industry    string
+}
+
+type Notification struct {
+	Id      string
+	From    string //id
+	To      string //id
+	Date    string
+	Content string
+}
+
+type NotificationsSettings struct {
+	ChatNotificatons         bool
+	ConnectionsNotifications bool
+	PostNotifications        bool
+}

@@ -82,6 +82,11 @@ service ConnectionsService{
         get: "/connections/connections/blocked/{id}"
         };
     }
+    rpc GetUserRecommendations(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
+      option (google.api.http) = {
+        get: "/connections/connections/recommendations/{id}"
+      };
+    }
     rpc GetConnectionRequests(GetAllConnectionsRequest) returns(GetAllConnectionsResponse) {
         option (google.api.http) = {
         get: "/connections/connections/requests/{id}"

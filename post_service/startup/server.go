@@ -2,12 +2,15 @@ package startup
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/dislinktxws-back/post_service/infrastructure/service"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"os"
 	"strings"
 
 	//api_gw "github.com/dislinktxws-back/api_gateway/startup"
@@ -40,9 +43,28 @@ func NewServer(config *config.Config) *Server {
 	}
 }
 
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
+
 const (
 	QueueGroup = "post_service"
 )
+
+func init() {
+	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
+
+	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
@@ -83,14 +105,35 @@ func (server *Server) initPostHandler(service *application.PostService) *api.Pos
 	return api.NewPostHandler(service)
 }
 
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("postservice.crt", "postservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
+}
+
 func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+
+	//tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
+	}
+
 	grpcServer := grpc.NewServer(
+		//grpc.Creds(tlsCredentials),
 		withServerUnaryInterceptor(),
 	)
+
 	post_service.RegisterPostServiceServer(grpcServer, PostHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
@@ -122,11 +165,13 @@ func serverInterceptor(ctx context.Context,
 func authorize(ctx context.Context) error {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+		ErrorLogger.Println("Retrieving metadata failed!")
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata failed")
 	}
 
 	authHeader, ok := md["authorization"]
 	if !ok {
+		ErrorLogger.Println("Action: 34, Message: Authorization token is not supplied!")
 		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
 	}
 
@@ -142,6 +187,7 @@ func authorize(ctx context.Context) error {
 	}
 
 	if validation.Status != 200 {
+		ErrorLogger.Println("Action: 35, Message: Cannot validate token!")
 		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
 	}
 	return nil

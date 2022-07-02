@@ -33,6 +33,7 @@ type ConnectionsServiceClient interface {
 	DeclineConnectionRequest(ctx context.Context, in *InsertUserConnectionRequest, opts ...grpc.CallOption) (*InsertUserConnectionResponse, error)
 	GetAll(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 	GetBlockedUsers(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
+	GetUserRecommendations(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 	GetConnectionRequests(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error)
 	GetConnectionStatus(ctx context.Context, in *ConnectionStatusRequest, opts ...grpc.CallOption) (*ConnectionStatusResponse, error)
 }
@@ -144,6 +145,15 @@ func (c *connectionsServiceClient) GetBlockedUsers(ctx context.Context, in *GetA
 	return out, nil
 }
 
+func (c *connectionsServiceClient) GetUserRecommendations(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error) {
+	out := new(GetAllConnectionsResponse)
+	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetUserRecommendations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *connectionsServiceClient) GetConnectionRequests(ctx context.Context, in *GetAllConnectionsRequest, opts ...grpc.CallOption) (*GetAllConnectionsResponse, error) {
 	out := new(GetAllConnectionsResponse)
 	err := c.cc.Invoke(ctx, "/connections.ConnectionsService/GetConnectionRequests", in, out, opts...)
@@ -177,6 +187,7 @@ type ConnectionsServiceServer interface {
 	DeclineConnectionRequest(context.Context, *InsertUserConnectionRequest) (*InsertUserConnectionResponse, error)
 	GetAll(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	GetBlockedUsers(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
+	GetUserRecommendations(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error)
 	GetConnectionStatus(context.Context, *ConnectionStatusRequest) (*ConnectionStatusResponse, error)
 	mustEmbedUnimplementedConnectionsServiceServer()
@@ -218,6 +229,9 @@ func (UnimplementedConnectionsServiceServer) GetAll(context.Context, *GetAllConn
 }
 func (UnimplementedConnectionsServiceServer) GetBlockedUsers(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBlockedUsers not implemented")
+}
+func (UnimplementedConnectionsServiceServer) GetUserRecommendations(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserRecommendations not implemented")
 }
 func (UnimplementedConnectionsServiceServer) GetConnectionRequests(context.Context, *GetAllConnectionsRequest) (*GetAllConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConnectionRequests not implemented")
@@ -436,6 +450,24 @@ func _ConnectionsService_GetBlockedUsers_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionsService_GetUserRecommendations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionsServiceServer).GetUserRecommendations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connections.ConnectionsService/GetUserRecommendations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionsServiceServer).GetUserRecommendations(ctx, req.(*GetAllConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConnectionsService_GetConnectionRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllConnectionsRequest)
 	if err := dec(in); err != nil {
@@ -522,6 +554,10 @@ var ConnectionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBlockedUsers",
 			Handler:    _ConnectionsService_GetBlockedUsers_Handler,
+		},
+		{
+			MethodName: "GetUserRecommendations",
+			Handler:    _ConnectionsService_GetUserRecommendations_Handler,
 		},
 		{
 			MethodName: "GetConnectionRequests",

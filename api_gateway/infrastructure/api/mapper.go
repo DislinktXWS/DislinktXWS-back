@@ -2,6 +2,8 @@ package api
 
 import (
 	"github.com/dislinktxws-back/api_gateway/domain"
+	pbAuth "github.com/dislinktxws-back/common/proto/authentication_service"
+	pbOffer "github.com/dislinktxws-back/common/proto/business_offer_service"
 	pbMessage "github.com/dislinktxws-back/common/proto/message_service"
 	pbPost "github.com/dislinktxws-back/common/proto/post_service"
 	pbUser "github.com/dislinktxws-back/common/proto/user_service"
@@ -35,6 +37,34 @@ func mapNewPost(postPb *pbPost.Post) *domain.Post {
 	return post
 }
 
+func mapToOfferPb(offer *domain.BusinessOffer) *pbOffer.BusinessOffer {
+	offerPb := &pbOffer.BusinessOffer{
+		Name:        offer.Name,
+		AuthorId:    offer.AuthorId,
+		Position:    offer.Position,
+		Description: offer.Description,
+		Industry:    offer.Industry,
+	}
+	return offerPb
+}
+
+func mapToSkillPb(offer *domain.Skill) *pbOffer.Skill {
+	offerPb := &pbOffer.Skill{
+		Name:        offer.Name,
+		Proficiency: pbOffer.Skill_SkillProficiency(offer.Proficiency),
+	}
+	return offerPb
+}
+
+func mapToAuthPb(user *domain.UserRegistration) *pbAuth.Auth {
+	authPb := &pbAuth.Auth{
+		Id:                user.Id,
+		Username:          user.Username,
+		VerificationToken: user.VerificationToken,
+		Email:             user.Email,
+	}
+	return authPb
+}
 func mapNewConversationInfo(postPb *pbMessage.GetConversationResponse, userInfo *domain.UserBasicInfo) *domain.ConversationInfo {
 	info := &domain.ConversationInfo{
 		UserId:    userInfo.Id,

@@ -1,23 +1,34 @@
 package application
 
 import (
+	"fmt"
 	"github.com/dislinktxws-back/user_service/domain"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
-	store domain.UserStore
+	store        domain.UserStore
+	orchestrator *InsertUserOrchestrator
 }
 
-func NewUserService(store domain.UserStore) *UserService {
+func NewUserService(store domain.UserStore, orchestrator *InsertUserOrchestrator) *UserService {
 	return &UserService{
-		store: store,
+		store:        store,
+		orchestrator: orchestrator,
 	}
 }
 
 func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
 	return service.store.Get(id)
+}
+
+func (service *UserService) GetByApiKey(apiKey string) (*domain.User, error) {
+	return service.store.GetByApiKey(apiKey)
+}
+
+func (service *UserService) GetByUsername(username string) (*domain.User, error) {
+	return service.store.GetByUsername(username)
 }
 
 func (service *UserService) GetAll() ([]*domain.User, error) {
@@ -29,7 +40,20 @@ func (service *UserService) GetPublicUsers() ([]*domain.User, error) {
 }
 
 func (service *UserService) Insert(user *domain.User) (error, *domain.User) {
-	return service.store.Insert(user)
+	err, newUser := service.store.Insert(user)
+	fmt.Println("INSERTOVANO U USER")
+	if err != nil {
+		return err, nil
+	}
+	err = service.orchestrator.Start(newUser)
+	if err != nil {
+		return err, nil
+	}
+	return nil, newUser
+}
+
+func (service *UserService) Delete(id primitive.ObjectID) error {
+	return service.store.Delete(id)
 }
 
 func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
@@ -38,6 +62,11 @@ func (service *UserService) EditUser(user *domain.User) (*domain.User, error) {
 
 func (service *UserService) EditUsername(user *domain.User) (*domain.User, error) {
 	return service.store.EditUsername(user)
+}
+
+func (service *UserService) SetApiKey(username string) (string, error) {
+	apiKey, _ := service.store.SetApiKey(username)
+	return apiKey, nil
 }
 
 func (service *UserService) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
@@ -94,4 +123,24 @@ func (service *UserService) SearchProfiles(search string) (*[]domain.User, error
 
 func (service *UserService) SetPrivacy(private bool, id primitive.ObjectID) error {
 	return service.store.SetPrivacy(private, id)
+}
+
+func (service *UserService) SetChatNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetChatNotifications(objectId)
+}
+
+func (service *UserService) SetPostNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetPostNotifications(objectId)
+}
+
+func (service *UserService) SetConnectionsNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetConnectionsNotifications(objectId)
+}
+
+func (service *UserService) GetNotificationsSettings(id string) (domain.NotificationsSettingsDTO, error) {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.GetNotificationsSettings(objectId)
 }

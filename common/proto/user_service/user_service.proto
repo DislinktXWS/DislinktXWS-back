@@ -14,6 +14,18 @@ service UserService{
 		            };
         }
 
+        rpc GetByUsername(GetByUsernameRequest) returns(GetByUsernameResponse) {
+                option (google.api.http) = {
+                        get: "/users/userByUsername/{username}"
+                };
+        }
+
+        rpc GetByApiKey(GetByApiKeyRequest) returns(GetByApiKeyResponse) {
+                option (google.api.http) = {
+                        get: "/users/userByApiKey/{apiKey}"
+                };
+        }
+
         rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         	      option (google.api.http) = {
 			                  get: "/users/user"
@@ -127,6 +139,36 @@ service UserService{
                         body: "private"
                 };
         }
+
+        rpc SetApiKey(SetApiKeyRequest) returns (SetApiKeyResponse){
+                option(google.api.http)  = {
+                        put: "/users/user/apiKey/{username}"
+                };
+        }
+
+        rpc SetChatNotifications(SetChatNotificationsRequest) returns (SetChatNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/chatNotifications/{id}"
+                };
+        }
+
+        rpc SetPostNotifications(SetPostNotificationsRequest) returns (SetPostNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/postNotifications/{id}"
+                };
+        }
+
+        rpc SetConnectionsNotifications(SetConnectionsNotificationsRequest) returns (SetConnectionsNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/connectionsNotifications/{id}"
+                };
+        }
+
+        rpc GetNotificationsSettings(GetNotificationsSettingsRequest) returns (GetNotificationsSettingsResponse){
+                option(google.api.http) = {
+                        get: "/users/user/notificationsSettings/{id}"
+                };
+        }
 }
 
 message GetRequest {
@@ -134,6 +176,22 @@ message GetRequest {
 }
 
 message GetResponse {
+        User user = 1;
+}
+
+message GetByUsernameRequest {
+        string username = 1;
+}
+
+message GetByUsernameResponse {
+        User user = 1;
+}
+
+message GetByApiKeyRequest {
+        string apiKey = 1;
+}
+
+message GetByApiKeyResponse {
         User user = 1;
 }
 
@@ -236,8 +294,49 @@ message SetPrivacyRequest{
 message SetPrivacyResponse{
 }
 
-message AddInterestResponse{
+message SetApiKeyRequest{
+        string username = 1;
+}
 
+message SetApiKeyResponse{
+        string apiKey = 1;
+}
+
+message AddInterestResponse{
+}
+
+message SetChatNotificationsRequest{
+        string id = 1;
+}
+
+message SetChatNotificationsResponse{
+
+}
+
+message SetPostNotificationsRequest{
+        string id = 1;
+}
+
+message SetPostNotificationsResponse{
+
+}
+
+message SetConnectionsNotificationsRequest{
+        string id = 1;
+}
+
+message SetConnectionsNotificationsResponse{
+
+}
+
+message GetNotificationsSettingsRequest{
+        string id = 1;
+}
+
+message GetNotificationsSettingsResponse{
+        bool chatNotifications = 1;
+        bool connectionsNotifications = 2;
+        bool postNotifications = 3;
 }
 
 message DeleteInterestRequest{
@@ -296,6 +395,7 @@ message User {
         string biography = 10;
         bool isPublic = 11;
         string verificationToken = 12;
+        string apiKey = 13;
 }
 
 message Education {

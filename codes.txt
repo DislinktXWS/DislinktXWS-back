@@ -1,0 +1,35 @@
+1 - invalid get request
+2 - entity not found 
+3 - user registration successfull
+4 - invalid post request for user
+5 - invalid edit user request
+6 - edit user successfull
+7 - connected with agents app
+8 - invalid delete request for user
+9 - liked post 
+10 - disliked post
+11 - invalid post request for posts
+12 - created new post
+13 - invalid post request for comments
+14 - commented post 
+15 - invalid post request for connection
+16 - created new connection
+17 - invalid delete request for connection
+18 - delete connection 
+19 - created new connection request
+20 - cancel connection
+21 - user blocked
+22 - user unblocked
+23 - accept connection
+24 - decline connection
+25 - invalid post request for business offer 
+26 - create business offer	
+27 - edit business offer 
+28 - wrong credentials for login
+29 - login
+30 - token invalid
+31 - token valid
+32 - mail send
+33 - invalid email
+34 - token is not supplied
+35 - unauthorized request

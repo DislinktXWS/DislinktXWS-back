@@ -18,4 +18,6 @@ type ConnectionsGraph interface {
 
 	BlockUser(connection *UserConnection) error
 	UnblockUser(connection *UserConnection) error
+
+	GetUserRecommendations(user string) []string
 }

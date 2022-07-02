@@ -2,9 +2,12 @@ package startup
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	user_service "github.com/dislinktxws-back/common/proto/user_service"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
+	"github.com/dislinktxws-back/common/saga/messaging/nats"
 	"github.com/dislinktxws-back/user_service/application"
 	"github.com/dislinktxws-back/user_service/domain"
 	"github.com/dislinktxws-back/user_service/infrastructure/api"
@@ -12,10 +15,12 @@ import (
 	"github.com/dislinktxws-back/user_service/infrastructure/service"
 	"github.com/dislinktxws-back/user_service/startup/config"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"log"
 	"net"
+	"os"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,6 +30,11 @@ import (
 type Server struct {
 	config *config.Config
 }
+
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
 
 func NewServer(config *config.Config) *Server {
 	return &Server{
@@ -36,13 +46,33 @@ const (
 	QueueGroup = "user_service"
 )
 
+func init() {
+	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	InfoLogger = log.New(infoFile, "INFO: ", log.LstdFlags|log.Lshortfile)
+
+	errFile, err1 := os.OpenFile("error.log", os.O_APPEND|os.O_WRONLY, 0666)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	ErrorLogger = log.New(errFile, "ERROR: ", log.LstdFlags|log.Lshortfile)
+}
+
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
 
-	userService := server.initUserService(userStore)
-	userHandler := server.initUserHandler(userService)
+	commandPublisher := server.initPublisher(server.config.InsertUserCommandSubject)
+	replySubscriber := server.initSubscriber(server.config.InsertUserReplySubject, QueueGroup)
+	insertUserOrchestrator := server.initInsertUserOrchestrator(commandPublisher, replySubscriber)
 
+	commandSubscriber := server.initSubscriber(server.config.InsertUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.InsertUserReplySubject)
+
+	userService := server.initUserService(userStore, insertUserOrchestrator)
+	userHandler := server.initUserHandler(userService, replyPublisher, commandSubscriber)
 	server.startGrpcServer(userHandler)
 }
 
@@ -55,34 +85,75 @@ func (server *Server) initMongoClient() *mongo.Client {
 }
 
 func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
-	store := persistence.NewUserMongoDBStore(client)
-	/*users, _ := store.GetAll()
-	store.DeleteAll()
-	for _, User := range users {
-		_, err := store.Insert(User)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}*/
-	return store
+	return persistence.NewUserMongoDBStore(client)
 }
 
-func (server *Server) initUserService(store domain.UserStore) *application.UserService {
-	return application.NewUserService(store)
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
 }
 
-func (server *Server) initUserHandler(service *application.UserService) *api.UserHandler {
-	return api.NewUserHandler(service)
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
+func (server *Server) initInsertUserOrchestrator(publisher saga.Publisher, subscriber saga.Subscriber) *application.InsertUserOrchestrator {
+	orchestrator, err := application.NewInsertUserOrchestrator(publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return orchestrator
+}
+
+func (server *Server) initUserService(store domain.UserStore, orchestrator *application.InsertUserOrchestrator) *application.UserService {
+	return application.NewUserService(store, orchestrator)
+}
+
+func (server *Server) initUserHandler(service *application.UserService, publisher saga.Publisher, subscriber saga.Subscriber) *api.UserHandler {
+	return api.NewUserHandler(service, publisher, subscriber)
+}
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("userservice.crt", "userservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
 }
 
 func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+
+	//tlsCredentials, err := loadTLSCredentials()
+	if err != nil {
+		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
+	}
+
 	grpcServer := grpc.NewServer(
+		//grpc.Creds(tlsCredentials),
 		withServerUnaryInterceptor(),
 	)
+
 	user_service.RegisterUserServiceServer(grpcServer, userHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
@@ -100,7 +171,12 @@ func serverInterceptor(ctx context.Context,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	fmt.Println(info.FullMethod)
 	if info.FullMethod != "/users.UserService/GetPublicUsers" && info.FullMethod != "/users.UserService/SearchProfiles" &&
-		info.FullMethod != "/users.UserService/Insert" && info.FullMethod != "/users.UserService/Get" {
+		info.FullMethod != "/users.UserService/Insert" && info.FullMethod != "/users.UserService/Get" &&
+		info.FullMethod != "/users.UserService/GetAll" &&
+		info.FullMethod != "/users.UserService/GetNotificationsSettings" &&
+		info.FullMethod != "/users.UserService/GetByUsername" &&
+		info.FullMethod != "/users.UserService/SetApiKey" &&
+		info.FullMethod != "/users.UserService/GetByApiKey" {
 		if err := authorize(ctx); err != nil {
 			return nil, err
 		}
@@ -114,11 +190,13 @@ func serverInterceptor(ctx context.Context,
 func authorize(ctx context.Context) error {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return status.Errorf(codes.InvalidArgument, "Retrieving metadata is failed")
+		ErrorLogger.Println("Retrieving metadata failed!")
+		return status.Errorf(codes.InvalidArgument, "Retrieving metadata failed!")
 	}
 
 	authHeader, ok := md["authorization"]
 	if !ok {
+		ErrorLogger.Println("Action: 34, Message: Authorization token is not supplied!")
 		return status.Errorf(codes.Unauthenticated, "Authorization token is not supplied")
 	}
 
@@ -134,7 +212,9 @@ func authorize(ctx context.Context) error {
 	}
 
 	if validation.Status != 200 {
+		ErrorLogger.Println("Action: 35, Message: Cannot validate token!")
 		return status.Errorf(codes.Unauthenticated, "Token is not valid!")
 	}
+
 	return nil
 }

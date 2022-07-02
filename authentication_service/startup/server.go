@@ -1,6 +1,7 @@
 package startup
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/application"
 	"github.com/dislinktxws-back/authentication_service/domain"
@@ -8,6 +9,9 @@ import (
 	"github.com/dislinktxws-back/authentication_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
+	saga "github.com/dislinktxws-back/common/saga/messaging"
+	"github.com/dislinktxws-back/common/saga/messaging/nats"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
 
@@ -33,8 +37,11 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	PostStore := server.initAuthStore(mongoClient)
 
+	commandSubscriber := server.initSubscriber(server.config.InsertUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.InsertUserReplySubject)
+
 	PostService := server.initAuthService(PostStore)
-	PostHandler := server.initAuthHandler(PostService)
+	PostHandler := server.initAuthHandler(PostService, replyPublisher, commandSubscriber)
 
 	server.startGrpcServer(PostHandler)
 }
@@ -52,12 +59,52 @@ func (server *Server) initAuthStore(client *mongo.Client) domain.AuthenticationS
 	return store
 }
 
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
+}
+
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
 func (server *Server) initAuthService(store domain.AuthenticationStore) *application.AuthenticationService {
 	return application.NewAuthenticationService(store)
 }
 
-func (server *Server) initAuthHandler(service *application.AuthenticationService) *api.AuthenticationHandler {
-	return api.NewAuthenticationHandler(service)
+func (server *Server) initInsertUserHandler(service *application.AuthenticationService, publisher saga.Publisher, subscriber saga.Subscriber) {
+	_, err := api.NewCreateAuthCommandHandler(service, publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (server *Server) initAuthHandler(service *application.AuthenticationService, publisher saga.Publisher, subscriber saga.Subscriber) *api.AuthenticationHandler {
+	return api.NewAuthenticationHandler(service, publisher, subscriber)
+}
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	serverCert, err := tls.LoadX509KeyPair("authenticationservice.crt", "authenticationservice.key")
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	return credentials.NewTLS(config), nil
 }
 
 func (server *Server) startGrpcServer(AuthenticationHandler *api.AuthenticationHandler) {
@@ -65,7 +112,12 @@ func (server *Server) startGrpcServer(AuthenticationHandler *api.AuthenticationH
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	//tlsCredentials, _ := loadTLSCredentials()
+
+	grpcServer := grpc.NewServer(
+	//grpc.Creds(tlsCredentials),
+	)
+
 	authentication_service.RegisterAuthenticationServiceServer(grpcServer, AuthenticationHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)

@@ -4,14 +4,14 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	"io"
-	"net/smtp"
-
 	"github.com/dislinktxws-back/user_service/domain"
 	"github.com/dislinktxws-back/user_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"io"
+	r "math/rand"
+	"net/smtp"
 )
 
 const (
@@ -21,6 +21,66 @@ const (
 
 type UserMongoDBStore struct {
 	users *mongo.Collection
+}
+
+func (store *UserMongoDBStore) GetNotificationsSettings(id primitive.ObjectID) (domain.NotificationsSettingsDTO, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return domain.NotificationsSettingsDTO{
+		ChatNotifications:        user.ChatNotifications,
+		ConnectionsNotifications: user.ConnectionsNotifications,
+		PostNotifications:        user.PostNotifications,
+	}, err
+}
+
+func (store *UserMongoDBStore) SetChatNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"chatNotifications", !user.ChatNotifications}}},
+		},
+	)
+
+	return err2
+}
+
+func (store *UserMongoDBStore) SetPostNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"postNotifications", !user.PostNotifications}}},
+		},
+	)
+
+	return err2
+}
+
+func (store *UserMongoDBStore) SetConnectionsNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"connectionsNotifications", !user.ConnectionsNotifications}}},
+		},
+	)
+	return err2
 }
 
 func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
@@ -66,6 +126,8 @@ func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, er
 func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
+	fmt.Println("ID u get education metodi")
+	fmt.Println(id)
 	return &user.Education, err
 }
 
@@ -228,6 +290,16 @@ func (store *UserMongoDBStore) Get(id primitive.ObjectID) (*domain.User, error) 
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, error) {
+	filter := bson.M{"username": username}
+	return store.filterOne(filter)
+}
+
+func (store *UserMongoDBStore) GetByApiKey(apiKey string) (*domain.User, error) {
+	filter := bson.M{"apiKey": apiKey}
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)
@@ -259,18 +331,23 @@ func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
 	return nil, User
 }
 
+func (store *UserMongoDBStore) Delete(id primitive.ObjectID) error {
+	_, err := store.users.DeleteOne(context.TODO(), bson.M{"_id": id})
+	return err
+}
+
 func sendEmail(email, token string) {
 	// Sender data.
-	from := "pswapoteka@gmail.com"
-	password := "psw12345"
-
+	from := "bezbednostsomn@yahoo.com"
+	password := "fcmhbptswmwtphum"
+	fmt.Println("Sifra" + password)
 	// Receiver email address.
 	to := []string{
 		email,
 	}
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
+	smtpHost := "smtp.mail.yahoo.com"
 	smtpPort := "587"
 
 	// Message.
@@ -353,6 +430,31 @@ func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, er
 		},
 	)
 	return user, err
+}
+
+func RandStringRunes(n int) string {
+
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[r.Int63()%int64(len(letters))]
+	}
+	return string(b)
+}
+
+func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
+	apiKey := RandStringRunes(10)
+	_, err := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"username": username},
+		bson.D{
+			{"$set", bson.D{
+				{"apiKey", apiKey},
+			}},
+		},
+	)
+	return apiKey, err
 }
 
 func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {

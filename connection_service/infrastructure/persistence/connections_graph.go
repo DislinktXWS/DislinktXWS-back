@@ -64,6 +64,25 @@ func (store *ConnectionsDBGraph) GetConnectionRequests(user string) []string {
 	return blocked
 }
 
+func (store *ConnectionsDBGraph) GetUserRecommendations(user string) []string {
+	var session = *store.session
+	friendsOfFriends, _ := getFriendsOfFriendsTxFunc(session, user)
+	randomUsers, _ := getRandomUsersTxFunc(session, user)
+
+	if len(friendsOfFriends) < 10 {
+
+		for _, v := range randomUsers {
+			if !contains(friendsOfFriends, v) {
+				friendsOfFriends = append(friendsOfFriends, v)
+			}
+			if len(friendsOfFriends) == 10 {
+				break
+			}
+		}
+	}
+	return friendsOfFriends
+}
+
 func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 	var session = *store.session
 	_, err := session.WriteTransaction(addUserNodeTxFunc(user))
