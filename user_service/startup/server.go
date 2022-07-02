@@ -175,10 +175,6 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	}
 }
 
-func withServerUnaryInterceptor() grpc.ServerOption {
-	return grpc.UnaryInterceptor(serverInterceptor)
-}
-
 // Authorization unary interceptor function to handle authorize per RPC call
 func serverInterceptor(ctx context.Context,
 	req interface{},

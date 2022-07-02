@@ -38,14 +38,6 @@ services:
       options:
         max-size: "1m"
 
-  jaeger:
-    image: jaegertracing/all-in-one
-    container_name: jaeger
-    ports:
-      - "16686:16686"
-    networks:
-      - public
-
 
 networks:
   public:

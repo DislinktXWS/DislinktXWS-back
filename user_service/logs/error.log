@@ -122,3 +122,5 @@ ERROR: 2022/06/29 21:40:12 user_grpc_api.go:47: Action: 1, Message: ID is not co
 ERROR: 2022/06/29 21:40:12 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/29 21:52:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
 ERROR: 2022/06/29 21:52:54 user_grpc_api.go:47: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 23:32:05 user_grpc_api.go:82: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 23:32:41 user_grpc_api.go:103: Action: 2, Message: User not found!

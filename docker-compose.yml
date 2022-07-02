@@ -35,6 +35,7 @@ services:
       BUSINESS_OFFER_SERVICE_PORT: ${BUSINESS_OFFER_SERVICE_PORT}
     networks:
       - network
+
   user_service:
     image: user_service
     container_name: user_service
@@ -81,9 +82,10 @@ services:
       INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - user_db
+      - jaeger
     networks:
+      - public
       - network
-
 
   post_service:
     image: post_service
@@ -117,10 +119,18 @@ services:
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       POST_DB_HOST: ${POST_DB_HOST}
       POST_DB_PORT: ${POST_DB_PORT}
+      JAEGER_SERVICE_NAME: post-service
+      JAEGER_AGENT_HOST: jaeger
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - post_db
+      - jaeger
     networks:
       - network
+      - public
 
   authentication_service:
     image: authentication_service
@@ -154,6 +164,12 @@ services:
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
       AUTH_DB_HOST: ${AUTH_DB_HOST}
       AUTH_DB_PORT: ${AUTH_DB_PORT}
+      JAEGER_SERVICE_NAME: authentication-service
+      JAEGER_AGENT_HOST: jaeger
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
       NATS_HOST: ${NATS_HOST}
       NATS_PORT: ${NATS_PORT}
       NATS_USER: ${NATS_USER}
@@ -162,8 +178,10 @@ services:
       INSERT_USER_REPLY_SUBJECT: ${INSERT_USER_REPLY_SUBJECT}
     depends_on:
       - auth_db
+      - jaeger
     networks:
       - network
+      - public
 
 
   connection_service:
@@ -206,10 +224,18 @@ services:
         - NATS_PASS=${NATS_PASS}
         - INSERT_USER_COMMAND_SUBJECT=${INSERT_USER_COMMAND_SUBJECT}
         - INSERT_USER_REPLY_SUBJECT=${INSERT_USER_REPLY_SUBJECT}
+        - JAEGER_SERVICE_NAME= connection-service
+        - JAEGER_AGENT_HOST= ${JAEGER_AGENT_HOST}
+        - JAEGER_AGENT_PORT= ${JAEGER_AGENT_PORT}
+        - JAEGER_SAMPLER_MANAGER_HOST_PORT= ${JAEGER_SAMPLER_MANAGER_HOST_PORT}
+        - JAEGER_SAMPLER_TYPE= ${JAEGER_SAMPLER_TYPE}
+        - JAEGER_SAMPLER_PARAM= ${JAEGER_SAMPLER_PARAM}
     depends_on:
       - neo4j
+      - jaeger
     networks:
       - network
+      - public
 
   business_offer_service:
     image: business_offer_service
@@ -245,10 +271,17 @@ services:
       - BUSINESS_OFFER_SERVICE_PORT=${BUSINESS_OFFER_SERVICE_PORT}
       - BUSINESS_OFFER_DB_USER=${BUSINESS_OFFER_DB_USER}
       - BUSINESS_OFFER_DB_PASS=${BUSINESS_OFFER_DB_PASS}
+      - JAEGER_SERVICE_NAME=business-offer-service
+      - JAEGER_AGENT_HOST=${JAEGER_AGENT_HOST}
+      - JAEGER_AGENT_PORT=${JAEGER_AGENT_PORT}
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=${JAEGER_SAMPLER_MANAGER_HOST_PORT}
+      - JAEGER_SAMPLER_TYPE=${JAEGER_SAMPLER_TYPE}
     depends_on:
       - neo4jA
+      - jaeger
     networks:
       - network
+      - public
 
   user_db:
     image: mongo
@@ -302,6 +335,17 @@ services:
     networks:
       - network
 
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+    networks:
+      - public
+
 networks:
   network:
     driver: bridge
+  public:
+    name: public

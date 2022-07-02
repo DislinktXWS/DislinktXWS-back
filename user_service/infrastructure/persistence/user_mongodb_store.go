@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"github.com/dislinktxws-back/user_service/domain"
+	"github.com/dislinktxws-back/user_service/tracer"
 	"github.com/dislinktxws-back/user_service/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,7 +24,9 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
-func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
+func (store *UserMongoDBStore) SearchProfiles(search string, ctx context.Context) (*[]domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "SearchProfiles")
+	defer span.Finish()
 	filter := bson.M{
 		"$or": []bson.M{
 			{
@@ -63,31 +66,41 @@ func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, er
 	return &results, err1
 }
 
-func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID) (*[]domain.Education, error) {
+func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID, ctx context.Context) (*[]domain.Education, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetEducation")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
 	return &user.Education, err
 }
 
-func (store *UserMongoDBStore) GetExperience(id primitive.ObjectID) (*[]domain.Experience, error) {
+func (store *UserMongoDBStore) GetExperience(id primitive.ObjectID, ctx context.Context) (*[]domain.Experience, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetExperience")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
 	return &user.Experience, err
 }
 
-func (store *UserMongoDBStore) GetInterests(id primitive.ObjectID) ([]string, error) {
+func (store *UserMongoDBStore) GetInterests(id primitive.ObjectID, ctx context.Context) ([]string, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetInterests")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
 	return user.Interests, err
 }
 
-func (store *UserMongoDBStore) GetSkills(id primitive.ObjectID) (*[]domain.Skill, error) {
+func (store *UserMongoDBStore) GetSkills(id primitive.ObjectID, ctx context.Context) (*[]domain.Skill, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetSkills")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
 	return &user.Skills, err
 }
 
-func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.ObjectID) (*domain.Skill, error) {
+func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.ObjectID, ctx context.Context) (*domain.Skill, error) {
+	span := tracer.StartSpanFromContext(ctx, "AddSkill")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	skillsCurrent := user.Skills
@@ -103,7 +116,9 @@ func (store *UserMongoDBStore) AddSkill(skill *domain.Skill, id primitive.Object
 	return skill, err
 }
 
-func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint) error {
+func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeleteSkill")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	skillsCurrent := user.Skills
@@ -119,7 +134,9 @@ func (store *UserMongoDBStore) DeleteSkill(id primitive.ObjectID, index uint) er
 	return err
 }
 
-func (store *UserMongoDBStore) AddInterest(id primitive.ObjectID, interest string) error {
+func (store *UserMongoDBStore) AddInterest(id primitive.ObjectID, interest string, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "AddInterest")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	interestsCurrent := user.Interests
@@ -135,7 +152,9 @@ func (store *UserMongoDBStore) AddInterest(id primitive.ObjectID, interest strin
 	return err
 }
 
-func (store *UserMongoDBStore) DeleteInterest(id primitive.ObjectID, index uint) error {
+func (store *UserMongoDBStore) DeleteInterest(id primitive.ObjectID, index uint, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeleteInterest")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	interestsCurrent := user.Interests
@@ -151,7 +170,9 @@ func (store *UserMongoDBStore) DeleteInterest(id primitive.ObjectID, index uint)
 	return err
 }
 
-func (store *UserMongoDBStore) DeleteExperience(id primitive.ObjectID, index uint) error {
+func (store *UserMongoDBStore) DeleteExperience(id primitive.ObjectID, index uint, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeleteExperience")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	experienceCurrent := user.Experience
@@ -168,7 +189,9 @@ func (store *UserMongoDBStore) DeleteExperience(id primitive.ObjectID, index uin
 
 }
 
-func (store *UserMongoDBStore) AddExperience(experience *domain.Experience, id primitive.ObjectID) (*domain.Experience, error) {
+func (store *UserMongoDBStore) AddExperience(experience *domain.Experience, id primitive.ObjectID, ctx context.Context) (*domain.Experience, error) {
+	span := tracer.StartSpanFromContext(ctx, "AddExperience")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	experienceCurrent := user.Experience
@@ -184,7 +207,9 @@ func (store *UserMongoDBStore) AddExperience(experience *domain.Experience, id p
 	return experience, err
 }
 
-func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint) error {
+func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeleteEducation")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	educationCurrent := user.Education
@@ -200,7 +225,9 @@ func (store *UserMongoDBStore) DeleteEducation(id primitive.ObjectID, index uint
 	return err
 }
 
-func (store *UserMongoDBStore) AddEducation(education *domain.Education, id primitive.ObjectID) (*domain.Education, error) {
+func (store *UserMongoDBStore) AddEducation(education *domain.Education, id primitive.ObjectID, ctx context.Context) (*domain.Education, error) {
+	span := tracer.StartSpanFromContext(ctx, "AddEducation")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, _ := store.filterOne(filter)
 	educationCurrent := user.Education
@@ -223,35 +250,44 @@ func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {
 	}
 }
 
-func (store *UserMongoDBStore) Get(id primitive.ObjectID) (*domain.User, error) {
-
+func (store *UserMongoDBStore) Get(id primitive.ObjectID, ctx context.Context) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "Get")
+	defer span.Finish()
 	filter := bson.M{"_id": id} //M je getovanje ali NE po redosledu kakav je u bazi
 	return store.filterOne(filter)
 }
 
-func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, error) {
+func (store *UserMongoDBStore) GetByUsername(username string, ctx context.Context) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetByUsername")
+	defer span.Finish()
 	filter := bson.M{"username": username}
 	return store.filterOne(filter)
 }
 
-func (store *UserMongoDBStore) GetByApiKey(apiKey string) (*domain.User, error) {
+func (store *UserMongoDBStore) GetByApiKey(apiKey string, ctx context.Context) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetByApiKey")
+	defer span.Finish()
 	filter := bson.M{"apiKey": apiKey}
 	return store.filterOne(filter)
 }
 
-func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
+func (store *UserMongoDBStore) GetAll(ctx context.Context) ([]*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)
 }
 
-func (store *UserMongoDBStore) GetPublicUsers() ([]*domain.User, error) {
-
+func (store *UserMongoDBStore) GetPublicUsers(ctx context.Context) ([]*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetPublicUsers")
+	defer span.Finish()
 	filter := bson.M{"isPublic": true}
 	return store.filter(filter)
 }
 
-func (store *UserMongoDBStore) Insert(User *domain.User) (error, *domain.User) {
-
+func (store *UserMongoDBStore) Insert(User *domain.User, ctx context.Context) (error, *domain.User) {
+	span := tracer.StartSpanFromContext(ctx, "RegisterUser")
+	defer span.Finish()
 	fmt.Print("*******************USLI SMO U STORE")
 	User.Skills = make([]domain.Skill, 0)
 	User.Interests = make([]string, 0)
@@ -338,11 +374,15 @@ func (store *UserMongoDBStore) filterOne(filter interface{}) (User *domain.User,
 	return
 }
 
-func (store *UserMongoDBStore) DeleteAll() {
+func (store *UserMongoDBStore) DeleteAll(ctx context.Context) {
+	span := tracer.StartSpanFromContext(ctx, "DeleteAll")
+	defer span.Finish()
 	store.users.DeleteMany(context.TODO(), bson.D{{}})
 }
 
-func (store *UserMongoDBStore) EditUser(user *domain.User) (*domain.User, error) {
+func (store *UserMongoDBStore) EditUser(user *domain.User, ctx context.Context) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "EditUser")
+	defer span.Finish()
 	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": user.Id},
@@ -359,7 +399,9 @@ func (store *UserMongoDBStore) EditUser(user *domain.User) (*domain.User, error)
 	return user, err
 }
 
-func (store *UserMongoDBStore) EditUsername(user *domain.User) (*domain.User, error) {
+func (store *UserMongoDBStore) EditUsername(user *domain.User, ctx context.Context) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "EditUsername")
+	defer span.Finish()
 	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": user.Id},
@@ -383,7 +425,9 @@ func RandStringRunes(n int) string {
 	return string(b)
 }
 
-func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
+func (store *UserMongoDBStore) SetApiKey(username string, ctx context.Context) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "SetApiKey")
+	defer span.Finish()
 	apiKey := RandStringRunes(10)
 	_, err := store.users.UpdateOne(
 		context.TODO(),
@@ -397,7 +441,9 @@ func (store *UserMongoDBStore) SetApiKey(username string) (string, error) {
 	return apiKey, err
 }
 
-func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID) error {
+func (store *UserMongoDBStore) SetPrivacy(private bool, userId primitive.ObjectID, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "SetPrivacy")
+	defer span.Finish()
 	_, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": userId},

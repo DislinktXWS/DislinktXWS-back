@@ -8,6 +8,8 @@ import (
 	events "github.com/dislinktxws-back/common/saga/insert_user"
 	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"github.com/dislinktxws-back/connection_service/application"
+	"github.com/dislinktxws-back/connection_service/tracer"
+	otgo "github.com/opentracing/opentracing-go"
 	"log"
 	"os"
 )
@@ -22,6 +24,7 @@ type ConnectionHandler struct {
 var (
 	InfoLogger  *log.Logger
 	ErrorLogger *log.Logger
+	trace       otgo.Tracer
 )
 
 func NewConnectionHandler(service *application.ConnectionsService, publisher saga.Publisher, subscriber saga.Subscriber) *ConnectionHandler {
@@ -35,6 +38,8 @@ func NewConnectionHandler(service *application.ConnectionsService, publisher sag
 }
 
 func init() {
+	trace, _ = tracer.Init("connection-service")
+	otgo.SetGlobalTracer(trace)
 	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -74,10 +79,11 @@ func (handler *ConnectionHandler) handle(command *events.InsertUserCommand) {
 }
 
 func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
 	fmt.Print("DESILA SE METODA")
+	span := tracer.StartSpanFromContextMetadata(ctx, "InsertConnection")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.InsertUserConnection(connection)
+	err := handler.service.InsertUserConnection(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot create connection!")
 		log.Println("Action: 15, Message: Cannot create connection!")
@@ -89,9 +95,10 @@ func (handler *ConnectionHandler) InsertUserConnection(ctx context.Context, requ
 }
 
 func (handler *ConnectionHandler) DeleteUserConnection(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "DeleteUser")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.DeleteUserConnection(connection)
+	err := handler.service.DeleteUserConnection(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 17, Cannot delete connection!")
 		log.Println("Action: 17, Cannot delete connection!")
@@ -102,6 +109,8 @@ func (handler *ConnectionHandler) DeleteUserConnection(ctx context.Context, requ
 	return &pb.InsertUserConnectionResponse{}, nil
 }
 func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb.InsertUserRequest) (*pb.InsertUserResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "InsertUser")
+	defer span.Finish()
 	user := request.User
 	err := handler.service.InsertNewUser(user)
 	if err != nil {
@@ -115,8 +124,9 @@ func (handler *ConnectionHandler) InsertNewUser(ctx context.Context, request *pb
 }
 
 func (handler *ConnectionHandler) GetAll(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
-
-	Connections := handler.service.GetAll(request.Id)
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetAll")
+	defer span.Finish()
+	Connections := handler.service.GetAll(request.Id, ctx)
 
 	response := &pb.GetAllConnectionsResponse{}
 
@@ -126,8 +136,9 @@ func (handler *ConnectionHandler) GetAll(ctx context.Context, request *pb.GetAll
 	return response, nil
 }
 func (handler *ConnectionHandler) GetBlockedUsers(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
-
-	Connections := handler.service.GetBlockedUsers(request.Id)
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetBlockedUsers")
+	defer span.Finish()
+	Connections := handler.service.GetBlockedUsers(request.Id, ctx)
 
 	response := &pb.GetAllConnectionsResponse{}
 
@@ -137,8 +148,9 @@ func (handler *ConnectionHandler) GetBlockedUsers(ctx context.Context, request *
 	return response, nil
 }
 func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
-
-	Connections := handler.service.GetAllConnectionRequests(request.Id)
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetConnectionRequests")
+	defer span.Finish()
+	Connections := handler.service.GetAllConnectionRequests(request.Id, ctx)
 
 	response := &pb.GetAllConnectionsResponse{}
 
@@ -149,8 +161,9 @@ func (handler *ConnectionHandler) GetConnectionRequests(ctx context.Context, req
 }
 
 func (handler *ConnectionHandler) GetUserRecommendations(ctx context.Context, request *pb.GetAllConnectionsRequest) (*pb.GetAllConnectionsResponse, error) {
-
-	Connections := handler.service.GetUserRecommendations(request.Id)
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetUserRecommendations")
+	defer span.Finish()
+	Connections := handler.service.GetUserRecommendations(request.Id, ctx)
 
 	response := &pb.GetAllConnectionsResponse{}
 
@@ -160,9 +173,10 @@ func (handler *ConnectionHandler) GetUserRecommendations(ctx context.Context, re
 	return response, nil
 }
 func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, request *pb.ConnectionStatusRequest) (*pb.ConnectionStatusResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetConnectionStatus")
+	defer span.Finish()
 	var enums int32
-	status := handler.service.GetConnectionStatus(request.Id1, request.Id2)
+	status := handler.service.GetConnectionStatus(request.Id1, request.Id2, ctx)
 	if status == "connected" {
 		enums = 0
 	}
@@ -185,9 +199,10 @@ func (handler *ConnectionHandler) GetConnectionStatus(ctx context.Context, reque
 	return response, nil
 }
 func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "InsertConnectionRequest")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.InsertConnectionRequest(connection)
+	err := handler.service.InsertConnectionRequest(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot create connection request!")
 		log.Println("Action: 15, Message: Cannot create connection request!")
@@ -199,9 +214,10 @@ func (handler *ConnectionHandler) InsertConnectionRequest(ctx context.Context, r
 }
 
 func (handler *ConnectionHandler) CancelConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "CancelConnectionRequest")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.CancelConnectionRequest(connection)
+	err := handler.service.CancelConnectionRequest(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 16, Message: Cannot cancel connection request!")
 		log.Println("Action: 16, Message: Cannot cancel connection request!")
@@ -213,8 +229,10 @@ func (handler *ConnectionHandler) CancelConnectionRequest(ctx context.Context, r
 }
 
 func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "BlockUser")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.BlockUser(connection)
+	err := handler.service.BlockUser(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Cannot block user!")
 		log.Println("Action: 4, Message: Cannot block user!")
@@ -226,9 +244,10 @@ func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.Ins
 }
 
 func (handler *ConnectionHandler) UnblockUser(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "UnblockUser")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.UnblockUser(connection)
+	err := handler.service.UnblockUser(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Cannot unblock user!")
 		log.Println("Action: 4, Message: Cannot unblock user!")
@@ -240,9 +259,10 @@ func (handler *ConnectionHandler) UnblockUser(ctx context.Context, request *pb.I
 }
 
 func (handler *ConnectionHandler) AcceptConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "AcceptConnection")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.AcceptUserConnection(connection)
+	err := handler.service.AcceptUserConnection(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot accept connection request!")
 		log.Println("Action: 15, Message: Cannot accept connection request!")
@@ -253,9 +273,10 @@ func (handler *ConnectionHandler) AcceptConnectionRequest(ctx context.Context, r
 }
 
 func (handler *ConnectionHandler) DeclineConnectionRequest(ctx context.Context, request *pb.InsertUserConnectionRequest) (*pb.InsertUserConnectionResponse, error) {
-
+	span := tracer.StartSpanFromContextMetadata(ctx, "DeclineConnection")
+	defer span.Finish()
 	connection := mapNewUserConnection(request.Connection)
-	err := handler.service.DeclineUserConnection(connection)
+	err := handler.service.DeclineUserConnection(connection, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 15, Message: Cannot decline connection request!")
 		log.Println("Action: 15, Message: Cannot decline connection request!")

@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	"github.com/dislinktxws-back/post_service/domain"
+	"github.com/dislinktxws-back/post_service/tracer"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,7 +26,9 @@ func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
 	}
 }
 
-func (store *PostMongoDBStore) CommentPost(comment *domain.Comment) error {
+func (store *PostMongoDBStore) CommentPost(comment *domain.Comment, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "CommentPost")
+	defer span.Finish()
 	objectId, err := primitive.ObjectIDFromHex(comment.PostId)
 	if err != nil {
 		return err
@@ -40,7 +43,9 @@ func (store *PostMongoDBStore) CommentPost(comment *domain.Comment) error {
 	return nil
 }
 
-func (store *PostMongoDBStore) LikePost(id primitive.ObjectID, username string) {
+func (store *PostMongoDBStore) LikePost(id primitive.ObjectID, username string, ctx context.Context) {
+	span := tracer.StartSpanFromContext(ctx, "LikePost")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	removed := false
 	post, _ := store.filterOne(filter)
@@ -66,7 +71,9 @@ func (store *PostMongoDBStore) LikePost(id primitive.ObjectID, username string) 
 		{"$set", bson.D{{"likes", currentLikes}}}})
 }
 
-func (store *PostMongoDBStore) DislikePost(id primitive.ObjectID, username string) {
+func (store *PostMongoDBStore) DislikePost(id primitive.ObjectID, username string, ctx context.Context) {
+	span := tracer.StartSpanFromContext(ctx, "DislikePost")
+	defer span.Finish()
 	filter := bson.M{"_id": id}
 	removed := false
 	post, _ := store.filterOne(filter)
@@ -92,17 +99,23 @@ func (store *PostMongoDBStore) DislikePost(id primitive.ObjectID, username strin
 		{"$set", bson.D{{"likes", currentLikes}}}})
 }
 
-func (store *PostMongoDBStore) Get(id primitive.ObjectID) (*domain.Post, error) {
+func (store *PostMongoDBStore) Get(id primitive.ObjectID, ctx context.Context) (*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "Get")
+	defer span.Finish()
 	filter := bson.M{"_id": id} //M je getovanje ali NE po redosledu kakav je u bazi
 	return store.filterOne(filter)
 }
 
-func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
+func (store *PostMongoDBStore) GetAll(ctx context.Context) ([]*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	return store.filter(filter)
 }
 
-func (store *PostMongoDBStore) GetPostsByUser(user string) ([]*domain.Post, error) {
+func (store *PostMongoDBStore) GetPostsByUser(user string, ctx context.Context) ([]*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetPostsByUser")
+	defer span.Finish()
 	filter := bson.M{"user": user}
 	return store.filter(filter)
 }
@@ -123,7 +136,9 @@ func (store *PostMongoDBStore) filterOne(filter interface{}) (Post *domain.Post,
 	return
 }
 
-func (store *PostMongoDBStore) Insert(Post *domain.Post) error {
+func (store *PostMongoDBStore) Insert(Post *domain.Post, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "CreatePost")
+	defer span.Finish()
 	result, err := store.posts.InsertOne(context.TODO(), Post)
 	if err != nil {
 		return err
@@ -132,7 +147,9 @@ func (store *PostMongoDBStore) Insert(Post *domain.Post) error {
 	return nil
 }
 
-func (store *PostMongoDBStore) DeleteAll() {
+func (store *PostMongoDBStore) DeleteAll(ctx context.Context) {
+	span := tracer.StartSpanFromContext(ctx, "DeleteAll")
+	defer span.Finish()
 	store.posts.DeleteMany(context.TODO(), bson.D{{}})
 }
 

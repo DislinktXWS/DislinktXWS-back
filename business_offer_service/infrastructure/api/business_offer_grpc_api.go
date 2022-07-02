@@ -3,7 +3,9 @@ package api
 import (
 	"context"
 	"github.com/dislinktxws-back/business_offer_service/application"
+	"github.com/dislinktxws-back/business_offer_service/tracer"
 	pb "github.com/dislinktxws-back/common/proto/business_offer_service"
+	otgo "github.com/opentracing/opentracing-go"
 	"log"
 	"os"
 )
@@ -16,6 +18,7 @@ type BusinessOfferHandler struct {
 var (
 	InfoLogger  *log.Logger
 	ErrorLogger *log.Logger
+	trace       otgo.Tracer
 )
 
 func NewBusinessOfferHandler(service *application.BusinessOfferService) *BusinessOfferHandler {
@@ -25,6 +28,8 @@ func NewBusinessOfferHandler(service *application.BusinessOfferService) *Busines
 }
 
 func init() {
+	trace, _ = tracer.Init("business-offer-service")
+	otgo.SetGlobalTracer(trace)
 	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -39,8 +44,10 @@ func init() {
 }
 
 func (handler *BusinessOfferHandler) InsertBusinessOffer(ctx context.Context, request *pb.InsertOfferRequest) (*pb.InsertOfferResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "InsertBusinessOffer")
+	defer span.Finish()
 	businessOffer := mapNewBusinessOffer(request.Offer)
-	err, offerId := handler.service.InsertBusinessOffer(businessOffer)
+	err, offerId := handler.service.InsertBusinessOffer(businessOffer, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 25, Message: Cannot create business offer!")
 		log.Println("Action: 25, Message: Cannot create business offer!")
@@ -52,8 +59,10 @@ func (handler *BusinessOfferHandler) InsertBusinessOffer(ctx context.Context, re
 }
 
 func (handler *BusinessOfferHandler) InsertSkill(ctx context.Context, request *pb.InsertSkillsRequest) (*pb.InsertSkillsResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "InsertSKill")
+	defer span.Finish()
 	skill := mapSkillFromOffer(request.Skill)
-	err := handler.service.InsertSkill(skill)
+	err := handler.service.InsertSkill(skill, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 25, Message: Cannot create new skill!")
 		log.Println("Action: 25, Message: Cannot create new skill!")
@@ -65,7 +74,9 @@ func (handler *BusinessOfferHandler) InsertSkill(ctx context.Context, request *p
 }
 
 func (handler *BusinessOfferHandler) GetBusinessOffers(ctx context.Context, request *pb.GetAllOffersRequest) (*pb.GetAllOffersResponse, error) {
-	offers, err := handler.service.GetBusinessOffers()
+	span := tracer.StartSpanFromContextMetadata(ctx, "GetBusinessOffers")
+	defer span.Finish()
+	offers, err := handler.service.GetBusinessOffers(ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 2, Message: Business offers not found")
 		log.Println("Action: 2, Message: Business offers not found")
@@ -76,7 +87,7 @@ func (handler *BusinessOfferHandler) GetBusinessOffers(ctx context.Context, requ
 	}
 
 	for _, offer := range offers {
-		skills, err1 := handler.service.GetOfferSkills(offer.Id)
+		skills, err1 := handler.service.GetOfferSkills(offer.Id, ctx)
 		if err1 != nil {
 			return nil, err1
 		}

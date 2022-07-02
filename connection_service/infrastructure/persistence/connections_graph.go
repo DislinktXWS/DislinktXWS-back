@@ -1,7 +1,9 @@
 package persistence
 
 import (
+	"context"
 	"github.com/dislinktxws-back/connection_service/domain"
+	"github.com/dislinktxws-back/connection_service/tracer"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 )
 
@@ -20,7 +22,9 @@ func (store *ConnectionsDBGraph) Get(connection *domain.UserConnection) bool {
 	return true
 }
 
-func (store *ConnectionsDBGraph) GetConnectionStatus(user1 string, user2 string) string {
+func (store *ConnectionsDBGraph) GetConnectionStatus(user1 string, user2 string, ctx context.Context) string {
+	span := tracer.StartSpanFromContext(ctx, "GetStatus")
+	defer span.Finish()
 	var session = *store.session
 
 	connected, _ := checkIfConnectionExists(session, user1, user2, "CONNECTED")
@@ -46,25 +50,33 @@ func (store *ConnectionsDBGraph) GetConnectionStatus(user1 string, user2 string)
 
 	return "none"
 }
-func (store *ConnectionsDBGraph) GetAll(user string) []string {
+func (store *ConnectionsDBGraph) GetAll(user string, ctx context.Context) []string {
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
 	var session = *store.session
 	connections, _ := getUserConnections(session, user)
 	return connections
 }
 
-func (store *ConnectionsDBGraph) GetBlockedUsers(user string) []string {
+func (store *ConnectionsDBGraph) GetBlockedUsers(user string, ctx context.Context) []string {
+	span := tracer.StartSpanFromContext(ctx, "GetBlockedUsers")
+	defer span.Finish()
 	var session = *store.session
 	blocked, _ := getBlockedUsersTxFunc(session, user)
 	return blocked
 }
 
-func (store *ConnectionsDBGraph) GetConnectionRequests(user string) []string {
+func (store *ConnectionsDBGraph) GetConnectionRequests(user string, ctx context.Context) []string {
+	span := tracer.StartSpanFromContext(ctx, "GetConnectionRequests")
+	defer span.Finish()
 	var session = *store.session
 	blocked, _ := getConnectionRequestsTxFunc(session, user)
 	return blocked
 }
 
-func (store *ConnectionsDBGraph) GetUserRecommendations(user string) []string {
+func (store *ConnectionsDBGraph) GetUserRecommendations(user string, ctx context.Context) []string {
+	span := tracer.StartSpanFromContext(ctx, "GetRecommendations")
+	defer span.Finish()
 	var session = *store.session
 	friendsOfFriends, _ := getFriendsOfFriendsTxFunc(session, user)
 	randomUsers, _ := getRandomUsersTxFunc(session, user)
@@ -89,7 +101,9 @@ func (store *ConnectionsDBGraph) InsertNewUser(user string) error {
 	return err
 }
 
-func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "CreateConnection")
+	defer span.Finish()
 	var session = *store.session
 	_, e1 := session.WriteTransaction(connectUsersTxFunc(connection.Connecting, connection.Connected))
 	if e1 != nil {
@@ -99,7 +113,9 @@ func (store *ConnectionsDBGraph) InsertUserConnection(connection *domain.UserCon
 	return e2
 }
 
-func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeleteConnection")
+	defer span.Finish()
 	var session = *store.session
 	_, e1 := session.WriteTransaction(disconnectUsersTxFunc(connection.Connecting, connection.Connected))
 	if e1 != nil {
@@ -109,19 +125,25 @@ func (store *ConnectionsDBGraph) DeleteUserConnection(connection *domain.UserCon
 	return e2
 }
 
-func (store *ConnectionsDBGraph) InsertConnectionRequest(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) InsertConnectionRequest(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "NewConnectionRequest")
+	defer span.Finish()
 	var session = *store.session
 	_, err := session.WriteTransaction(requestConnectionTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
 
-func (store *ConnectionsDBGraph) CancelConnectionRequest(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) CancelConnectionRequest(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "CancelRequest")
+	defer span.Finish()
 	var session = *store.session
 	_, err := session.WriteTransaction(cancelConnectionRequestTxFunc(connection.Connecting, connection.Connected))
 	return err
 }
 
-func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "AcceptConnection")
+	defer span.Finish()
 	var session = *store.session
 	_, er := session.WriteTransaction(deleteConnectionRequestTxFunc(connection.Connecting, connection.Connected))
 	if er != nil {
@@ -134,12 +156,16 @@ func (store *ConnectionsDBGraph) AcceptUserConnectionRequest(connection *domain.
 	_, e := session.WriteTransaction(connectUsersTxFunc(connection.Connected, connection.Connecting))
 	return e
 }
-func (store *ConnectionsDBGraph) DeclineUserConnectionRequest(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) DeclineUserConnectionRequest(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "DeclineConnection")
+	defer span.Finish()
 	var session = *store.session
 	_, er := session.WriteTransaction(deleteConnectionRequestTxFunc(connection.Connecting, connection.Connected))
 	return er
 }
-func (store *ConnectionsDBGraph) BlockUser(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) BlockUser(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "BlockUser")
+	defer span.Finish()
 	var session = *store.session
 	_, err := session.WriteTransaction(blockUserTxFunc(connection.Connecting, connection.Connected))
 	if err != nil {
@@ -153,7 +179,9 @@ func (store *ConnectionsDBGraph) BlockUser(connection *domain.UserConnection) er
 
 	return error
 }
-func (store *ConnectionsDBGraph) UnblockUser(connection *domain.UserConnection) error {
+func (store *ConnectionsDBGraph) UnblockUser(connection *domain.UserConnection, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "UnblockUser")
+	defer span.Finish()
 	var session = *store.session
 	_, err := session.WriteTransaction(unblockUserTxFunc(connection.Connecting, connection.Connected))
 	return err

@@ -16,19 +16,19 @@ import (
 
 // Init returns an instance of Jaeger Tracer.
 func Init(service string) (opentracing.Tracer, io.Closer) {
-	/*cfg, err := config.FromEnv()
+	cfg, err := config.FromEnv()
 	if err != nil {
 		fmt.Println(err.Error())
 
 		return nil, nil
 	}
 
-	cfg.ServiceName = "users"
+	cfg.ServiceName = service
 	cfg.Sampler.Type = jaeger.SamplerTypeConst
 	cfg.Sampler.Param = 1
-	cfg.Reporter.LogSpans = true*/
+	cfg.Reporter.LogSpans = true
 	//Without docker, easier to test
-	cfg := &config.Configuration{
+	/*cfg := &config.Configuration{
 		ServiceName: service,
 
 		// "const" sampler is a binary sampling strategy: 0=never sample, 1=always sample.
@@ -41,7 +41,7 @@ func Init(service string) (opentracing.Tracer, io.Closer) {
 		Reporter: &config.ReporterConfig{
 			LogSpans: true,
 		},
-	}
+	}*/
 
 	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {

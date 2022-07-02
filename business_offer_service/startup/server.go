@@ -8,16 +8,23 @@ import (
 	"github.com/dislinktxws-back/business_offer_service/infrastructure/api"
 	"github.com/dislinktxws-back/business_offer_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/business_offer_service/startup/config"
+	"github.com/dislinktxws-back/business_offer_service/tracer"
 	business_offer_service "github.com/dislinktxws-back/common/proto/business_offer_service"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	otgo "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"io"
 	"log"
 	"net"
 )
 
 type Server struct {
 	config *config.Config
+	tracer otgo.Tracer
+	closer io.Closer
 }
 
 var (
@@ -26,8 +33,12 @@ var (
 )
 
 func NewServer(config *config.Config) *Server {
+	tracer, closer := tracer.Init("business-offer-service")
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config: config,
+		tracer: tracer,
+		closer: closer,
 	}
 }
 
@@ -90,7 +101,12 @@ func (server *Server) startGrpcServer(businessOfferHandler *api.BusinessOfferHan
 	}
 
 	grpcServer := grpc.NewServer(
-	//grpc.Creds(tlsCredentials),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_opentracing.UnaryServerInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)),
+		//grpc.Creds(tlsCredentials),
 	)
 
 	business_offer_service.RegisterBusinessOffersServiceServer(grpcServer, businessOfferHandler)
