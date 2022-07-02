@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type UserRegistration struct {
 	Id                string
 	Name              string
@@ -19,6 +21,16 @@ type UserBasicInfo struct {
 	Name     string
 	Surname  string
 	Username string
+}
+
+type ConversationInfo struct {
+	UserId                 string
+	Username               string
+	FirstName              string
+	LastName               string
+	LastMessageDate        time.Time
+	LastMessageDateString  string
+	NumberOfUnreadMessages int32
 }
 
 type Post struct {
@@ -68,4 +80,18 @@ type BusinessOffer struct {
 	Position    string
 	Description string
 	Industry    string
+}
+
+type Notification struct {
+	Id      string
+	From    string //id
+	To      string //id
+	Date    string
+	Content string
+}
+
+type NotificationsSettings struct {
+	ChatNotificatons         bool
+	ConnectionsNotifications bool
+	PostNotifications        bool
 }

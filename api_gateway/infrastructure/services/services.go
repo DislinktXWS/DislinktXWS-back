@@ -4,6 +4,8 @@ import (
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	business_offer "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connection_service "github.com/dislinktxws-back/common/proto/connection_service"
+	notifications_service "github.com/dislinktxws-back/common/proto/notifications_service"
+	message_service "github.com/dislinktxws-back/common/proto/message_service"
 	post_service "github.com/dislinktxws-back/common/proto/post_service"
 	user_service "github.com/dislinktxws-back/common/proto/user_service"
 	"log"
@@ -36,6 +38,14 @@ func NewPostClient(address string) post_service.PostServiceClient {
 	return post_service.NewPostServiceClient(connection)
 }
 
+func NewMessageClient(address string) message_service.MessageServiceClient {
+	connection, err := getClientConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
+	}
+	return message_service.NewMessageServiceClient(connection)
+}
+
 func NewConnectionClient(address string) connection_service.ConnectionsServiceClient {
 	connection, err := getClientConnection(address)
 	if err != nil {
@@ -50,6 +60,14 @@ func NewBusinessOfferClient(address string) business_offer.BusinessOffersService
 		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
 	}
 	return business_offer.NewBusinessOffersServiceClient(connection)
+}
+
+func NewNotificationClient(address string) notifications_service.NotificationsServiceClient {
+	connection, err := getClientConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Notification service: %v", err)
+	}
+	return notifications_service.NewNotificationsServiceClient(connection)
 }
 
 func getClientConnection(address string) (*grpc.ClientConn, error) {

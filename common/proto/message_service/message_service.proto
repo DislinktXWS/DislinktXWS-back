@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option go_package = "module/common/messages";
+
+package messages;
+
+import "google/api/annotations.proto";
+
+
+service MessageService{
+
+  rpc CreateConversation(CreateConversationRequest) returns (EmptyResponse) {
+    option (google.api.http) = {
+      post: "/messages/conversation"
+      body: "participants"
+    };
+  }
+
+  rpc GetConversation(GetConversationRequest) returns(GetConversationResponse) {
+    option (google.api.http) = {
+      get: "/messages/{id1}/{id2}"
+    };
+  }
+  rpc GetAllConversations(GetAllConversationsRequest) returns(GetAllConversationsResponse) {
+    option (google.api.http) = {
+      get: "/messages/{id}"
+    };
+  }
+  rpc AddMessage(AddMessageRequest) returns (EmptyResponse) {
+    option (google.api.http) = {
+      post: "/messages/message"
+      body: "Message"
+    };
+  }
+}
+
+message Participants {
+  string sender = 1;
+  string receiver = 2;
+}
+
+message CreateConversationRequest {
+  Participants participants = 1;
+}
+
+message EmptyResponse {
+}
+
+message GetConversationRequest {
+  string id1 = 1;
+  string id2 = 2;
+}
+
+message Message {
+  string sender=1;
+  string receiver=2;
+  string content=3;
+  string date=4;
+  bool isRead=5;
+}
+
+message GetConversationResponse {
+  string id=1;
+  string firstParticipator=2;
+  string secondParticipator=3;
+  repeated Message messages = 4;
+}
+
+
+message GetAllConversationsRequest {
+  string id = 1;
+}
+
+message GetAllConversationsResponse {
+  repeated GetConversationResponse conversations = 1;
+}
+
+message AddMessageRequest{
+  Message Message =1;
+}
+

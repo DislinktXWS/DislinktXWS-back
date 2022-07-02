@@ -125,3 +125,23 @@ func (service *UserService) SearchProfiles(search string, ctx context.Context) (
 func (service *UserService) SetPrivacy(private bool, id primitive.ObjectID, ctx context.Context) error {
 	return service.store.SetPrivacy(private, id, ctx)
 }
+
+func (service *UserService) SetChatNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetChatNotifications(objectId)
+}
+
+func (service *UserService) SetPostNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetPostNotifications(objectId)
+}
+
+func (service *UserService) SetConnectionsNotifications(id string) error {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.SetConnectionsNotifications(objectId)
+}
+
+func (service *UserService) GetNotificationsSettings(id string) (domain.NotificationsSettingsDTO, error) {
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	return service.store.GetNotificationsSettings(objectId)
+}

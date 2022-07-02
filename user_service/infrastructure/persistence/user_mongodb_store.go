@@ -24,8 +24,69 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
-func (store *UserMongoDBStore) SearchProfiles(search string, ctx context.Context) (*[]domain.User, error) {
-	span := tracer.StartSpanFromContext(ctx, "SearchProfiles")
+
+func (store *UserMongoDBStore) GetNotificationsSettings(id primitive.ObjectID) (domain.NotificationsSettingsDTO, error) {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	return domain.NotificationsSettingsDTO{
+		ChatNotifications:        user.ChatNotifications,
+		ConnectionsNotifications: user.ConnectionsNotifications,
+		PostNotifications:        user.PostNotifications,
+	}, err
+}
+
+func (store *UserMongoDBStore) SetChatNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"chatNotifications", !user.ChatNotifications}}},
+		},
+	)
+
+	return err2
+}
+
+func (store *UserMongoDBStore) SetPostNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"postNotifications", !user.PostNotifications}}},
+		},
+	)
+
+	return err2
+}
+
+func (store *UserMongoDBStore) SetConnectionsNotifications(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("USER NOT FOUND")
+	}
+	_, err2 := store.users.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": user.Id},
+		bson.D{
+			{"$set", bson.D{{"connectionsNotifications", !user.ConnectionsNotifications}}},
+		},
+	)
+	return err2
+}
+
+func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
+  span := tracer.StartSpanFromContext(ctx, "SearchProfiles")
 	defer span.Finish()
 	filter := bson.M{
 		"$or": []bson.M{
@@ -71,6 +132,8 @@ func (store *UserMongoDBStore) GetEducation(id primitive.ObjectID, ctx context.C
 	defer span.Finish()
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
+	fmt.Println("ID u get education metodi")
+	fmt.Println(id)
 	return &user.Education, err
 }
 

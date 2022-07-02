@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/post_service"
 	"github.com/dislinktxws-back/post_service/application"
 	"github.com/dislinktxws-back/post_service/tracer"
@@ -105,6 +106,7 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	span := tracer.StartSpanFromContextMetadata(ctx, "Get")
 	defer span.Finish()
 	id := request.Id
+	fmt.Println("USLO U GETPOSTBYID")
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 1, Message: ID is not correct!")

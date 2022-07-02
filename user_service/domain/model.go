@@ -5,22 +5,25 @@ import (
 )
 
 type User struct {
-	Id                primitive.ObjectID `bson:"_id,omitempty"`
-	Name              string             `bson:"name"`
-	Surname           string             `bson:"surname"`
-	Username          string             `bson:"username"`
-	DateOfBirth       string             `bson:"dateOfBirth"`
-	Gender            string             `bson:"gender"`
-	Email             string             `bson:"email"`
-	Phone             string             `bson:"phone"`
-	Biography         string             `bson:"biography"`
-	IsPublic          bool               `bson:"isPublic"`
-	VerificationToken string             `bson:"verificationToken"`
-	Education         []Education        `bson:"education"`
-	Experience        []Experience       `bson:"experience"`
-	Interests         []string           `bson:"interests"`
-	Skills            []Skill            `bson:"skills"`
-	ApiKey            string             `bson:"apiKey"`
+	Id                       primitive.ObjectID `bson:"_id,omitempty"`
+	Name                     string             `bson:"name"`
+	Surname                  string             `bson:"surname"`
+	Username                 string             `bson:"username"`
+	DateOfBirth              string             `bson:"dateOfBirth"`
+	Gender                   string             `bson:"gender"`
+	Email                    string             `bson:"email"`
+	Phone                    string             `bson:"phone"`
+	Biography                string             `bson:"biography"`
+	IsPublic                 bool               `bson:"isPublic"`
+	VerificationToken        string             `bson:"verificationToken"`
+	Education                []Education        `bson:"education"`
+	Experience               []Experience       `bson:"experience"`
+	Interests                []string           `bson:"interests"`
+	Skills                   []Skill            `bson:"skills"`
+	ApiKey                   string             `bson:"apiKey"`
+	ChatNotifications        bool               `bson:"chatNotifications"`
+	ConnectionsNotifications bool               `bson:"connectionsNotifications"`
+	PostNotifications        bool               `bson:"postNotifications"`
 }
 
 type Education struct {
@@ -77,4 +80,10 @@ func (proficiency SkillProficiency) String() string {
 type ApiKeyDto struct {
 	Username string `bson:"username"`
 	ApiKey   string `bson:"apiKey"`
+}
+
+type NotificationsSettingsDTO struct {
+	ChatNotifications        bool
+	ConnectionsNotifications bool
+	PostNotifications        bool
 }

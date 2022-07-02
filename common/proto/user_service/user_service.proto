@@ -145,6 +145,30 @@ service UserService{
                         put: "/users/user/apiKey/{username}"
                 };
         }
+
+        rpc SetChatNotifications(SetChatNotificationsRequest) returns (SetChatNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/chatNotifications/{id}"
+                };
+        }
+
+        rpc SetPostNotifications(SetPostNotificationsRequest) returns (SetPostNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/postNotifications/{id}"
+                };
+        }
+
+        rpc SetConnectionsNotifications(SetConnectionsNotificationsRequest) returns (SetConnectionsNotificationsResponse){
+                option(google.api.http) = {
+                        put: "/users/user/connectionsNotifications/{id}"
+                };
+        }
+
+        rpc GetNotificationsSettings(GetNotificationsSettingsRequest) returns (GetNotificationsSettingsResponse){
+                option(google.api.http) = {
+                        get: "/users/user/notificationsSettings/{id}"
+                };
+        }
 }
 
 message GetRequest {
@@ -279,9 +303,41 @@ message SetApiKeyResponse{
 }
 
 message AddInterestResponse{
+}
+
+message SetChatNotificationsRequest{
+        string id = 1;
+}
+
+message SetChatNotificationsResponse{
 
 }
 
+message SetPostNotificationsRequest{
+        string id = 1;
+}
+
+message SetPostNotificationsResponse{
+
+}
+
+message SetConnectionsNotificationsRequest{
+        string id = 1;
+}
+
+message SetConnectionsNotificationsResponse{
+
+}
+
+message GetNotificationsSettingsRequest{
+        string id = 1;
+}
+
+message GetNotificationsSettingsResponse{
+        bool chatNotifications = 1;
+        bool connectionsNotifications = 2;
+        bool postNotifications = 3;
+}
 
 message DeleteInterestRequest{
         string id = 1;

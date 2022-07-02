@@ -6,8 +6,17 @@ import (
 	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
+	"github.com/gorilla/handlers"
+	messageGw "github.com/dislinktxws-back/common/proto/message_service"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
+	"io/ioutil"
+	"log"
 	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
+	notificationsGW "github.com/dislinktxws-back/common/proto/notifications_service"
 	postGw "github.com/dislinktxws-back/common/proto/post_service"
 	userGw "github.com/dislinktxws-back/common/proto/user_service"
 	"github.com/gorilla/handlers"
@@ -47,14 +56,15 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err = userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
-
 	if err != nil {
 		panic(err)
 	}
@@ -67,9 +77,19 @@ func (server *Server) initHandlers() {
 
 	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
+
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
+
+	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
+	err = notificationsGW.RegisterNotificationsServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationsEndpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func (server *Server) initCustomHandlers() {
@@ -77,7 +97,9 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
+	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
 	authenticationEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
+	//messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint, authenticationEndpoint)
 	registrationHandler.Init(server.mux)
@@ -111,6 +133,14 @@ func (server *Server) initCustomHandlers() {
 
 	userFeedHandler := api.NewUserFeedHandler(connectionEndpoint, postEndpoint)
 	userFeedHandler.Init(server.mux)
+
+	notificationHandler := api.NewNotificationHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
+	notificationHandler.Init(server.mux)
+
+	postNotificationHandler := api.NewPostNotificationsHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
+	postNotificationHandler.Init(server.mux)
+	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
+	//conversationInfoHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

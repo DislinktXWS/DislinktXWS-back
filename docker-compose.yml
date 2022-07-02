@@ -33,9 +33,52 @@ services:
       AUTHENTICATION_SERVICE_PORT: ${AUTHENTICATION_SERVICE_PORT}
       BUSINESS_OFFER_SERVICE_HOST: ${BUSINESS_OFFER_SERVICE_HOST}
       BUSINESS_OFFER_SERVICE_PORT: ${BUSINESS_OFFER_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
+      MESSAGE_SERVICE_HOST: ${MESSAGE_SERVICE_HOST}
+      MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
     networks:
       - network
 
+  post_service:
+    image: post_service
+    container_name: post_service
+    build:
+      context: .
+      dockerfile: ./post_service/Dockerfile
+    volumes:
+      - type: bind
+        source: ./post_service/logs/info.log
+        target: /root/info.log
+      - type: bind
+        source: ./post_service/logs/error.log
+        target: /root/error.log
+      - type: bind
+        source: ./post_service/post-service.crt
+        target: /root/postservice.crt
+      - type: bind
+        source: ./post_service/post-service.key
+        target: /root/postservice.key
+      - type: bind
+        source: ./post_service/post-service.csr
+        target: /root/postservice.csr
+    restart: on-failure
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+      POST_DB_HOST: ${POST_DB_HOST}
+      POST_DB_PORT: ${POST_DB_PORT}
+      JAEGER_SERVICE_NAME: post-service
+      JAEGER_AGENT_HOST: jaeger
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
+    depends_on:
+      - post_db
+      - jaeger
+    networks:
+      - network
+      - public
   user_service:
     image: user_service
     container_name: user_service
@@ -87,47 +130,24 @@ services:
       - public
       - network
 
-  post_service:
-    image: post_service
-    container_name: post_service
+  message_service:
+    image: message_service
+    container_name: message_service
     build:
       context: .
-      dockerfile: ./post_service/Dockerfile
-    volumes:
-      - type: bind
-        source: ./post_service/logs/info.log
-        target: /root/info.log
-      - type: bind
-        source: ./post_service/logs/error.log
-        target: /root/error.log
-      - type: bind
-        source: ./post_service/post-service.crt
-        target: /root/postservice.crt
-      - type: bind
-        source: ./post_service/post-service.key
-        target: /root/postservice.key
-      - type: bind
-        source: ./post_service/post-service.csr
-        target: /root/postservice.csr
+      dockerfile: ./message_service/Dockerfile
     restart: on-failure
     logging:
       driver: fluentd
       options:
         fluentd-address: 127.0.0.1:24224
     environment:
-      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
-      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
-      POST_DB_HOST: ${POST_DB_HOST}
-      POST_DB_PORT: ${POST_DB_PORT}
-      JAEGER_SERVICE_NAME: post-service
-      JAEGER_AGENT_HOST: jaeger
-      JAEGER_AGENT_PORT: 6831
-      JAEGER_SAMPLER_MANAGER_HOST_PORT: jaeger:5778
-      JAEGER_SAMPLER_TYPE: const
-      JAEGER_SAMPLER_PARAM: 1
+      MESSAGE_SERVICE_HOST: ${MESSAGE_SERVICE_HOST}
+      MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
+      MESSAGE_DB_HOST: ${MESSAGE_DB_HOST}
+      MESSAGE_DB_PORT: ${MESSAGE_DB_PORT}
     depends_on:
-      - post_db
-      - jaeger
+      - mess_db
     networks:
       - network
       - public
@@ -284,6 +304,23 @@ services:
       - network
       - public
 
+  notifications_service:
+    image: notifications_service
+    container_name: notifications_service
+    build:
+      context: .
+      dockerfile: ./notifications_service/Dockerfile
+    restart: on-failure
+    environment:
+      NOTIFICATIONS_SERVICE_HOST: ${NOTIFICATIONS_SERVICE_HOST}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+      NOTIFICATIONS_DB_HOST: ${NOTIFICATIONS_DB_HOST}
+      NOTIFICATIONS_DB_PORT: ${NOTIFICATIONS_DB_PORT}
+    depends_on:
+      - notifications_db
+    networks:
+      - network
+
   user_db:
     image: mongo
     container_name: user_db
@@ -294,6 +331,13 @@ services:
   post_db:
     image: mongo
     container_name: post_db
+    restart: on-failure
+    networks:
+      - network
+
+  mess_db:
+    image: mongo
+    container_name: mess_db
     restart: on-failure
     networks:
       - network
@@ -328,6 +372,13 @@ services:
     environment:
       - NEO4J_AUTH=none
       - NEO4J_dbms_memory_pagecache_size=512M
+
+  notifications_db:
+    image: mongo
+    container_name: notifications_db
+    restart: on-failure
+    networks:
+      - network
 
   nats:
     image: nats

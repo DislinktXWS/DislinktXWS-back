@@ -77,6 +77,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	span := tracer.StartSpanFromContextMetadata(ctx, "Get")
 	defer span.Finish()
 	id := request.Id
+	//fmt.Println("DOBAVLJANJE INFORMACIJA O SENDERU")
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		ErrorLogger.Println("Action: 1, Message: ID is not correct!")
@@ -447,4 +448,31 @@ func (handler *UserHandler) SearchProfiles(ctx context.Context, request *pb.Sear
 		response.Users = append(response.Users, current)
 	}
 	return response, nil
+}
+
+func (handler *UserHandler) SetChatNotifications(ctx context.Context, request *pb.SetChatNotificationsRequest) (*pb.SetChatNotificationsResponse, error) {
+	handler.service.SetChatNotifications(request.Id)
+	return &pb.SetChatNotificationsResponse{}, nil
+}
+
+func (handler *UserHandler) SetPostNotifications(ctx context.Context, request *pb.SetPostNotificationsRequest) (*pb.SetPostNotificationsResponse, error) {
+	handler.service.SetPostNotifications(request.Id)
+	return &pb.SetPostNotificationsResponse{}, nil
+}
+
+func (handler *UserHandler) SetConnectionsNotifications(ctx context.Context, request *pb.SetConnectionsNotificationsRequest) (*pb.SetConnectionsNotificationsResponse, error) {
+	handler.service.SetConnectionsNotifications(request.Id)
+	return &pb.SetConnectionsNotificationsResponse{}, nil
+}
+
+func (handler *UserHandler) GetNotificationsSettings(ctx context.Context, request *pb.GetNotificationsSettingsRequest) (*pb.GetNotificationsSettingsResponse, error) {
+	fmt.Println("ULAZI U GET NOTIF SETTING")
+	notificationSettings, _ := handler.service.GetNotificationsSettings(request.Id)
+	fmt.Println("IZASLO IZ GET NOTIF SETTING")
+	fmt.Println(notificationSettings)
+	return &pb.GetNotificationsSettingsResponse{
+		ChatNotifications:        notificationSettings.ChatNotifications,
+		ConnectionsNotifications: notificationSettings.ConnectionsNotifications,
+		PostNotifications:        notificationSettings.PostNotifications,
+	}, nil
 }
