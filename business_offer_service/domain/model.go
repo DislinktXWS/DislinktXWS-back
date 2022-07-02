@@ -47,3 +47,8 @@ func (proficiency SkillProficiency) String() string {
 
 	return "unknown"
 }
+
+type Recommend struct {
+	Skills   []string
+	Industry []string
+}

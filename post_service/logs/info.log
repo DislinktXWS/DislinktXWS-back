@@ -65,3 +65,10 @@ INFO: 2022/07/01 22:01:40 post_grpc_api.go:53: Action: 10, Message: User 62bf2cc
 INFO: 2022/07/01 22:06:24 post_grpc_api.go:53: Action: 10, Message: User 62bf2cc57fdd165d9a141531 liked post with id 62bf334703341f59c6fc0906
 INFO: 2022/07/01 22:06:53 post_grpc_api.go:132: Action: 12, Message: User 62bf2cc57fdd165d9a141531 created a new post.
 INFO: 2022/07/01 22:09:28 post_grpc_api.go:53: Action: 10, Message: User 62bf2d1a7fdd165d9a141532 liked post with id 62bf3a41b67398debd7bcaf0
+INFO: 2022/07/01 22:55:34 post_grpc_api.go:132: Action: 12, Message: User 62bf7aaa6f7b559c0357fa35 created a new post.
+INFO: 2022/07/01 22:55:40 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/01 22:56:27 post_grpc_api.go:53: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/01 23:02:23 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/01 23:02:25 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/01 23:02:43 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/01 23:03:06 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0

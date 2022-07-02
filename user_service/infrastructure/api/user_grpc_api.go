@@ -332,6 +332,8 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 }
 
 func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkillsRequest) (*pb.GetSkillsResponse, error) {
+	fmt.Println("USLO U GETSKILLS")
+	fmt.Println("ID KORISNIKA: " + request.Id)
 	id, _ := primitive.ObjectIDFromHex(request.Id)
 	skills, err := handler.service.GetSkills(id)
 	if err != nil {
@@ -346,8 +348,9 @@ func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkills
 	for _, skill := range *skills {
 		s := mapSkill(&skill)
 		response.Skills = append(response.Skills, s)
+		fmt.Println("NASLO VESTINE")
+		fmt.Println(s)
 	}
-
 	return response, nil
 
 }

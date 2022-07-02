@@ -5,4 +5,5 @@ type BusinessOffersGraph interface {
 	InsertSkill(skill *SkillDTO) error
 	GetBusinessOffers() ([]*BusinessOffer, error)
 	GetOfferSkills(offerId int64) ([]*Skill, error)
+	GetBusinessOfferRecommendations(recommend *Recommend) ([]*BusinessOffer, error)
 }

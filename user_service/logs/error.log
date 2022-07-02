@@ -147,3 +147,23 @@ ERROR: 2022/07/01 21:59:59 user_grpc_api.go:76: Action: 1, Message: ID is not co
 ERROR: 2022/07/01 21:59:59 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
 ERROR: 2022/07/01 22:07:28 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
 ERROR: 2022/07/01 22:07:28 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:52:02 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:52:02 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:53:02 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:53:02 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:54:07 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:54:07 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:55:48 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:55:48 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:56:59 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 22:56:59 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 23:02:01 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/01 23:02:01 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/02 10:53:28 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/02 10:53:29 user_grpc_api.go:76: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/02 11:07:26 server.go:199: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/02 11:11:18 server.go:199: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/02 12:18:12 server.go:199: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/02 12:29:02 server.go:199: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/02 12:38:50 server.go:199: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/02 12:38:58 server.go:199: Action: 34, Message: Authorization token is not supplied!

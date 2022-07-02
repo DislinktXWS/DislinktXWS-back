@@ -87,3 +87,11 @@ func mapProficiencyBackwards(proficiency domain.SkillProficiency) pb.GetSkill_Sk
 	}
 	return pb.GetSkill_novice
 }
+
+func mapRecommendation(recommendPb *pb.Recommend) *domain.Recommend {
+	recommend := &domain.Recommend{
+		Skills:   recommendPb.Skills,
+		Industry: recommendPb.Industry,
+	}
+	return recommend
+}

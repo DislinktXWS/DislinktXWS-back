@@ -83,3 +83,19 @@ type NotificationsSettings struct {
 	ConnectionsNotifications bool
 	PostNotifications        bool
 }
+
+type GetBusinessOffer struct {
+	Id          int64
+	AuthorId    string
+	Name        string
+	Position    string
+	Description string
+	Industry    string
+	Skills      []GetSkill
+}
+
+type GetSkill struct {
+	Id                     int64
+	Name                   string
+	SkillProficiencyString string
+}

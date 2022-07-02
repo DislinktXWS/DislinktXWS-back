@@ -27,3 +27,7 @@ func (service *BusinessOfferService) GetBusinessOffers() ([]*domain.BusinessOffe
 func (service *BusinessOfferService) GetOfferSkills(offerId int64) ([]*domain.Skill, error) {
 	return service.graph.GetOfferSkills(offerId)
 }
+
+func (service *BusinessOfferService) GetBusinessOfferRecommendations(recommend *domain.Recommend) ([]*domain.BusinessOffer, error) {
+	return service.graph.GetBusinessOfferRecommendations(recommend)
+}

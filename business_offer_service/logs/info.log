@@ -1,0 +1,8 @@
+INFO: 2022/07/02 10:55:40 business_offer_grpc_api.go:48: Action: 26, Message: User with id  created new business offer.
+INFO: 2022/07/02 10:55:45 business_offer_grpc_api.go:59: Action: 27, Message: Created new skill for business offer.
+INFO: 2022/07/02 10:57:08 business_offer_grpc_api.go:48: Action: 26, Message: User with id  created new business offer.
+INFO: 2022/07/02 10:57:09 business_offer_grpc_api.go:59: Action: 27, Message: Created new skill for business offer.
+INFO: 2022/07/02 15:06:37 business_offer_grpc_api.go:48: Action: 26, Message: User with id  created new business offer.
+INFO: 2022/07/02 15:06:37 business_offer_grpc_api.go:59: Action: 27, Message: Created new skill for business offer.
+INFO: 2022/07/02 17:13:09 business_offer_grpc_api.go:48: Action: 26, Message: User with id  created new business offer.
+INFO: 2022/07/02 17:13:10 business_offer_grpc_api.go:59: Action: 27, Message: Created new skill for business offer.
