@@ -4,6 +4,7 @@ import (
 	"github.com/dislinktxws-back/api_gateway/domain"
 	pbAuth "github.com/dislinktxws-back/common/proto/authentication_service"
 	pbOffer "github.com/dislinktxws-back/common/proto/business_offer_service"
+	pbMessage "github.com/dislinktxws-back/common/proto/message_service"
 	pbPost "github.com/dislinktxws-back/common/proto/post_service"
 	pbUser "github.com/dislinktxws-back/common/proto/user_service"
 )
@@ -63,4 +64,13 @@ func mapToAuthPb(user *domain.UserRegistration) *pbAuth.Auth {
 		Email:             user.Email,
 	}
 	return authPb
+}
+func mapNewConversationInfo(postPb *pbMessage.GetConversationResponse, userInfo *domain.UserBasicInfo) *domain.ConversationInfo {
+	info := &domain.ConversationInfo{
+		UserId:    userInfo.Id,
+		Username:  userInfo.Username,
+		FirstName: userInfo.Name,
+		LastName:  userInfo.Surname,
+	}
+	return info
 }

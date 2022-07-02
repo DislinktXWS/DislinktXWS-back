@@ -21,6 +21,8 @@ type Config struct { //prijava svih servisa gateway-u
 	BusinessOfferPort      string
 	NotificationsOfferHost string
 	NotificationsOfferPort string
+	MessageHost        string
+	MessagePort        string
 }
 
 func NewConfig() *Config {
@@ -45,5 +47,7 @@ func NewConfig() *Config {
 		BusinessOfferPort:      os.Getenv("BUSINESS_OFFER_SERVICE_PORT"),
 		NotificationsOfferHost: os.Getenv("NOTIFICATIONS_SERVICE_HOST"),
 		NotificationsOfferPort: os.Getenv("NOTIFICATIONS_SERVICE_PORT"),
+		MessageHost:        os.Getenv("MESSAGE_SERVICE_HOST"),
+		MessagePort:        os.Getenv("MESSAGE_SERVICE_PORT"),
 	}
 }

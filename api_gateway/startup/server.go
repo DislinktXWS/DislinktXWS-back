@@ -9,6 +9,7 @@ import (
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/gorilla/handlers"
+	messageGw "github.com/dislinktxws-back/common/proto/message_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -92,6 +93,9 @@ func (server *Server) initHandlers() {
 
 	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
+
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
@@ -101,6 +105,7 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
 }
 
 func (server *Server) initCustomHandlers() {
@@ -110,6 +115,7 @@ func (server *Server) initCustomHandlers() {
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
 	authenticationEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
+	//messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint, authenticationEndpoint)
 	registrationHandler.Init(server.mux)
@@ -149,6 +155,8 @@ func (server *Server) initCustomHandlers() {
 
 	postNotificationHandler := api.NewPostNotificationsHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
 	postNotificationHandler.Init(server.mux)
+	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
+	//conversationInfoHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
