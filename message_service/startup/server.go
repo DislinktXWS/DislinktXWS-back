@@ -81,7 +81,7 @@ func (server *Server) startGrpcServer(messageHandler *api.MessageHandler) {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer(
-		withServerUnaryInterceptor(),
+	//withServerUnaryInterceptor(),
 	)
 	message_service.RegisterMessageServiceServer(grpcServer, messageHandler)
 	if err := grpcServer.Serve(listener); err != nil {

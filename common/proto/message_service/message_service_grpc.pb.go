@@ -8,7 +8,6 @@ package messages
 
 import (
 	context "context"
-	"fmt"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -56,7 +55,6 @@ func (c *messageServiceClient) GetConversation(ctx context.Context, in *GetConve
 }
 
 func (c *messageServiceClient) GetAllConversations(ctx context.Context, in *GetAllConversationsRequest, opts ...grpc.CallOption) (*GetAllConversationsResponse, error) {
-	fmt.Println("USLI MO U MESSAGE CLIENT I POZIVA SE U PROTU")
 	out := new(GetAllConversationsResponse)
 	err := c.cc.Invoke(ctx, "/messages.MessageService/GetAllConversations", in, out, opts...)
 	if err != nil {

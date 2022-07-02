@@ -321,11 +321,11 @@ services:
       - network
   
   mess_db:
-  image: mongo
-  container_name: mess_db
-  restart: on-failure
-  networks:
-    - network
+    image: mongo
+    container_name: mess_db
+    restart: on-failure
+    networks:
+      - network
 
 networks:
   network:
