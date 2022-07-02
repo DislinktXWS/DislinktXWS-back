@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/application"
+	"github.com/dislinktxws-back/authentication_service/tracer"
 	"github.com/dislinktxws-back/authentication_service/utils"
 	pb "github.com/dislinktxws-back/common/proto/authentication_service"
 	events "github.com/dislinktxws-back/common/saga/insert_user"
 	saga "github.com/dislinktxws-back/common/saga/messaging"
+	otgo "github.com/opentracing/opentracing-go"
 	"log"
 	"os"
 	"time"
@@ -16,6 +18,7 @@ import (
 var (
 	InfoLogger  *log.Logger
 	ErrorLogger *log.Logger
+	trace       otgo.Tracer
 )
 
 type AuthenticationHandler struct {
@@ -36,6 +39,8 @@ func NewAuthenticationHandler(service *application.AuthenticationService, publis
 }
 
 func init() {
+	trace, _ = tracer.Init("authentication-service")
+	otgo.SetGlobalTracer(trace)
 	infoFile, err := os.OpenFile("info.log", os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -81,13 +86,17 @@ func (handler *AuthenticationHandler) handle(command *events.InsertUserCommand) 
 }
 
 func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "Login")
+	defer span.Finish()
 	newAuth := mapAuth(request.Auth)
-	status, err, token, isTwoFactorEnabled := handler.service.Login(newAuth)
+	status, err, token, isTwoFactorEnabled := handler.service.Login(newAuth, ctx)
 	if status != 200 {
 		ErrorLogger.Println("Action: 28, Message: Wrong credentials for login")
+		log.Println("Action: 28, Message: Wrong credentials for login")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 29, Message: Login successfull")
+		log.Println("Action: 29, Message: Login successfull")
 	}
 	return &pb.LoginResponse{
 		Status:             status,
@@ -98,12 +107,16 @@ func (handler *AuthenticationHandler) Login(ctx context.Context, request *pb.Log
 }
 
 func (handler *AuthenticationHandler) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
-	status, err, token := handler.service.PasswordlessLogin(request.VerificationToken)
+	span := tracer.StartSpanFromContextMetadata(ctx, "Passwordless login")
+	defer span.Finish()
+	status, err, token := handler.service.PasswordlessLogin(request.VerificationToken, ctx)
 	if status != 200 {
 		ErrorLogger.Println("Action: 28, Message: Wrong email for passwordless login")
+		log.Println("Action: 28, Message: Wrong email for passwordless login")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 29, Message: Login successfull")
+		log.Println("Action: 29, Message: Login successfull")
 	}
 	return &pb.PasswordlessLoginResponse{
 		Status: status,
@@ -113,13 +126,17 @@ func (handler *AuthenticationHandler) PasswordlessLogin(ctx context.Context, req
 }
 
 func (handler *AuthenticationHandler) Validate(ctx context.Context, request *pb.ValidateRequest) (*pb.ValidateResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "Validate")
+	defer span.Finish()
 	token := request.Token
-	status, err, user := handler.service.Validate(token)
+	status, err, user := handler.service.Validate(token, ctx)
 	if status != 200 {
 		ErrorLogger.Println("Action: 30, Message: Token is not valid or expired!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 31, Message: User validation successfull")
+		log.Println("Action: 31, Message: User validation successfull")
 	}
 	return &pb.ValidateResponse{
 		Status: status,
@@ -129,6 +146,8 @@ func (handler *AuthenticationHandler) Validate(ctx context.Context, request *pb.
 }
 
 func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "Register")
+	defer span.Finish()
 	Auth := mapAuth(request.Auth)
 	fmt.Println(request.Auth)
 	Auth.Password = utils.HashPassword(Auth.Password)
@@ -137,48 +156,65 @@ func (handler *AuthenticationHandler) Register(ctx context.Context, request *pb.
 	err := handler.service.Register(Auth)
 	if err != nil {
 		ErrorLogger.Println("Action: 4, Message: Can not register user!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 3, Message: User " + Auth.Username + " registered successfully!")
+	log.Println("Action: 3, Message: User " + Auth.Username + " registered successfully!")
 	return &pb.RegisterResponse{}, nil
 }
 
 func (handler *AuthenticationHandler) EditUsername(ctx context.Context, request *pb.EditUsernameRequest) (*pb.EditUsernameResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "EditUsername")
+	defer span.Finish()
 	auth := mapAuth(request.Auth)
-	_, err := handler.service.EditUsername(auth)
+	_, err := handler.service.EditUsername(auth, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action: 5, Message: Username is not unique!")
+		log.Println("Action: 30, Message: Token is not valid or expired!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 6, Message: User " + auth.Username + " edited successfully")
+	log.Println("Action: 6, Message: User " + auth.Username + " edited successfully")
 	return &pb.EditUsernameResponse{}, nil
 }
 
 func (handler *AuthenticationHandler) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	span := tracer.StartSpanFromContextMetadata(ctx, "ChangePassword")
+	defer span.Finish()
 	auth := mapAuth(request.Auth)
-	err := handler.service.ChangePassword(auth)
+	err := handler.service.ChangePassword(auth, ctx)
 	if err != nil {
 		ErrorLogger.Println("Action 5, Message: Cannot change password!")
+		log.Println("Action 5, Message: Cannot change password!")
 		return nil, err
 	}
 	InfoLogger.Println("Action: 6, Message: User " + auth.Username + " changed password successfully")
+	log.Println("Action: 6, Message: User " + auth.Username + " changed password successfully")
 	return &pb.ChangePasswordResponse{}, nil
 }
 
 func (handler *AuthenticationHandler) GenerateVerificationToken(ctx context.Context,
 	request *pb.GenerateVerificationTokenRequest) (*pb.GenerateVerificationTokenResponse, error) {
-	err := handler.service.GenerateVerificationToken(request.Email)
+	span := tracer.StartSpanFromContextMetadata(ctx, "GenerateToken")
+	defer span.Finish()
+	err := handler.service.GenerateVerificationToken(request.Email, ctx)
 	InfoLogger.Println("Action: 32, Message: E-mail sent successfully")
+	log.Println("Action: 32, Message: E-mail sent successfully")
 	return &pb.GenerateVerificationTokenResponse{}, err
 }
 
 func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, request *pb.AccountRecoveryRequest) (*pb.AccountRecoveryResponse, error) {
-	status, err := handler.service.AccountRecovery(request.Email)
+	span := tracer.StartSpanFromContextMetadata(ctx, "AccountRecovery")
+	defer span.Finish()
+	status, err := handler.service.AccountRecovery(request.Email, ctx)
 	if status != 200 {
 		ErrorLogger.Println("Action: 33, Message: Wrong email")
+		log.Println("Action: 33, Message: Wrong email")
 	}
 	if status == 200 {
 		InfoLogger.Println("Action: 32, Message: Recovery mail sent successfull")
+		log.Println("Action: 32, Message: Recovery mail sent successfull")
 	}
 	return &pb.AccountRecoveryResponse{
 		Status: status,
@@ -187,7 +223,9 @@ func (handler *AuthenticationHandler) AccountRecovery(ctx context.Context, reque
 }
 
 func (handler *AuthenticationHandler) ChangeTwoFactorAuth(ctx context.Context, request *pb.ChangeTwoFactorAuthRequest) (*pb.ChangeTwoFactorAuthResponse, error) {
-	qrCode, err := handler.service.ChangeTwoFactorAuth(request.Username)
+	span := tracer.StartSpanFromContextMetadata(ctx, "Change2Factor")
+	defer span.Finish()
+	qrCode, err := handler.service.ChangeTwoFactorAuth(request.Username, ctx)
 	return &pb.ChangeTwoFactorAuthResponse{
 		QrCode: qrCode,
 		Error:  err,
@@ -195,12 +233,16 @@ func (handler *AuthenticationHandler) ChangeTwoFactorAuth(ctx context.Context, r
 }
 
 func (handler *AuthenticationHandler) GetTwoFactorAuth(ctx context.Context, request *pb.GetTwoFactorAuthRequest) (*pb.GetTwoFactorAuthResponse, error) {
-	flag := handler.service.GetTwoFactorAuth(request.Username)
+	span := tracer.StartSpanFromContextMetadata(ctx, "Get2Factor")
+	defer span.Finish()
+	flag := handler.service.GetTwoFactorAuth(request.Username, ctx)
 	return &pb.GetTwoFactorAuthResponse{IsEnabled: flag}, nil
 }
 
 func (handler *AuthenticationHandler) VerifyTwoFactorAuthToken(ctx context.Context, request *pb.VerifyTwoFactorAuthTokenRequest) (*pb.VerifyTwoFactorAuthTokenResponse, error) {
-	status, err, token := handler.service.VerifyTwoFactorAuthToken(request.Username, request.Token)
+	span := tracer.StartSpanFromContextMetadata(ctx, "Verify2Factor")
+	defer span.Finish()
+	status, err, token := handler.service.VerifyTwoFactorAuthToken(request.Username, request.Token, ctx)
 	return &pb.VerifyTwoFactorAuthTokenResponse{
 		Status: status,
 		Error:  err,

@@ -7,7 +7,9 @@ replace github.com/dislinktxws-back/common => ../common
 require (
 	github.com/dislinktxws-back/common v0.0.0-00010101000000-000000000000
 	github.com/gorilla/handlers v1.5.1
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
+	github.com/opentracing/opentracing-go v1.1.0
 	google.golang.org/grpc v1.46.0
 )
 

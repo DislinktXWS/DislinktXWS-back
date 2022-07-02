@@ -14,12 +14,18 @@ import (
 	"github.com/dislinktxws-back/connection_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/connection_service/infrastructure/service"
 	"github.com/dislinktxws-back/connection_service/startup/config"
+	"github.com/dislinktxws-back/connection_service/tracer"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	otgo "github.com/opentracing/opentracing-go"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"io"
 	"log"
 	"net"
 	"strings"
@@ -27,6 +33,8 @@ import (
 
 type Server struct {
 	config *config.Config
+	tracer otgo.Tracer
+	closer io.Closer
 }
 
 var (
@@ -35,8 +43,12 @@ var (
 )
 
 func NewServer(config *config.Config) *Server {
+	tracer, closer := tracer.Init("connection-service")
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config: config,
+		tracer: tracer,
+		closer: closer,
 	}
 }
 
@@ -122,8 +134,13 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 	}
 
 	grpcServer := grpc.NewServer(
-	//grpc.Creds(tlsCredentials),
-	//	withServerUnaryInterceptor(),
+		//grpc.Creds(tlsCredentials),
+		//	withServerUnaryInterceptor(),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_opentracing.UnaryServerInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)),
 	)
 
 	connection_service.RegisterConnectionsServiceServer(grpcServer, connectionHandler)
