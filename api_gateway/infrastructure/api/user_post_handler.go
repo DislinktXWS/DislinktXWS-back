@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"github.com/dislinktxws-back/api_gateway/domain"
 	"github.com/dislinktxws-back/api_gateway/infrastructure/services"
 	post_proto "github.com/dislinktxws-back/common/proto/post_service"
 	user_proto "github.com/dislinktxws-back/common/proto/user_service"
@@ -40,19 +41,20 @@ func (handler *UserPostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		panic(err)
 	}
-	for i, post := range posts.Posts {
+	var publicPosts []*domain.Post
+	for _, post := range posts.Posts {
 		exists := false
 		for _, user := range users.Users {
 			if post.User == user.Id {
 				exists = true
 			}
 		}
-		if !exists {
-			posts.Posts = append(posts.Posts[:i], posts.Posts[i+1:]...)
+		if exists {
+			publicPosts = append(publicPosts, mapNewPost(post))
 		}
 	}
 
-	response, err := json.Marshal(posts.Posts)
+	response, err := json.Marshal(publicPosts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

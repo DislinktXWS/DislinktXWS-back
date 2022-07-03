@@ -78,9 +78,10 @@ func (handler *UserFeedHandler) getPosts(posts *[]domain.Post, userIds []string)
 
 	for _, id := range userIds {
 		userPosts, _ := postClient.GetPostsByUser(context.TODO(), &post_proto.GetPostsByUserRequest{User: id})
-		for _, post := range userPosts.Posts {
-			post := mapNewPost(post)
+		for _, postPb := range userPosts.Posts {
+			post := mapNewPost(postPb)
 			*posts = append(*posts, *post)
+			fmt.Println(post)
 		}
 	}
 	return nil

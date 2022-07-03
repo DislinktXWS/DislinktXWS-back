@@ -153,7 +153,7 @@ func serverInterceptor(ctx context.Context,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	fmt.Println(info.FullMethod)
-	if info.FullMethod != "/posts.PostService/GetAll" {
+	if info.FullMethod != "/posts.PostService/GetAll" && info.FullMethod != "/posts.PostService/GetPostsByUser" {
 		if err := authorize(ctx); err != nil {
 			return nil, err
 		}
