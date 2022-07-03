@@ -41,3 +41,5 @@ INFO: 2022/07/01 22:53:30 user_grpc_api.go:169: Action: 3, Message: User mima re
 INFO: 2022/07/02 10:58:57 user_grpc_api.go:281: Action: 6, Message: User with id 62bf7aaa6f7b559c0357fa35 added experience.
 INFO: 2022/07/02 10:58:57 user_grpc_api.go:201: Action: 6, Message: User nina edited.
 INFO: 2022/07/02 11:11:00 user_grpc_api.go:363: Action: 6, Message: User with id 62bf7aaa6f7b559c0357fa35 added skill.
+INFO: 2022/07/03 13:35:14 user_grpc_api.go:186: Action: 3, Message: User nina registered successfully.
+INFO: 2022/07/03 13:56:29 user_grpc_api.go:186: Action: 3, Message: User mima registered successfully.
