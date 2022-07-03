@@ -88,6 +88,7 @@ type Notification struct {
 	To      string //id
 	Date    string
 	Content string
+	Where   string
 }
 
 type NotificationsSettings struct {

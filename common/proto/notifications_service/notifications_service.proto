@@ -72,6 +72,7 @@ message Notification {
   User to = 3;
   string date = 4;
   string content = 5;
+  string where = 6;
 }
 
 message User {
@@ -88,4 +89,5 @@ message NotificationView {
   string date = 5;
   string content = 6;
   bool isReviewed = 7;
+  string where = 8;
 }

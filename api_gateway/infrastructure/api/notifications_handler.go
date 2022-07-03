@@ -118,6 +118,7 @@ func mapNotificationPb(notification *domain.Notification, userFrom *notification
 		To:      userTo,
 		Date:    notification.Date,
 		Content: notification.Content,
+		Where:   notification.Where,
 	}
 	return notificationPb
 }

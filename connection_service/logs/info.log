@@ -45,3 +45,4 @@ INFO: 2022/07/03 15:46:24 connection_grpc_api.go:256: Action: 22, Message: User 
 INFO: 2022/07/03 15:46:58 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c1acb5efbe025a7f934405 and 62befbf48a22785655c4f9f0
 INFO: 2022/07/03 15:47:02 connection_grpc_api.go:241: Action: 21, Message: User 62befbf48a22785655c4f9f0 blocked 62c1acb5efbe025a7f934405
 INFO: 2022/07/03 16:11:20 connection_grpc_api.go:270: Action: 23, Message: User 62c1acb5efbe025a7f934405 accepted connection request for 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 21:27:00 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c2094072c985537225753b and 62c2098472c985537225753c

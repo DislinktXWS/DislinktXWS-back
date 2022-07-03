@@ -42,3 +42,5 @@ INFO: 2022/07/03 15:17:45 user_grpc_api.go:419: Action: 6, Message: User with id
 INFO: 2022/07/03 15:20:29 user_grpc_api.go:419: Action: 6, Message: User with id 62c02aed70dc31f1a216aba1 set privacy.
 INFO: 2022/07/03 15:21:10 user_grpc_api.go:419: Action: 6, Message: User with id 62c02aed70dc31f1a216aba1 set privacy.
 INFO: 2022/07/03 15:21:27 user_grpc_api.go:419: Action: 6, Message: User with id 62c02aed70dc31f1a216aba1 set privacy.
+INFO: 2022/07/03 21:25:24 user_grpc_api.go:186: Action: 3, Message: User nina registered successfully.
+INFO: 2022/07/03 21:26:32 user_grpc_api.go:186: Action: 3, Message: User mima registered successfully.

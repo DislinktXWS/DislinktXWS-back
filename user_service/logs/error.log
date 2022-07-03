@@ -384,3 +384,23 @@ ERROR: 2022/07/03 19:48:31 server.go:210: Action: 34, Message: Authorization tok
 ERROR: 2022/07/03 19:48:31 server.go:210: Action: 34, Message: Authorization token is not supplied!
 ERROR: 2022/07/03 19:48:31 server.go:210: Action: 34, Message: Authorization token is not supplied!
 ERROR: 2022/07/03 19:48:31 server.go:210: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:24:49 user_grpc_api.go:83: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/03 21:24:49 user_grpc_api.go:83: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/03 21:24:54 user_grpc_api.go:83: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/03 21:24:54 user_grpc_api.go:83: Action: 1, Message: ID is not correct!
+ERROR: 2022/07/03 21:33:16 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:33:16 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:33:29 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:33:29 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:34:44 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:34:44 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:03 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:03 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:16 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:16 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:20 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:20 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:29 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:29 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:38 server.go:212: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 21:35:38 server.go:212: Action: 34, Message: Authorization token is not supplied!

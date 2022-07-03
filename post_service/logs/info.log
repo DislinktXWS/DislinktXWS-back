@@ -109,3 +109,53 @@ INFO: 2022/07/03 13:57:06 post_grpc_api.go:173: Action: 14, Message: User 62c02a
 INFO: 2022/07/03 13:57:15 post_grpc_api.go:77: Action: 10, Message: User 62c02aed70dc31f1a216aba1 disliked post with id 62bf0279fe8f95781a7f399c
 INFO: 2022/07/03 15:04:02 post_grpc_api.go:61: Action: 10, Message: User 62c1acb5efbe025a7f934405 liked post with id 62bf0279fe8f95781a7f399c
 INFO: 2022/07/03 15:42:53 post_grpc_api.go:158: Action: 12, Message: User 62c03b308cfe23c5bf0aa19e created a new post.
+INFO: 2022/07/03 21:27:17 post_grpc_api.go:158: Action: 12, Message: User 62c2098472c985537225753c created a new post.
+INFO: 2022/07/03 21:28:08 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 21:30:47 post_grpc_api.go:158: Action: 12, Message: User 62c2098472c985537225753c created a new post.
+INFO: 2022/07/03 21:31:49 post_grpc_api.go:158: Action: 12, Message: User 62c2094072c985537225753b created a new post.
+INFO: 2022/07/03 21:37:44 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:37:59 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 21:38:46 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 21:38:51 post_grpc_api.go:77: Action: 10, Message: User 62c2098472c985537225753c disliked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 21:38:59 post_grpc_api.go:173: Action: 14, Message: User 62c2098472c985537225753c commented post 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 21:40:48 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:40:50 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:46:05 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:46:07 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:47:16 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:47:23 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:48:10 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:48:20 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:49:35 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:49:36 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:50:02 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:50:11 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:51:30 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:51:31 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:52:11 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 21:52:16 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:03:02 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:03:03 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:04:52 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:06:33 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:06:35 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:08:38 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:08:40 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:09:36 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:09:37 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:25:12 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:25:16 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:29:35 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:29:45 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:31:54 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:31:56 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:36:27 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:36:31 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:38:12 post_grpc_api.go:77: Action: 10, Message: User 62c2094072c985537225753b disliked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:38:45 post_grpc_api.go:77: Action: 10, Message: User 62c2094072c985537225753b disliked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:39:21 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 22:45:38 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c20a87fcf1de8862283fed
+INFO: 2022/07/03 22:59:03 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 22:59:07 post_grpc_api.go:61: Action: 10, Message: User 62c2098472c985537225753c liked post with id 62c20ac5fcf1de8862283fee
+INFO: 2022/07/03 23:00:43 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec
+INFO: 2022/07/03 23:00:50 post_grpc_api.go:61: Action: 10, Message: User 62c2094072c985537225753b liked post with id 62c209b5fcf1de8862283fec

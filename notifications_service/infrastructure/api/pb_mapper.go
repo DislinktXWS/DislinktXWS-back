@@ -24,6 +24,7 @@ func mapNewNotification(notficationPb *pb.Notification) *domain.Notification {
 		Date:       notficationPb.Date,
 		Content:    notficationPb.Content,
 		IsReviewed: false,
+		Where:      notficationPb.Where,
 	}
 	return notification
 }
@@ -45,6 +46,7 @@ func mapNewNotificationPb(notification *domain.Notification) *pb.Notification {
 		To:      userToPb,
 		Date:    notification.Date,
 		Content: notification.Content,
+		Where:   notification.Where,
 	}
 
 	return notificationPb
@@ -59,6 +61,7 @@ func mapNotification(notification *domain.Notification) *pb.NotificationView {
 		Date:         notification.Date,
 		Content:      notification.Content,
 		IsReviewed:   notification.IsReviewed,
+		Where:        notification.Where,
 	}
 	return notificationPb
 }

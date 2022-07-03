@@ -21,6 +21,7 @@ func NewNotificationsHandler(service *application.NotificationsService) *Notific
 
 func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
 	notification := mapNewNotification(request.Notification)
+	fmt.Println(request.Notification.Where)
 	fmt.Println("USLO U METODU INSERT")
 	fmt.Println(notification)
 	newNotification, err := handler.service.Insert(notification)

@@ -9,6 +9,7 @@ type Notification struct {
 	Date       string             `bson:"date"`
 	Content    string             `bson:"content"`
 	IsReviewed bool               `bson:"isReviewed"`
+	Where      string             `bson:"where"`
 }
 
 type User struct {
