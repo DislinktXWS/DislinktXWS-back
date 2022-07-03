@@ -27,6 +27,7 @@ func mapToUserPb(user *domain.UserRegistration) *pbUser.User {
 
 func mapNewPost(postPb *pbPost.Post) *domain.Post {
 	post := &domain.Post{
+		Id:       postPb.Id,
 		Content:  postPb.Content,
 		Image:    postPb.Image,
 		Date:     postPb.Date,
@@ -34,6 +35,14 @@ func mapNewPost(postPb *pbPost.Post) *domain.Post {
 		Likes:    postPb.Likes,
 		Dislikes: postPb.Dislikes,
 	}
+	for _, comment := range postPb.Comments {
+		post.Comments = append(post.Comments, domain.Comment{
+			PostId:  comment.PostId,
+			User:    comment.User,
+			Content: comment.Content,
+		})
+	}
+
 	return post
 }
 

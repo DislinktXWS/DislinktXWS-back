@@ -9,3 +9,14 @@ ERROR: 2022/06/17 09:57:59 server.go:174: Action: 34, Message: Authorization tok
 ERROR: 2022/06/17 09:58:08 server.go:174: Action: 34, Message: Authorization token is not supplied!
 ERROR: 2022/06/17 09:58:08 server.go:174: Action: 34, Message: Authorization token is not supplied!
 ERROR: 2022/07/01 16:49:22 server.go:190: Action: 35, Message: Cannot validate token!
+ERROR: 2022/07/03 12:16:22 server.go:193: Action: 35, Message: Cannot validate token!
+ERROR: 2022/07/03 12:20:14 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:20:17 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:22:10 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:22:26 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:27:38 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:29:48 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:33:24 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:35:08 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:41:55 server.go:177: Action: 34, Message: Authorization token is not supplied!
+ERROR: 2022/07/03 12:42:06 server.go:177: Action: 34, Message: Authorization token is not supplied!
