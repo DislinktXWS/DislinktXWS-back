@@ -6,10 +6,14 @@ import (
 	"fmt"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/dislinktxws-back/post_service/infrastructure/service"
+	"github.com/dislinktxws-back/post_service/tracer"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"io"
 	"os"
 	"strings"
 
@@ -20,6 +24,7 @@ import (
 	"github.com/dislinktxws-back/post_service/infrastructure/api"
 	"github.com/dislinktxws-back/post_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/post_service/startup/config"
+	otgo "github.com/opentracing/opentracing-go"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
@@ -29,6 +34,8 @@ import (
 
 type Server struct {
 	config *config.Config
+	tracer otgo.Tracer
+	closer io.Closer
 }
 
 type Response struct {
@@ -38,8 +45,12 @@ type Response struct {
 }
 
 func NewServer(config *config.Config) *Server {
+	tracer, closer := tracer.Init("post-service")
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config: config,
+		tracer: tracer,
+		closer: closer,
 	}
 }
 
@@ -85,16 +96,7 @@ func (server *Server) initMongoClient() *mongo.Client {
 }
 
 func (server *Server) initPostStore(client *mongo.Client) domain.PostStore {
-	store := persistence.NewPostMongoDBStore(client)
-	posts, _ := store.GetAll()
-	store.DeleteAll()
-	for _, Post := range posts {
-		err := store.Insert(Post)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	return store
+	return persistence.NewPostMongoDBStore(client)
 }
 
 func (server *Server) initPostService(store domain.PostStore) *application.PostService {
@@ -131,17 +133,18 @@ func (server *Server) startGrpcServer(PostHandler *api.PostHandler) {
 
 	grpcServer := grpc.NewServer(
 		//grpc.Creds(tlsCredentials),
-		withServerUnaryInterceptor(),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			serverInterceptor,
+			grpc_opentracing.UnaryServerInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)),
 	)
 
 	post_service.RegisterPostServiceServer(grpcServer, PostHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
-}
-
-func withServerUnaryInterceptor() grpc.ServerOption {
-	return grpc.UnaryInterceptor(serverInterceptor)
 }
 
 // Authorization unary interceptor function to handle authorize per RPC call

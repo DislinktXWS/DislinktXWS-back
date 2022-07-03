@@ -1,9 +1,11 @@
 package domain
 
+import "context"
+
 type BusinessOffersGraph interface {
-	InsertBusinessOffer(offer *BusinessOffer) (error, int64)
-	InsertSkill(skill *SkillDTO) error
-	GetBusinessOffers() ([]*BusinessOffer, error)
-	GetOfferSkills(offerId int64) ([]*Skill, error)
+	InsertBusinessOffer(offer *BusinessOffer, ctx context.Context) (error, int64)
+	InsertSkill(skill *SkillDTO, ctx context.Context) error
+	GetBusinessOffers(ctx context.Context) ([]*BusinessOffer, error)
+	GetOfferSkills(offerId int64, ctx context.Context) ([]*Skill, error)
 	GetBusinessOfferRecommendations(recommend *Recommend) ([]*BusinessOffer, error)
 }

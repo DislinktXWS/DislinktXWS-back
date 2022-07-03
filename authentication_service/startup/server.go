@@ -8,10 +8,15 @@ import (
 	"github.com/dislinktxws-back/authentication_service/infrastructure/api"
 	"github.com/dislinktxws-back/authentication_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
+	"github.com/dislinktxws-back/authentication_service/tracer"
 	authentication_service "github.com/dislinktxws-back/common/proto/authentication_service"
 	saga "github.com/dislinktxws-back/common/saga/messaging"
 	"github.com/dislinktxws-back/common/saga/messaging/nats"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	otgo "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc/credentials"
+	"io"
 	"log"
 	"net"
 
@@ -21,11 +26,17 @@ import (
 
 type Server struct {
 	config *config.Config
+	tracer otgo.Tracer
+	closer io.Closer
 }
 
 func NewServer(config *config.Config) *Server {
+	tracer, closer := tracer.Init("authentication-service")
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config: config,
+		tracer: tracer,
+		closer: closer,
 	}
 }
 
@@ -115,7 +126,12 @@ func (server *Server) startGrpcServer(AuthenticationHandler *api.AuthenticationH
 	//tlsCredentials, _ := loadTLSCredentials()
 
 	grpcServer := grpc.NewServer(
-	//grpc.Creds(tlsCredentials),
+		//grpc.Creds(tlsCredentials),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_opentracing.UnaryServerInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)),
 	)
 
 	authentication_service.RegisterAuthenticationServiceServer(grpcServer, AuthenticationHandler)

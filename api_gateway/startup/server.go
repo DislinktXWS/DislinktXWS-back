@@ -2,25 +2,29 @@ package startup
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
 	"github.com/dislinktxws-back/api_gateway/infrastructure/api"
 	cfg "github.com/dislinktxws-back/api_gateway/startup/config"
 	authGw "github.com/dislinktxws-back/common/proto/authentication_service"
 	"github.com/gorilla/handlers"
+	messageGw "github.com/dislinktxws-back/common/proto/message_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"io/ioutil"
 	"log"
-
 	offerGw "github.com/dislinktxws-back/common/proto/business_offer_service"
 	connectionGw "github.com/dislinktxws-back/common/proto/connection_service"
 	notificationsGW "github.com/dislinktxws-back/common/proto/notifications_service"
 	postGw "github.com/dislinktxws-back/common/proto/post_service"
 	userGw "github.com/dislinktxws-back/common/proto/user_service"
+	"github.com/gorilla/handlers"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	otgo "github.com/opentracing/opentracing-go"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 )
 
@@ -39,33 +43,14 @@ func NewServer(config *cfg.Config) *Server {
 	return server
 }
 
-func loadTLSCredentials() (credentials.TransportCredentials, error) {
-	pemServerCA, err := ioutil.ReadFile("apigateway.crt")
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
-	certPool := x509.NewCertPool()
-	if !certPool.AppendCertsFromPEM(pemServerCA) {
-		return nil, fmt.Errorf("failed to add server")
-	}
-
-	config := &tls.Config{
-		RootCAs:            certPool,
-		InsecureSkipVerify: true,
-	}
-
-	return credentials.NewTLS(config), nil
-}
-
 func (server *Server) initHandlers() {
-	/*tlsCredentials, err := loadTLSCredentials()
-	if err != nil {
-		log.Fatal("cannot load TLS credentials")
-	}*/
+
 	//userOpts := []grpc.DialOption{grpc.WithTransportCredentials(tlsCredentials)}
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithUnaryInterceptor(
+		grpc_opentracing.UnaryClientInterceptor(
+			grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+		),
+	), grpc.WithTransportCredentials(insecure.NewCredentials())}
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
 	err := authGw.RegisterAuthenticationServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
@@ -92,6 +77,9 @@ func (server *Server) initHandlers() {
 
 	offerEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	err = offerGw.RegisterBusinessOffersServiceHandlerFromEndpoint(context.TODO(), server.mux, offerEndpoint, opts)
+
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndpoint, opts)
 	if err != nil {
 		panic(err)
 	}
@@ -101,6 +89,7 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+
 }
 
 func (server *Server) initCustomHandlers() {
@@ -110,6 +99,7 @@ func (server *Server) initCustomHandlers() {
 	businessOfferEndpoint := fmt.Sprintf("%s:%s", server.config.BusinessOfferHost, server.config.BusinessOfferPort)
 	notificationsEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationsOfferHost, server.config.NotificationsOfferPort)
 	authenticationEndpoint := fmt.Sprintf("%s:%s", server.config.AuthenticationHost, server.config.AuthenticationPort)
+	//messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
 
 	registrationHandler := api.NewRegistrationHandler(userEndpoint, connectionEndpoint, authenticationEndpoint)
 	registrationHandler.Init(server.mux)
@@ -152,6 +142,9 @@ func (server *Server) initCustomHandlers() {
 
 	businessOfferRecommendationsHandler := api.NewBusinessOfferRecommendationsHandler(userEndpoint, businessOfferEndpoint)
 	businessOfferRecommendationsHandler.Init(server.mux)
+
+	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
+	//conversationInfoHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

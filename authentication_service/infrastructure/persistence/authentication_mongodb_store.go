@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/dislinktxws-back/authentication_service/domain"
 	"github.com/dislinktxws-back/authentication_service/startup/config"
+	"github.com/dislinktxws-back/authentication_service/tracer"
 	utils "github.com/dislinktxws-back/authentication_service/utils"
 	"github.com/sec51/twofactor"
 	"go.mongodb.org/mongo-driver/bson"
@@ -39,7 +40,9 @@ func NewAuthMongoDBStore(client *mongo.Client) domain.AuthenticationStore {
 	}
 }
 
-func (store *AuthMongoDBStore) VerifyTwoFactorAuthToken(username string, twoAuthToken string) (status int64, error string, JWTtoken string) {
+func (store *AuthMongoDBStore) VerifyTwoFactorAuthToken(username string, twoAuthToken string, ctx context.Context) (status int64, error string, JWTtoken string) {
+	span := tracer.StartSpanFromContext(ctx, "Verify2Factor")
+	defer span.Finish()
 	filter := bson.M{"username": username}
 	twoFAuth, _ := store.filterOneTwoFactor(filter)
 	authentication, _ := store.filterOne(filter)
@@ -56,13 +59,17 @@ func (store *AuthMongoDBStore) VerifyTwoFactorAuthToken(username string, twoAuth
 	return http.StatusOK, "", token
 }
 
-func (store *AuthMongoDBStore) GetTwoFactorAuth(username string) bool {
+func (store *AuthMongoDBStore) GetTwoFactorAuth(username string, ctx context.Context) bool {
+	span := tracer.StartSpanFromContext(ctx, "Get2Factor")
+	defer span.Finish()
 	filter := bson.M{"username": username}
 	authentication, _ := store.filterOne(filter)
 	return authentication.TwoFactorAuth
 }
 
-func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string) (qrCode string, error string) {
+func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string, ctx context.Context) (qrCode string, error string) {
+	span := tracer.StartSpanFromContext(ctx, "Change2Factor")
+	defer span.Finish()
 	fmt.Println(username)
 	filter := bson.M{"username": username}
 	authentication, _ := store.filterOne(filter)
@@ -87,7 +94,7 @@ func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string) (qrCode stri
 		fmt.Println(otp)
 		fmt.Println(*otp)
 
-		store.InsertTwoFactAuth(mapTwoAuth(username, otp))
+		store.InsertTwoFactAuth(mapTwoAuth(username, otp), ctx)
 		res, _ := store.filterOneTwoFactor(filter)
 		fmt.Println("OK")
 		fmt.Println(res.Username)
@@ -99,7 +106,9 @@ func (store *AuthMongoDBStore) ChangeTwoFactorAuth(username string) (qrCode stri
 	return "", ""
 }
 
-func (store *AuthMongoDBStore) InsertTwoFactAuth(twofactorAuth *domain.TwoFactorAuth) error {
+func (store *AuthMongoDBStore) InsertTwoFactAuth(twofactorAuth *domain.TwoFactorAuth, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "Insert2Factor")
+	defer span.Finish()
 	fmt.Println("INSERT METODA")
 	fmt.Println(twofactorAuth)
 	result, _ := store.twoFactorAuths.InsertOne(context.TODO(), twofactorAuth)
@@ -126,7 +135,9 @@ func (store *AuthMongoDBStore) Delete(id string) error {
 	return nil
 }
 
-func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
+func (store *AuthMongoDBStore) Validate(token string, ctx context.Context) (int64, string, string) {
+	span := tracer.StartSpanFromContext(ctx, "Validate")
+	defer span.Finish()
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
 	claims, err := wrapper.ValidateToken(token)
@@ -143,7 +154,9 @@ func (store *AuthMongoDBStore) Validate(token string) (int64, string, string) {
 	return http.StatusOK, "", authentication.Id.Hex()
 }
 
-func (store *AuthMongoDBStore) GenerateVerificationToken(email string) error {
+func (store *AuthMongoDBStore) GenerateVerificationToken(email string, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "GenerateToken")
+	defer span.Finish()
 	filter := bson.M{"email": email}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
@@ -210,7 +223,9 @@ func EncodeToString(max int) string {
 	return string(b)
 }
 
-func (store *AuthMongoDBStore) AccountRecovery(email string) (int64, string) {
+func (store *AuthMongoDBStore) AccountRecovery(email string, ctx context.Context) (int64, string) {
+	span := tracer.StartSpanFromContext(ctx, "AccountRecovery")
+	defer span.Finish()
 	filter := bson.M{"email": email}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
@@ -263,7 +278,9 @@ func sendRecoveryEmail(email, token string) {
 	fmt.Println("Email Sent Successfully!")
 }
 
-func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int64, string, string) {
+func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string, ctx context.Context) (int64, string, string) {
+	span := tracer.StartSpanFromContext(ctx, "PasswordlessLogin")
+	defer span.Finish()
 	filter := bson.D{{}}
 	authentications, _ := store.filter(filter)
 	for _, auth := range authentications {
@@ -289,7 +306,9 @@ func (store *AuthMongoDBStore) PasswordlessLogin(verificationToken string) (int6
 
 }
 
-func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string, bool) {
+func (store *AuthMongoDBStore) Login(auth *domain.Auth, ctx context.Context) (int64, string, string, bool) {
+	span := tracer.StartSpanFromContext(ctx, "Login")
+	defer span.Finish()
 	filter := bson.M{"username": auth.Username}
 	fmt.Println(auth.Username)
 	fmt.Println(auth.Id)
@@ -311,7 +330,9 @@ func (store *AuthMongoDBStore) Login(auth *domain.Auth) (int64, string, string, 
 	return http.StatusOK, "", token, authentication.TwoFactorAuth
 }
 
-func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth) (*domain.Auth, error) {
+func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth, ctx context.Context) (*domain.Auth, error) {
+	span := tracer.StartSpanFromContext(ctx, "EditUsername")
+	defer span.Finish()
 	filter := bson.D{{}} //D je getovanje ali  po redosledu kakav je u bazi
 	auths, _ := store.filter(filter)
 	exists := false
@@ -336,7 +357,9 @@ func (store *AuthMongoDBStore) EditUsername(auth *domain.Auth) (*domain.Auth, er
 	return auth, nil
 }
 
-func (store *AuthMongoDBStore) ChangePassword(auth *domain.Auth) error {
+func (store *AuthMongoDBStore) ChangePassword(auth *domain.Auth, ctx context.Context) error {
+	span := tracer.StartSpanFromContext(ctx, "ChangePassword")
+	defer span.Finish()
 	filter := bson.M{"username": auth.Username}
 	authentication, err := store.filterOne(filter)
 	if err != nil {

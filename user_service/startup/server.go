@@ -14,10 +14,15 @@ import (
 	"github.com/dislinktxws-back/user_service/infrastructure/persistence"
 	"github.com/dislinktxws-back/user_service/infrastructure/service"
 	"github.com/dislinktxws-back/user_service/startup/config"
+	"github.com/dislinktxws-back/user_service/tracer"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	otgo "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -29,6 +34,8 @@ import (
 
 type Server struct {
 	config *config.Config
+	tracer otgo.Tracer
+	closer io.Closer
 }
 
 var (
@@ -37,8 +44,12 @@ var (
 )
 
 func NewServer(config *config.Config) *Server {
+	tracer, closer := tracer.Init("user-service")
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config: config,
+		tracer: tracer,
+		closer: closer,
 	}
 }
 
@@ -148,20 +159,20 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	if err != nil {
 		ErrorLogger.Println("Cannot load TLS credentials: " + err.Error())
 	}
-
 	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			serverInterceptor,
+			grpc_opentracing.UnaryServerInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)),
 		//grpc.Creds(tlsCredentials),
-		withServerUnaryInterceptor(),
 	)
 
 	user_service.RegisterUserServiceServer(grpcServer, userHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %s", err)
 	}
-}
-
-func withServerUnaryInterceptor() grpc.ServerOption {
-	return grpc.UnaryInterceptor(serverInterceptor)
 }
 
 // Authorization unary interceptor function to handle authorize per RPC call
