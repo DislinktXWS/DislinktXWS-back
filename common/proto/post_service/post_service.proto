@@ -11,7 +11,7 @@ service PostService{
 
     rpc Get(GetRequest) returns(GetResponse) {
         option (google.api.http) = {
-            get: "/posts/post/{id}"
+            get: "/posts/postById/{id}"
         };
     }
 

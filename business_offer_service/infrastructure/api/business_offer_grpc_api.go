@@ -106,7 +106,7 @@ func (handler *BusinessOfferHandler) GetBusinessOfferRecommendations(ctx context
 	}
 
 	for _, recommendation := range recommendations {
-		skills, err1 := handler.service.GetOfferSkills(recommendation.Id)
+		skills, err1 := handler.service.GetOfferSkills(recommendation.Id, ctx)
 		if err1 != nil {
 			return nil, err1
 		}

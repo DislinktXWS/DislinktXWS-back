@@ -72,3 +72,14 @@ INFO: 2022/07/01 23:02:23 post_grpc_api.go:53: Action: 10, Message: User 62bf7aa
 INFO: 2022/07/01 23:02:25 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
 INFO: 2022/07/01 23:02:43 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
 INFO: 2022/07/01 23:03:06 post_grpc_api.go:53: Action: 10, Message: User 62bf7aaa6f7b559c0357fa35 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 11:42:13 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 11:54:32 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 11:54:43 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:03:06 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:32:59 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:46:44 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:47:01 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:47:59 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:48:03 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:49:03 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
+INFO: 2022/07/03 12:49:09 post_grpc_api.go:61: Action: 10, Message: User 62bf7ae76f7b559c0357fa36 liked post with id 62bf7b663eeb1f862f1e32d0
