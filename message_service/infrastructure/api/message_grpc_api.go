@@ -27,7 +27,7 @@ func (handler *MessageHandler) CreateConversation(ctx context.Context, request *
 	if err != nil {
 		return nil, err
 	}
-
+	
 	return &pb.EmptyResponse{}, nil
 }
 

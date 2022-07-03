@@ -24,7 +24,6 @@ type UserMongoDBStore struct {
 	users *mongo.Collection
 }
 
-
 func (store *UserMongoDBStore) GetNotificationsSettings(id primitive.ObjectID) (domain.NotificationsSettingsDTO, error) {
 	filter := bson.M{"_id": id}
 	user, err := store.filterOne(filter)
@@ -85,8 +84,8 @@ func (store *UserMongoDBStore) SetConnectionsNotifications(id primitive.ObjectID
 	return err2
 }
 
-func (store *UserMongoDBStore) SearchProfiles(search string) (*[]domain.User, error) {
-  span := tracer.StartSpanFromContext(ctx, "SearchProfiles")
+func (store *UserMongoDBStore) SearchProfiles(search string, ctx context.Context) (*[]domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "SearchProfiles")
 	defer span.Finish()
 	filter := bson.M{
 		"$or": []bson.M{
