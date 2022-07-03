@@ -18,11 +18,12 @@ func mapNewNotification(notficationPb *pb.Notification) *domain.Notification {
 		Surname:  notficationPb.To.Surname,
 	}
 	notification := &domain.Notification{
-		Id:      primitive.ObjectID{},
-		From:    userFrom,
-		To:      userTo,
-		Date:    notficationPb.Date,
-		Content: notficationPb.Content,
+		Id:         primitive.ObjectID{},
+		From:       userFrom,
+		To:         userTo,
+		Date:       notficationPb.Date,
+		Content:    notficationPb.Content,
+		IsReviewed: false,
 	}
 	return notification
 }
@@ -57,6 +58,7 @@ func mapNotification(notification *domain.Notification) *pb.NotificationView {
 		FromSurname:  notification.From.Surname,
 		Date:         notification.Date,
 		Content:      notification.Content,
+		IsReviewed:   notification.IsReviewed,
 	}
 	return notificationPb
 }

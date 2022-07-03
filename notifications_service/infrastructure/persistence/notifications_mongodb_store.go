@@ -18,6 +18,30 @@ type NotificationsMongoDBStore struct {
 	notifications *mongo.Collection
 }
 
+func (store *NotificationsMongoDBStore) ReviewNotification(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+	notification, err := store.filterOne(filter)
+	if err != nil {
+		fmt.Println("Notification with id: %s doesn't exist!", id)
+		return err
+	}
+	_, err1 := store.notifications.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": id},
+		bson.D{
+			{"$set", bson.D{{"isReviewed", !notification.IsReviewed}}},
+		},
+	)
+	return err1
+
+}
+
+func (store *NotificationsMongoDBStore) filterOne(filter interface{}) (Notification *domain.Notification, err error) {
+	result := store.notifications.FindOne(context.TODO(), filter)
+	err = result.Decode(&Notification)
+	return
+}
+
 func (store *NotificationsMongoDBStore) GetUserNotifications(username string) ([]*domain.Notification, error) {
 	filter := bson.D{{}}
 	allNotifications, _ := store.filter(filter)

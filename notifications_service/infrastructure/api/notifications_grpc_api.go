@@ -5,6 +5,7 @@ import (
 	"fmt"
 	pb "github.com/dislinktxws-back/common/proto/notifications_service"
 	"github.com/dislinktxws-back/notification_service/application"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type NotificationHandler struct {
@@ -42,4 +43,14 @@ func (handler *NotificationHandler) GetUserNotifications(ctx context.Context, re
 	}
 
 	return response, nil
+}
+
+func (handler *NotificationHandler) ReviewNotification(ctx context.Context, request *pb.ReviewNotificationRequest) (*pb.ReviewNotificationResponse, error) {
+	id, _ := primitive.ObjectIDFromHex(request.Id)
+	err := handler.service.ReviewNotification(id)
+	if err != nil {
+		fmt.Println("ERROR with UPDATE notification!")
+		return nil, err
+	}
+	return &pb.ReviewNotificationResponse{}, nil
 }
