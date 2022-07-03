@@ -371,6 +371,8 @@ func (handler *UserHandler) DeleteInterest(ctx context.Context, request *pb.Dele
 }
 
 func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkillsRequest) (*pb.GetSkillsResponse, error) {
+	fmt.Println("USLO U GETSKILLS")
+	fmt.Println("ID KORISNIKA: " + request.Id)
 	span := tracer.StartSpanFromContextMetadata(ctx, "GetSkills")
 	defer span.Finish()
 	id, _ := primitive.ObjectIDFromHex(request.Id)
@@ -387,8 +389,9 @@ func (handler *UserHandler) GetSkills(ctx context.Context, request *pb.GetSkills
 	for _, skill := range *skills {
 		s := mapSkill(&skill)
 		response.Skills = append(response.Skills, s)
+		fmt.Println("NASLO VESTINE")
+		fmt.Println(s)
 	}
-
 	return response, nil
 
 }

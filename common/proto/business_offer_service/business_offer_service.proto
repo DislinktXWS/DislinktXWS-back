@@ -26,6 +26,13 @@ service BusinessOffersService{
       get: "/offers/offers"
     };
   }
+
+  rpc GetBusinessOfferRecommendations(RecommendationsRequest) returns (RecommendationsResponse){
+    option(google.api.http) = {
+      post: "/offers/offer/recommendations"
+      body: "recommend"
+    };
+  }
 }
 
 message InsertOfferRequest {
@@ -49,6 +56,14 @@ message GetAllOffersRequest {
 }
 
 message GetAllOffersResponse{
+  repeated GetBusinessOffer offers = 1;
+}
+
+message RecommendationsRequest{
+  Recommend recommend = 1;
+}
+
+message RecommendationsResponse{
   repeated GetBusinessOffer offers = 1;
 }
 
@@ -94,4 +109,9 @@ message GetSkill {
     master = 4;
   }
   SkillProficiency proficiency = 3;
+}
+
+message Recommend{
+  repeated string skills = 1;
+  repeated string industry = 2;
 }

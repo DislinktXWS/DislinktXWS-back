@@ -25,6 +25,7 @@ type NotificationsServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetUserNotifications(ctx context.Context, in *GetUserNotificationsRequest, opts ...grpc.CallOption) (*GetUserNotificationsResponse, error)
+	ReviewNotification(ctx context.Context, in *ReviewNotificationRequest, opts ...grpc.CallOption) (*ReviewNotificationResponse, error)
 }
 
 type notificationsServiceClient struct {
@@ -62,6 +63,15 @@ func (c *notificationsServiceClient) GetUserNotifications(ctx context.Context, i
 	return out, nil
 }
 
+func (c *notificationsServiceClient) ReviewNotification(ctx context.Context, in *ReviewNotificationRequest, opts ...grpc.CallOption) (*ReviewNotificationResponse, error) {
+	out := new(ReviewNotificationResponse)
+	err := c.cc.Invoke(ctx, "/notifications.NotificationsService/ReviewNotification", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationsServiceServer is the server API for NotificationsService service.
 // All implementations must embed UnimplementedNotificationsServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type NotificationsServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
 	GetUserNotifications(context.Context, *GetUserNotificationsRequest) (*GetUserNotificationsResponse, error)
+	ReviewNotification(context.Context, *ReviewNotificationRequest) (*ReviewNotificationResponse, error)
 	mustEmbedUnimplementedNotificationsServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedNotificationsServiceServer) Insert(context.Context, *InsertRe
 }
 func (UnimplementedNotificationsServiceServer) GetUserNotifications(context.Context, *GetUserNotificationsRequest) (*GetUserNotificationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserNotifications not implemented")
+}
+func (UnimplementedNotificationsServiceServer) ReviewNotification(context.Context, *ReviewNotificationRequest) (*ReviewNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReviewNotification not implemented")
 }
 func (UnimplementedNotificationsServiceServer) mustEmbedUnimplementedNotificationsServiceServer() {}
 
@@ -152,6 +166,24 @@ func _NotificationsService_GetUserNotifications_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationsService_ReviewNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReviewNotificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationsServiceServer).ReviewNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notifications.NotificationsService/ReviewNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationsServiceServer).ReviewNotification(ctx, req.(*ReviewNotificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationsService_ServiceDesc is the grpc.ServiceDesc for NotificationsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var NotificationsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserNotifications",
 			Handler:    _NotificationsService_GetUserNotifications_Handler,
+		},
+		{
+			MethodName: "ReviewNotification",
+			Handler:    _NotificationsService_ReviewNotification_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

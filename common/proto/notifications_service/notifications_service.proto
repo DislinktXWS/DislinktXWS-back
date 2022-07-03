@@ -26,6 +26,12 @@ service NotificationsService{
         get: "/notifications/notification/user/{username}"
       };
     }
+
+    rpc ReviewNotification(ReviewNotificationRequest) returns (ReviewNotificationResponse) {
+      option(google.api.http) = {
+        put: "/notifications/notification/{id}"
+      };
+    }
 }
 
 message GetRequest {
@@ -52,6 +58,14 @@ message GetUserNotificationsResponse {
   repeated NotificationView notificationView = 1;
 }
 
+message ReviewNotificationRequest{
+  string id = 1;
+}
+
+message ReviewNotificationResponse{
+
+}
+
 message Notification {
   string id = 1;
   User from = 2;
@@ -73,4 +87,5 @@ message NotificationView {
   string fromSurname = 4;
   string date = 5;
   string content = 6;
+  bool isReviewed = 7;
 }

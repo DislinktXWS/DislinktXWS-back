@@ -132,6 +132,10 @@ func (server *Server) initCustomHandlers() {
 
 	postNotificationHandler := api.NewPostNotificationsHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
 	postNotificationHandler.Init(server.mux)
+
+	businessOfferRecommendationsHandler := api.NewBusinessOfferRecommendationsHandler(userEndpoint, businessOfferEndpoint)
+	businessOfferRecommendationsHandler.Init(server.mux)
+
 	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
 	//conversationInfoHandler.Init(server.mux)
 }

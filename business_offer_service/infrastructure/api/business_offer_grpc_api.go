@@ -97,3 +97,22 @@ func (handler *BusinessOfferHandler) GetBusinessOffers(ctx context.Context, requ
 
 	return response, nil
 }
+
+func (handler *BusinessOfferHandler) GetBusinessOfferRecommendations(ctx context.Context, request *pb.RecommendationsRequest) (*pb.RecommendationsResponse, error) {
+	recommend := mapRecommendation(request.Recommend)
+	recommendations, _ := handler.service.GetBusinessOfferRecommendations(recommend)
+	response := &pb.RecommendationsResponse{
+		Offers: []*pb.GetBusinessOffer{},
+	}
+
+	for _, recommendation := range recommendations {
+		skills, err1 := handler.service.GetOfferSkills(recommendation.Id, ctx)
+		if err1 != nil {
+			return nil, err1
+		}
+		o := mapBusinessOffer(recommendation, skills)
+		response.Offers = append(response.Offers, o)
+	}
+
+	return response, nil
+}

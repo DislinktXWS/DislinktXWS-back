@@ -30,3 +30,7 @@ func (service *BusinessOfferService) GetBusinessOffers(ctx context.Context) ([]*
 func (service *BusinessOfferService) GetOfferSkills(offerId int64, ctx context.Context) ([]*domain.Skill, error) {
 	return service.graph.GetOfferSkills(offerId, ctx)
 }
+
+func (service *BusinessOfferService) GetBusinessOfferRecommendations(recommend *domain.Recommend) ([]*domain.BusinessOffer, error) {
+	return service.graph.GetBusinessOfferRecommendations(recommend)
+}

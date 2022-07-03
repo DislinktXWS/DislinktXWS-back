@@ -12,6 +12,24 @@ type BusinessOffersDBGraph struct {
 	session *neo4j.Session
 }
 
+func (store *BusinessOffersDBGraph) GetBusinessOfferRecommendations(recommend *domain.Recommend) ([]*domain.BusinessOffer, error) {
+	var session = *store.session
+	offers := []*domain.BusinessOffer{}
+	for _, skill := range recommend.Skills {
+		newOffers := getOffersBySkill(session, skill)
+		for _, offer := range newOffers {
+			offers = append(offers, offer)
+		}
+	}
+	for _, industry := range recommend.Industry {
+		newOffers := getOffersByIndustry(session, industry)
+		for _, offer := range newOffers {
+			offers = append(offers, offer)
+		}
+	}
+	return offers, nil
+}
+
 func NewBusinessOffersGraph(session *neo4j.Session) domain.BusinessOffersGraph {
 	return &BusinessOffersDBGraph{
 		session: session,
@@ -22,9 +40,6 @@ func (store *BusinessOffersDBGraph) InsertBusinessOffer(offer *domain.BusinessOf
 	span := tracer.StartSpanFromContext(ctx, "InsertBusinessOffer")
 	defer span.Finish()
 	var session = *store.session
-	//_, offerId := addOfferNode(offer.AuthorId, offer.Name, offer.Position, offer.Description, offer.Industry)
-	//fmt.Println(offerId)
-	//_, err := session.WriteTransaction(work)
 	offerId, err := addOffer(session, offer.AuthorId, offer.Name, offer.Position, offer.Description, offer.Industry)
 	offers, _ := getAllOffers(session)
 	for _, offer := range offers {

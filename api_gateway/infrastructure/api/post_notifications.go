@@ -38,6 +38,7 @@ func (handler *PostNotificationsHandler) PostNotifications(w http.ResponseWriter
 	id := pathParams["id"]
 	var newNotification domain.Notification
 	err := json.NewDecoder(r.Body).Decode(&newNotification)
+	fmt.Println(newNotification)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -47,7 +48,7 @@ func (handler *PostNotificationsHandler) PostNotifications(w http.ResponseWriter
 	sender := domain.UserBasicInfo{}
 	receiver := domain.UserBasicInfo{}
 	sender = *handler.getUserInformation(id, &sender)
-	receiver = *handler.getUserInformation(id, &receiver)
+	receiver = *handler.getUserInformation(newNotification.To, &receiver)
 	handler.sendNotification(&sender, &receiver, newNotification)
 
 }

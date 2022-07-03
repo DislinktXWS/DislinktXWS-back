@@ -185,6 +185,8 @@ func serverInterceptor(ctx context.Context,
 		info.FullMethod != "/users.UserService/Insert" && info.FullMethod != "/users.UserService/Get" &&
 		info.FullMethod != "/users.UserService/GetAll" &&
 		info.FullMethod != "/users.UserService/GetNotificationsSettings" &&
+		info.FullMethod != "/users.UserService/GetSkills" &&
+		info.FullMethod != "/users.UserService/GetExperience" &&
 		info.FullMethod != "/users.UserService/GetByUsername" &&
 		info.FullMethod != "/users.UserService/SetApiKey" &&
 		info.FullMethod != "/users.UserService/GetByApiKey" {

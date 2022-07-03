@@ -25,6 +25,7 @@ type BusinessOffersServiceClient interface {
 	InsertBusinessOffer(ctx context.Context, in *InsertOfferRequest, opts ...grpc.CallOption) (*InsertOfferResponse, error)
 	InsertSkill(ctx context.Context, in *InsertSkillsRequest, opts ...grpc.CallOption) (*InsertSkillsResponse, error)
 	GetBusinessOffers(ctx context.Context, in *GetAllOffersRequest, opts ...grpc.CallOption) (*GetAllOffersResponse, error)
+	GetBusinessOfferRecommendations(ctx context.Context, in *RecommendationsRequest, opts ...grpc.CallOption) (*RecommendationsResponse, error)
 }
 
 type businessOffersServiceClient struct {
@@ -62,6 +63,15 @@ func (c *businessOffersServiceClient) GetBusinessOffers(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *businessOffersServiceClient) GetBusinessOfferRecommendations(ctx context.Context, in *RecommendationsRequest, opts ...grpc.CallOption) (*RecommendationsResponse, error) {
+	out := new(RecommendationsResponse)
+	err := c.cc.Invoke(ctx, "/business_offer.BusinessOffersService/GetBusinessOfferRecommendations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BusinessOffersServiceServer is the server API for BusinessOffersService service.
 // All implementations must embed UnimplementedBusinessOffersServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type BusinessOffersServiceServer interface {
 	InsertBusinessOffer(context.Context, *InsertOfferRequest) (*InsertOfferResponse, error)
 	InsertSkill(context.Context, *InsertSkillsRequest) (*InsertSkillsResponse, error)
 	GetBusinessOffers(context.Context, *GetAllOffersRequest) (*GetAllOffersResponse, error)
+	GetBusinessOfferRecommendations(context.Context, *RecommendationsRequest) (*RecommendationsResponse, error)
 	mustEmbedUnimplementedBusinessOffersServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedBusinessOffersServiceServer) InsertSkill(context.Context, *In
 }
 func (UnimplementedBusinessOffersServiceServer) GetBusinessOffers(context.Context, *GetAllOffersRequest) (*GetAllOffersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBusinessOffers not implemented")
+}
+func (UnimplementedBusinessOffersServiceServer) GetBusinessOfferRecommendations(context.Context, *RecommendationsRequest) (*RecommendationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBusinessOfferRecommendations not implemented")
 }
 func (UnimplementedBusinessOffersServiceServer) mustEmbedUnimplementedBusinessOffersServiceServer() {}
 
@@ -152,6 +166,24 @@ func _BusinessOffersService_GetBusinessOffers_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BusinessOffersService_GetBusinessOfferRecommendations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RecommendationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BusinessOffersServiceServer).GetBusinessOfferRecommendations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/business_offer.BusinessOffersService/GetBusinessOfferRecommendations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BusinessOffersServiceServer).GetBusinessOfferRecommendations(ctx, req.(*RecommendationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BusinessOffersService_ServiceDesc is the grpc.ServiceDesc for BusinessOffersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var BusinessOffersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBusinessOffers",
 			Handler:    _BusinessOffersService_GetBusinessOffers_Handler,
+		},
+		{
+			MethodName: "GetBusinessOfferRecommendations",
+			Handler:    _BusinessOffersService_GetBusinessOfferRecommendations_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

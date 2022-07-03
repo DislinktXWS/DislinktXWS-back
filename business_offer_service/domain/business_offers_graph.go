@@ -7,4 +7,5 @@ type BusinessOffersGraph interface {
 	InsertSkill(skill *SkillDTO, ctx context.Context) error
 	GetBusinessOffers(ctx context.Context) ([]*BusinessOffer, error)
 	GetOfferSkills(offerId int64, ctx context.Context) ([]*Skill, error)
+	GetBusinessOfferRecommendations(recommend *Recommend) ([]*BusinessOffer, error)
 }

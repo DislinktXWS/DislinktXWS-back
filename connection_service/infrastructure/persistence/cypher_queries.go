@@ -47,6 +47,7 @@ func getFriendsOfFriendsTxFunc(session neo4j.Session, user string) ([]string, er
 				"WHERE u1.userId=$user AND u3.userId<>$user "+
 				"AND NOT exists((u1)-[:CONNECTED]-(u3)) "+
 				"AND NOT exists((u1)-[:BLOCKED]-(u3)) "+
+				"AND NOT exists((u1)-[:REQUESTED_CONNECTION]-(u3)) "+
 				"RETURN distinct u3.userId LIMIT 10 ",
 
 			map[string]interface{}{"user": user})
@@ -79,6 +80,7 @@ func getRandomUsersTxFunc(session neo4j.Session, id string) ([]string, error) {
 			"MATCH (user: User {userId: $id}),(N:User) "+
 				"WHERE NOT exists((N)-[:CONNECTED]-(user)) "+
 				"AND NOT exists((N)-[:BLOCKED]-(user)) "+
+				"AND NOT exists((N)-[:REQUESTED_CONNECTION]-(user)) "+
 				"AND N.userId<>$id "+
 				"RETURN N.userId LIMIT 20 ",
 
