@@ -11,3 +11,37 @@ INFO: 2022/06/29 14:58:19 connection_grpc_api.go:52: Action: 16, Message: New co
 INFO: 2022/06/29 14:58:33 connection_grpc_api.go:64: Message: 18, Deleted connection between 62ac65f5f2007b371948aa40 and 62bc666ebd01b45d466b6b6e
 INFO: 2022/06/29 18:42:52 connection_grpc_api.go:74: Action: 3, Message: User 62bc9d2389e18932c7f038ff created.
 INFO: 2022/07/01 17:41:33 connection_grpc_api.go:85: Action: 16, Message: New connection between 62bf2d1a7fdd165d9a141532 and 62bf2cc57fdd165d9a141531
+INFO: 2022/07/03 14:51:18 connection_grpc_api.go:211: Action: 19, Message: New connection request created between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 14:54:07 connection_grpc_api.go:270: Action: 23, Message: User 62c1acb5efbe025a7f934405 accepted connection request for 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:02:50 connection_grpc_api.go:92: Action: 16, Message: New connection between 62befbf48a22785655c4f9f0 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:03:29 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:03:32 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:03:52 connection_grpc_api.go:92: Action: 16, Message: New connection between 62befbf48a22785655c4f9f0 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:11:55 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:15:26 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:15:53 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:18:23 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c03b308cfe23c5bf0aa19e and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:19:55 connection_grpc_api.go:241: Action: 21, Message: User 62c02aed70dc31f1a216aba1 blocked 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:19:59 connection_grpc_api.go:256: Action: 22, Message: User 62c02aed70dc31f1a216aba1 unblocked 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:23:41 connection_grpc_api.go:211: Action: 19, Message: New connection request created between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:24:25 connection_grpc_api.go:270: Action: 23, Message: User 62c1acb5efbe025a7f934405 accepted connection request for 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:30:22 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:30:24 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:30:27 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:31:19 connection_grpc_api.go:241: Action: 21, Message: User 62c02aed70dc31f1a216aba1 blocked 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:31:22 connection_grpc_api.go:256: Action: 22, Message: User 62c02aed70dc31f1a216aba1 unblocked 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:31:53 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:32:39 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:32:40 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62c02aed70dc31f1a216aba1
+INFO: 2022/07/03 15:32:50 connection_grpc_api.go:211: Action: 19, Message: New connection request created between 62c02aed70dc31f1a216aba1 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:42:07 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62c03b308cfe23c5bf0aa19e
+INFO: 2022/07/03 15:42:10 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62c03b308cfe23c5bf0aa19e
+INFO: 2022/07/03 15:44:26 connection_grpc_api.go:211: Action: 19, Message: New connection request created between 62c03b308cfe23c5bf0aa19e and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:45:28 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:45:30 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:46:14 connection_grpc_api.go:92: Action: 16, Message: New connection between 62befbf48a22785655c4f9f0 and 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 15:46:18 connection_grpc_api.go:241: Action: 21, Message: User 62c1acb5efbe025a7f934405 blocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:46:24 connection_grpc_api.go:256: Action: 22, Message: User 62c1acb5efbe025a7f934405 unblocked 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:46:58 connection_grpc_api.go:92: Action: 16, Message: New connection between 62c1acb5efbe025a7f934405 and 62befbf48a22785655c4f9f0
+INFO: 2022/07/03 15:47:02 connection_grpc_api.go:241: Action: 21, Message: User 62befbf48a22785655c4f9f0 blocked 62c1acb5efbe025a7f934405
+INFO: 2022/07/03 16:11:20 connection_grpc_api.go:270: Action: 23, Message: User 62c1acb5efbe025a7f934405 accepted connection request for 62c02aed70dc31f1a216aba1

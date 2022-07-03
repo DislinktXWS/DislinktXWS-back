@@ -107,3 +107,5 @@ INFO: 2022/07/03 13:45:54 post_grpc_api.go:61: Action: 10, Message: User 62c02ae
 INFO: 2022/07/03 13:46:08 post_grpc_api.go:173: Action: 14, Message: User 62c02aed70dc31f1a216aba1 commented post 62bf0279fe8f95781a7f399c
 INFO: 2022/07/03 13:57:06 post_grpc_api.go:173: Action: 14, Message: User 62c02aed70dc31f1a216aba1 commented post 62bf0279fe8f95781a7f399c
 INFO: 2022/07/03 13:57:15 post_grpc_api.go:77: Action: 10, Message: User 62c02aed70dc31f1a216aba1 disliked post with id 62bf0279fe8f95781a7f399c
+INFO: 2022/07/03 15:04:02 post_grpc_api.go:61: Action: 10, Message: User 62c1acb5efbe025a7f934405 liked post with id 62bf0279fe8f95781a7f399c
+INFO: 2022/07/03 15:42:53 post_grpc_api.go:158: Action: 12, Message: User 62c03b308cfe23c5bf0aa19e created a new post.
