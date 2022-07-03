@@ -63,6 +63,7 @@ services:
         source: ./post_service/post-service.csr
         target: /root/postservice.csr
     restart: on-failure
+    environment:
       POST_SERVICE_HOST: ${POST_SERVICE_HOST}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       POST_DB_HOST: ${POST_DB_HOST}
