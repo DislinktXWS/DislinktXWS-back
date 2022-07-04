@@ -32,6 +32,7 @@ func (handler *ConnectUserAgentsHandler) Init(mux *runtime.ServeMux) {
 }
 
 func (handler *ConnectUserAgentsHandler) ConnectUser(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+
 	var apiKey domain.ApiKey
 	err := json.NewDecoder(r.Body).Decode(&apiKey)
 	if err != nil {

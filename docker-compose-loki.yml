@@ -9,6 +9,7 @@ services:
       - ./data/grafana/data:/var/lib/grafana
       - ./datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./jaeger.yml:/etc/grafana/provisioning/datasources/jaeger.yml
+      - ./prometheus.yml:/etc/grafana/provisioning/datasources/prometheus.yml
     networks:
       - public
     ports:

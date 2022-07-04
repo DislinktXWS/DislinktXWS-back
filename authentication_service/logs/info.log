@@ -1,1 +1,4 @@
 
+INFO: 2022/07/03 23:10:39 authentication_grpc_api.go:192: Action: 6, Message: User sara changed password successfully
+INFO: 2022/07/03 23:10:59 authentication_grpc_api.go:98: Action: 29, Message: Login successfull
+INFO: 2022/07/03 23:14:04 authentication_grpc_api.go:98: Action: 29, Message: Login successfull

@@ -15,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"io"
+	"log"
 	"net/http"
 	"net/smtp"
 	"strings"
@@ -317,13 +318,12 @@ func (store *AuthMongoDBStore) Login(auth *domain.Auth, ctx context.Context) (in
 	if err != nil {
 		return http.StatusNotFound, "User not found", "", false
 	}
-	if !authentication.IsVerified {
-		return http.StatusForbidden, "User not verified", "", false
-	}
 	match := utils.CheckPasswordHash(auth.Password, authentication.Password)
 	if !match {
 		return http.StatusNotFound, "User not found", "", false
 	}
+	log.Println("Nema greske")
+
 	secretKey := config.NewConfig().JWTSecretKey
 	wrapper := utils.JwtWrapper{SecretKey: secretKey, ExpirationHours: 5}
 	token, _ := wrapper.GenerateToken(authentication)
@@ -363,6 +363,7 @@ func (store *AuthMongoDBStore) ChangePassword(auth *domain.Auth, ctx context.Con
 	filter := bson.M{"username": auth.Username}
 	authentication, err := store.filterOne(filter)
 	if err != nil {
+		log.Println("Nema ga u bazi nigde")
 		return err
 	}
 	store.authentications.UpdateOne(

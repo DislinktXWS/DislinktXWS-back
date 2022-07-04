@@ -436,3 +436,8 @@ ERROR: 2022/07/01 22:07:28 authentication_grpc_api.go:119: Action: 30, Message: 
 ERROR: 2022/07/01 22:07:28 authentication_grpc_api.go:119: Action: 30, Message: Token is not valid or expired!
 ERROR: 2022/07/01 22:07:28 authentication_grpc_api.go:119: Action: 30, Message: Token is not valid or expired!
 
+ERROR: 2022/07/03 22:55:16 authentication_grpc_api.go:94: Action: 28, Message: Wrong credentials for login
+ERROR: 2022/07/03 22:57:54 authentication_grpc_api.go:94: Action: 28, Message: Wrong credentials for login
+ERROR: 2022/07/03 23:01:40 authentication_grpc_api.go:94: Action: 28, Message: Wrong credentials for login
+ERROR: 2022/07/03 23:06:09 authentication_grpc_api.go:94: Action: 28, Message: Wrong credentials for login
+ERROR: 2022/07/04 01:17:09 authentication_grpc_api.go:134: Action: 30, Message: Token is not valid or expired!

@@ -25,6 +25,7 @@ func NewPostHandler(postClientAddress string) Handler {
 
 func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 	err := mux.HandlePath("POST", "/posts/postImage", handler.InsertPost)
+	//mux.HandlePath("GET", "/metrics", promhttp.InstrumentHandlerCounter(prome, promhttp.Handler()))
 	if err != nil {
 		panic(err)
 	}

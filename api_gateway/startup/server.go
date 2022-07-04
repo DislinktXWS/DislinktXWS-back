@@ -16,6 +16,7 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	otgo "github.com/opentracing/opentracing-go"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
@@ -132,6 +133,7 @@ func (server *Server) initCustomHandlers() {
 
 	postNotificationHandler := api.NewPostNotificationsHandler(notificationsEndpoint, connectionEndpoint, userEndpoint)
 	postNotificationHandler.Init(server.mux)
+
 	//conversationInfoHandler := api.NewConversationInfoHandler(userEndpoint, messageEndpoint)
 	//conversationInfoHandler.Init(server.mux)
 }
@@ -144,6 +146,8 @@ func (server *Server) Start() {
 	listeningOn := server.config.Host + ":" + server.config.Port
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
 	//http.ListenAndServe(listeningOn, ch(server.mux))
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":5000", nil)
 	http.ListenAndServeTLS(listeningOn,
 		"localhost.crt",
 		"localhost.key",
